@@ -4,6 +4,7 @@
  */
 package com.idopontfoglalo.gbmedicalbackend.model;
 
+import static com.idopontfoglalo.gbmedicalbackend.model.Patients.emf;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -24,7 +25,13 @@ import jakarta.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.ParameterMode;
+import javax.persistence.Persistence;
+import javax.persistence.StoredProcedureQuery;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 /**
@@ -57,7 +64,7 @@ public class Doctors implements Serializable {
     @Size(min = 1, max = 100)
     @Column(name = "name")
     private String name;
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    @Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message = "Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
@@ -79,6 +86,10 @@ public class Doctors implements Serializable {
     @Size(min = 1, max = 65535)
     @Column(name = "bio")
     private String bio;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "isAdmin")
+    private boolean isAdmin;
     @Basic(optional = false)
     @NotNull
     @Column(name = "is_deleted")
@@ -108,11 +119,32 @@ public class Doctors implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "doctorId")
     private Collection<Schedules> schedulesCollection;
 
+    static EntityManagerFactory emf = Persistence.createEntityManagerFactory("com.idopontfoglalo_GBMedicalBackend_war_1.0-SNAPSHOTPU");
+
     public Doctors() {
     }
 
     public Doctors(Integer id) {
-        this.id = id;
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            Doctors d = em.find(Doctors.class, id);
+
+            this.id = d.getId();
+            this.name = d.getName();
+            this.email = d.getEmail();
+            this.phoneNumber = d.getPhoneNumber();
+            this.password = d.getPassword();
+            this.bio = d.getBio();
+            this.isAdmin = d.getIsAdmin();
+            this.isDeleted = d.getIsDeleted();
+            this.createdAt = d.getCreatedAt();
+        } catch (Exception ex) {
+            System.err.println("Hiba: " + ex.getLocalizedMessage());
+        } finally {
+            em.clear();
+            em.close();
+        }
     }
 
     public Doctors(Integer id, String name, String email, String phoneNumber, String password, String bio, boolean isDeleted, Date createdAt, Date updatedAt) {
@@ -126,6 +158,15 @@ public class Doctors implements Serializable {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
+
+    public Doctors(String name, String email, String phoneNumber, String password) {
+        this.name = name;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+    }
+
+    ;
 
     public Integer getId() {
         return id;
@@ -175,8 +216,16 @@ public class Doctors implements Serializable {
         this.bio = bio;
     }
 
+    public boolean getIsAdmin() {
+        return isAdmin;
+    }
+
     public boolean getIsDeleted() {
         return isDeleted;
+    }
+
+    public void setIsAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 
     public void setIsDeleted(boolean isDeleted) {
@@ -264,4 +313,56 @@ public class Doctors implements Serializable {
         return "com.idopontfoglalo.gbmedicalbackend.model.Doctors[ id=" + id + " ]";
     }
 
+    public static Boolean isDoctorExists(String email) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("isDoctorExists");
+
+            spq.registerStoredProcedureParameter("emailIN", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("resultOUT", Boolean.class, ParameterMode.OUT);
+
+            spq.setParameter("emailIN", email);
+
+            spq.execute();
+
+            Boolean result = Boolean.valueOf(spq.getOutputParameterValue("resultOUT").toString());
+
+            return result;
+        } catch (Exception e) {
+            System.err.println("Hiba: " + e.getLocalizedMessage());
+            return null;
+        } finally {
+            em.clear();
+            em.close();
+        }
+    }
+
+    public Boolean registerDoctor(Doctors d) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("registerDoctor");
+
+            spq.registerStoredProcedureParameter("nameIN", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("emailIN", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("phoneNumberIN", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("passwordIN", String.class, ParameterMode.IN);
+
+            spq.setParameter("nameIN", d.getName());
+            spq.setParameter("emailIN", d.getEmail());
+            spq.setParameter("phoneNumberIN", d.getPhoneNumber());
+            spq.setParameter("passwordIN", d.getPassword());
+
+            spq.execute();
+
+            return true;
+        } catch (Exception e) {
+            System.err.println("Hiba: " + e.getLocalizedMessage());
+            return false;
+        } finally {
+            em.clear();
+            em.close();
+        }
+    }
 }

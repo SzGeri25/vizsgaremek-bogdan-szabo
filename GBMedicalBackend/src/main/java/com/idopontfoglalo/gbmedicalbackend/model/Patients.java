@@ -4,6 +4,7 @@
  */
 package com.idopontfoglalo.gbmedicalbackend.model;
 
+import jakarta.jms.Connection;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -19,6 +20,8 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.EntityManager;
@@ -29,6 +32,7 @@ import javax.persistence.StoredProcedureQuery;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import org.json.JSONObject;
 
 /**
  *
@@ -352,4 +356,5 @@ public class Patients implements Serializable {
             em.close();
         }
     }
+
 }

@@ -1,5 +1,7 @@
+com\idopontfoglalo\gbmedicalbackend\service\DoctorService.class
 com\idopontfoglalo\gbmedicalbackend\model\Reviews.class
 com\idopontfoglalo\gbmedicalbackend\model\Schedules.class
+com\idopontfoglalo\gbmedicalbackend\controller\DoctorController.class
 com\idopontfoglalo\gbmedicalbackend\model\Doctors.class
 com\idopontfoglalo\gbmedicalbackend\model\Payments.class
 com\idopontfoglalo\gbmedicalbackend\controller\PatientController.class
