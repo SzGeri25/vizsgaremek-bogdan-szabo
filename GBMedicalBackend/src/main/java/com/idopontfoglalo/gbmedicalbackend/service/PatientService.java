@@ -4,6 +4,7 @@
  */
 package com.idopontfoglalo.gbmedicalbackend.service;
 
+import com.idopontfoglalo.gbmedicalbackend.config.JWT;
 import com.idopontfoglalo.gbmedicalbackend.model.Patients;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -79,6 +80,45 @@ public class PatientService {
             }
         } else {
             status = "InvalidEmail";
+            statusCode = 417;
+        }
+
+        toReturn.put("status", status);
+        toReturn.put("statusCode", statusCode);
+        return toReturn;
+    }
+
+    public JSONObject login(String email, String password) {
+        JSONObject toReturn = new JSONObject();
+        String status = "success";
+        int statusCode = 200;
+
+        if (isValidEmail(email)) {
+            Patients modelResult = layer.login(email, password);
+
+            if (modelResult == null) {
+                status = "modelException";
+                statusCode = 500;
+            } else {
+                if (modelResult.getId() == null) {
+                    status = "patientNotFound";
+                    statusCode = 417;
+                } else {
+                    JSONObject result = new JSONObject();
+                    result.put("id", modelResult.getId());
+                    result.put("email", modelResult.getEmail());
+                    result.put("firstName", modelResult.getFirstName());
+                    result.put("lastName", modelResult.getLastName());
+                    result.put("isAdmin", modelResult.getIsAdmin());
+                    result.put("isDeleted", modelResult.getIsDeleted());
+                    result.put("jwt", JWT.createJWT(modelResult));
+
+                    toReturn.put("result", result);
+                }
+            }
+
+        } else {
+            status = "invalidEmail";
             statusCode = 417;
         }
 

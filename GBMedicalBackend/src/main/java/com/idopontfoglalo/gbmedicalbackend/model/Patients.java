@@ -22,8 +22,11 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.ParameterMode;
@@ -351,6 +354,50 @@ public class Patients implements Serializable {
         } catch (Exception e) {
             System.err.println("Hiba: " + e.getLocalizedMessage());
             return false;
+        } finally {
+            em.clear();
+            em.close();
+        }
+    }
+
+    public Patients login(String email, String password) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("loginPatient");
+
+            spq.registerStoredProcedureParameter("emailIN", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("passwordIN", String.class, ParameterMode.IN);
+
+            spq.setParameter("emailIN", email);
+            spq.setParameter("passwordIN", password);
+
+            spq.execute();
+
+            List<Object[]> resultList = spq.getResultList();
+            Patients toReturn = new Patients();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            for (Object[] o : resultList) {
+                Patients u = new Patients(
+                        Integer.valueOf(o[0].toString()),
+                        o[1].toString(),
+                        o[2].toString(),
+                        o[3].toString(),
+                        o[4].toString(),
+                        o[5].toString(),
+                        Boolean.parseBoolean(o[6].toString()),
+                        Boolean.parseBoolean(o[7].toString()),
+                        formatter.parse(o[8].toString()),
+                        o[9] == null ? null : formatter.parse(o[9].toString())
+                );
+                toReturn = u;
+            }
+
+            return toReturn;
+
+        } catch (NumberFormatException | ParseException e) {
+            System.err.println("Hiba: " + e.getLocalizedMessage());
+            return null;
         } finally {
             em.clear();
             em.close();
