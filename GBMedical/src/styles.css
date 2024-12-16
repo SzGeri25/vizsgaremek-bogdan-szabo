@@ -1,1 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+body {
+    background-color: #e5f9f9;
+    /* Világos szürke háttérszín */
+    margin: 0;
+    /* Eltávolítja az alapértelmezett margót */
+    font-family: Arial, sans-serif;
+}
