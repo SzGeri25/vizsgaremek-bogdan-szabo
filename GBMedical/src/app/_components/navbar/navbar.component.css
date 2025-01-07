@@ -1,0 +1,17 @@
+nav {
+    background-color: #0d3b66;
+    color: white !important;
+    max-height: 85px;
+}
+
+#logo {
+    width: 90px;
+    height: 70px;
+}
+
+.nav-link {
+    color: white;
+    margin: 10px;
+    font-size: 18px;
+    
+}
