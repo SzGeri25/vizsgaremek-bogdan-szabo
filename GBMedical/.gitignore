@@ -14,7 +14,7 @@ yarn-error.log
 /dist
 /.angular
 /.env
-#*.log
+*.log
 
 
 # IDEs and editors
