@@ -1,0 +1,14 @@
+com\idopontfoglalo\gbmedicalbackend\service\DoctorService.class
+com\idopontfoglalo\gbmedicalbackend\model\Reviews.class
+com\idopontfoglalo\gbmedicalbackend\model\Schedules.class
+com\idopontfoglalo\gbmedicalbackend\controller\DoctorController.class
+com\idopontfoglalo\gbmedicalbackend\model\Doctors.class
+com\idopontfoglalo\gbmedicalbackend\model\Payments.class
+com\idopontfoglalo\gbmedicalbackend\controller\PatientController.class
+com\idopontfoglalo\gbmedicalbackend\model\Reminders.class
+com\idopontfoglalo\gbmedicalbackend\model\Services.class
+com\idopontfoglalo\gbmedicalbackend\config\JWT.class
+com\idopontfoglalo\gbmedicalbackend\controller\ApplicationConfig.class
+com\idopontfoglalo\gbmedicalbackend\model\Patients.class
+com\idopontfoglalo\gbmedicalbackend\model\Appointments.class
+com\idopontfoglalo\gbmedicalbackend\service\PatientService.class

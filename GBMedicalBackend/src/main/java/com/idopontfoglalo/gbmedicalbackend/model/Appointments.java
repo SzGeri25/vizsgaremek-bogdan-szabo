@@ -1,0 +1,247 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.idopontfoglalo.gbmedicalbackend.model;
+
+import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Date;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+/**
+ *
+ * @author szabo
+ */
+@Entity
+@Table(name = "appointments")
+@NamedQueries({
+    @NamedQuery(name = "Appointments.findAll", query = "SELECT a FROM Appointments a"),
+    @NamedQuery(name = "Appointments.findById", query = "SELECT a FROM Appointments a WHERE a.id = :id"),
+    @NamedQuery(name = "Appointments.findByStartTime", query = "SELECT a FROM Appointments a WHERE a.startTime = :startTime"),
+    @NamedQuery(name = "Appointments.findByEndTime", query = "SELECT a FROM Appointments a WHERE a.endTime = :endTime"),
+    @NamedQuery(name = "Appointments.findByDuration", query = "SELECT a FROM Appointments a WHERE a.duration = :duration"),
+    @NamedQuery(name = "Appointments.findByStatus", query = "SELECT a FROM Appointments a WHERE a.status = :status"),
+    @NamedQuery(name = "Appointments.findByIsDeleted", query = "SELECT a FROM Appointments a WHERE a.isDeleted = :isDeleted"),
+    @NamedQuery(name = "Appointments.findByCreatedAt", query = "SELECT a FROM Appointments a WHERE a.createdAt = :createdAt"),
+    @NamedQuery(name = "Appointments.findByUpdatedAt", query = "SELECT a FROM Appointments a WHERE a.updatedAt = :updatedAt"),
+    @NamedQuery(name = "Appointments.findByDeletedAt", query = "SELECT a FROM Appointments a WHERE a.deletedAt = :deletedAt")})
+public class Appointments implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id")
+    private Integer id;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "start_time")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date startTime;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "end_time")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date endTime;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "duration")
+    private int duration;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 9)
+    @Column(name = "status")
+    private String status;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
+    @Column(name = "deleted_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date deletedAt;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "appointmentId")
+    private Collection<Reminders> remindersCollection;
+    @JoinColumn(name = "doctor_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Doctors doctorId;
+    @JoinColumn(name = "patient_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Patients patientId;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "appointmentId")
+    private Collection<Payments> paymentsCollection;
+
+    public Appointments() {
+    }
+
+    public Appointments(Integer id) {
+        this.id = id;
+    }
+
+    public Appointments(Integer id, Date startTime, Date endTime, int duration, String status, boolean isDeleted, Date createdAt, Date updatedAt) {
+        this.id = id;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.duration = duration;
+        this.status = status;
+        this.isDeleted = isDeleted;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Date getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Date deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    public Collection<Reminders> getRemindersCollection() {
+        return remindersCollection;
+    }
+
+    public void setRemindersCollection(Collection<Reminders> remindersCollection) {
+        this.remindersCollection = remindersCollection;
+    }
+
+    public Doctors getDoctorId() {
+        return doctorId;
+    }
+
+    public void setDoctorId(Doctors doctorId) {
+        this.doctorId = doctorId;
+    }
+
+    public Patients getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(Patients patientId) {
+        this.patientId = patientId;
+    }
+
+    public Collection<Payments> getPaymentsCollection() {
+        return paymentsCollection;
+    }
+
+    public void setPaymentsCollection(Collection<Payments> paymentsCollection) {
+        this.paymentsCollection = paymentsCollection;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Appointments)) {
+            return false;
+        }
+        Appointments other = (Appointments) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "com.idopontfoglalo.gbmedicalbackend.model.Appointments[ id=" + id + " ]";
+    }
+
+}
