@@ -1,0 +1,15 @@
+.footer-background{
+    background-color: #0d3b66;
+    color: white !important;
+    height: 90px;
+}
+
+.footer-logo{
+    position: relative;
+    right: 170px;
+}
+
+#logo {
+    height: 90px;
+}
+
