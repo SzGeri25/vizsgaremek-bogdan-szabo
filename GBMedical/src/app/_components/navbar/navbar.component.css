@@ -1,17 +1,44 @@
-nav {
-    background-color: #0d3b66;
-    color: white !important;
-    max-height: 85px;
+.navbar{
+    background-color: #008080;
+    padding: 5px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 80px;
 }
 
-#logo {
-    width: 90px;
-    height: 70px;
+/*Navbar ul beállítások*/
+.navbar-nav{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    color: #f5f5f5 !important;
 }
 
-.nav-link {
-    color: white;
-    margin: 10px;
-    font-size: 18px;
-    
+/*Navbar li beállítások*/
+.nav-item{
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    color: #f5f5f5 !important;
+}
+
+
+
+.nav-item:hover{
+    transform: scale(1.05);
+    border-radius: 5px;
+}
+
+.navbar-logo{
+    width: 130px;
+}
+
+.nav-link{
+    color: #f5f5f5 !important;
 }
