@@ -68,10 +68,21 @@ public class DoctorController {
                 body.getString("name"),
                 body.getString("email"),
                 body.getString("phoneNumber"),
-                body.getString("password")
+                body.getString("password"),
+                body.getString("bio")
         );
 
         JSONObject obj = layer.registerDoctor(d);
+        return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
+    }
+
+    @POST
+    @Path("loginDoctor")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response loginDoctor(String bodyString) {
+        JSONObject body = new JSONObject(bodyString);
+
+        JSONObject obj = layer.loginDoctor(body.getString("email"), body.getString("password"));
         return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
     }
 }

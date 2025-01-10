@@ -77,10 +77,10 @@ public class PatientController {
     @POST
     @Path("loginPatient")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response login(String bodyString) {
+    public Response loginPatient(String bodyString) {
         JSONObject body = new JSONObject(bodyString);
 
-        JSONObject obj = layer.login(body.getString("email"), body.getString("password"));
+        JSONObject obj = layer.loginPatient(body.getString("email"), body.getString("password"));
         return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
     }
 

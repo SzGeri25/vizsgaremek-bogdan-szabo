@@ -23,8 +23,11 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.ParameterMode;
@@ -147,23 +150,25 @@ public class Doctors implements Serializable {
         }
     }
 
-    public Doctors(Integer id, String name, String email, String phoneNumber, String password, String bio, boolean isDeleted, Date createdAt, Date updatedAt) {
+    public Doctors(Integer id, String name, String email, String phoneNumber, String password, String bio, boolean isAdmin, boolean isDeleted, Date createdAt, Date updatedAt) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.bio = bio;
+        this.isAdmin = isAdmin;
         this.isDeleted = isDeleted;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
-    public Doctors(String name, String email, String phoneNumber, String password) {
+    public Doctors(String name, String email, String phoneNumber, String password, String bio) {
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
+        this.bio = bio;
     }
 
     ;
@@ -348,11 +353,13 @@ public class Doctors implements Serializable {
             spq.registerStoredProcedureParameter("emailIN", String.class, ParameterMode.IN);
             spq.registerStoredProcedureParameter("phoneNumberIN", String.class, ParameterMode.IN);
             spq.registerStoredProcedureParameter("passwordIN", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("bioIN", String.class, ParameterMode.IN);
 
             spq.setParameter("nameIN", d.getName());
             spq.setParameter("emailIN", d.getEmail());
             spq.setParameter("phoneNumberIN", d.getPhoneNumber());
             spq.setParameter("passwordIN", d.getPassword());
+            spq.setParameter("bioIN", d.getBio());
 
             spq.execute();
 
@@ -360,6 +367,51 @@ public class Doctors implements Serializable {
         } catch (Exception e) {
             System.err.println("Hiba: " + e.getLocalizedMessage());
             return false;
+        } finally {
+            em.clear();
+            em.close();
+        }
+    }
+
+    public Doctors loginDoctor(String email, String password) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("loginDoctor");
+
+            spq.registerStoredProcedureParameter("emailIN", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("passwordIN", String.class, ParameterMode.IN);
+
+            spq.setParameter("emailIN", email);
+            spq.setParameter("passwordIN", password);
+
+            spq.execute();
+
+            List<Object[]> resultList = spq.getResultList();
+            Doctors toReturn = new Doctors();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            for (Object[] o : resultList) {
+                Doctors d = new Doctors(
+                        Integer.valueOf(o[0].toString()),
+                        o[1].toString(),
+                        o[2].toString(),
+                        o[3].toString(),
+                        o[4].toString(),
+                        o[5].toString(),
+                        Boolean.parseBoolean(o[6].toString()),
+                        false, // Alapértelmezett érték az isDeleted mezőhöz
+                        formatter.parse(o[8].toString()),
+                        o[9] == null ? null : formatter.parse(o[9].toString())
+                );
+
+                toReturn = d;
+            }
+
+            return toReturn;
+
+        } catch (NumberFormatException | ParseException e) {
+            System.err.println("Hiba: " + e.getLocalizedMessage());
+            return null;
         } finally {
             em.clear();
             em.close();

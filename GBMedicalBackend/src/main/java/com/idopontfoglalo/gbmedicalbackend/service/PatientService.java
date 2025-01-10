@@ -88,13 +88,13 @@ public class PatientService {
         return toReturn;
     }
 
-    public JSONObject login(String email, String password) {
+    public JSONObject loginPatient(String email, String password) {
         JSONObject toReturn = new JSONObject();
         String status = "success";
         int statusCode = 200;
 
         if (isValidEmail(email)) {
-            Patients modelResult = layer.login(email, password);
+            Patients modelResult = layer.loginPatient(email, password);
 
             if (modelResult == null) {
                 status = "modelException";

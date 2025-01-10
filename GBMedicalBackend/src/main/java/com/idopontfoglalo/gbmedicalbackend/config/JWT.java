@@ -4,6 +4,7 @@
  */
 package com.idopontfoglalo.gbmedicalbackend.config;
 
+import com.idopontfoglalo.gbmedicalbackend.model.Doctors;
 import com.idopontfoglalo.gbmedicalbackend.model.Patients;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -31,6 +32,26 @@ public class JWT {
     private static final byte[] SECRET = Base64.getDecoder().decode(SIGN);
 
     public static String createJWT(Patients p) {
+        Instant now = Instant.now();
+
+        String token = Jwts.builder()
+                .setIssuer("GBmedical")
+                .setSubject("test")
+                .claim("id", p.getId())
+                .claim("isAdmin", p.getIsAdmin())
+                .claim("createdAt", p.getCreatedAt())
+                .setIssuedAt(Date.from(now))
+                .setExpiration(Date.from(now.plus(1, ChronoUnit.DAYS)))
+                .signWith(
+                        SignatureAlgorithm.HS256,
+                        TextCodec.BASE64.decode(SIGN)
+                )
+                .compact();
+
+        return token;
+    }
+
+    public static String createJWT(Doctors p) {
         Instant now = Instant.now();
 
         String token = Jwts.builder()

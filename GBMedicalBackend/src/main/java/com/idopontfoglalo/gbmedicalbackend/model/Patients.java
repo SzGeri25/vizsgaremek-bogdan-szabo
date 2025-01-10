@@ -360,7 +360,7 @@ public class Patients implements Serializable {
         }
     }
 
-    public Patients login(String email, String password) {
+    public Patients loginPatient(String email, String password) {
         EntityManager em = emf.createEntityManager();
 
         try {
