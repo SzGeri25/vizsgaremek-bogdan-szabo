@@ -1,20 +1,5 @@
-.jumbotron {
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    padding: 2rem;
-}
-
-i {
-    color: #007bff;
-}
-
-footer {
-    color: #6c757d;
-    font-size: 0.9rem;
-}
-
 .to-top{
-    background-color: #008080 !important;
+    background-color: #008080;
     position: fixed;
     bottom: 0px;
     right: 20px;
