@@ -1,0 +1,45 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.idopontfoglalo.gbmedicalbackend.controller;
+
+import com.idopontfoglalo.gbmedicalbackend.service.AppointmentService;
+import com.idopontfoglalo.gbmedicalbackend.service.DoctorService;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import org.json.JSONObject;
+
+/**
+ *
+ * @author szabo
+ */
+@Path("appointments")
+public class AppointmentController {
+
+    private AppointmentService layer = new AppointmentService(); // vagy a megfelelő osztály, amely a service réteget képviseli
+
+    @POST
+    @Path("addAppointmentWithNotification")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addAppointmentWithNotification(String bodyString) {
+        JSONObject body = new JSONObject(bodyString);
+
+        int doctorId = body.getInt("doctorId");
+        int patientId = body.getInt("patientId");
+        String startTime = body.getString("startTime");
+        String endTime = body.getString("endTime");
+        int duration = body.getInt("duration");
+        String status = body.getString("status");
+
+        JSONObject obj = layer.addAppointmentWithNotification(doctorId, patientId, startTime, endTime, duration, status);
+        return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
+    }
+}

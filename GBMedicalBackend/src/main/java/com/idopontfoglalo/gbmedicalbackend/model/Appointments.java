@@ -4,6 +4,7 @@
  */
 package com.idopontfoglalo.gbmedicalbackend.model;
 
+import static com.idopontfoglalo.gbmedicalbackend.model.Patients.emf;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -22,6 +23,9 @@ import jakarta.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import javax.persistence.EntityManager;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureQuery;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -244,4 +248,40 @@ public class Appointments implements Serializable {
         return "com.idopontfoglalo.gbmedicalbackend.model.Appointments[ id=" + id + " ]";
     }
 
+    public boolean addAppointmentWithNotification(int doctorId, int patientId, String startTime, String endTime, int duration, String status) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            // Tárolt eljárás meghívása
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("addAppointmentWithNotification");
+
+            // Bemeneti paraméterek regisztrálása
+            spq.registerStoredProcedureParameter("doctor_idIN", Integer.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("patient_idIN", Integer.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("start_timeIN", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("end_timeIN", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("durationIN", Integer.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("statusIN", String.class, ParameterMode.IN);
+
+            // Paraméterek beállítása
+            spq.setParameter("doctor_idIN", doctorId);
+            spq.setParameter("patient_idIN", patientId);
+            spq.setParameter("start_timeIN", startTime);
+            spq.setParameter("end_timeIN", endTime);
+            spq.setParameter("durationIN", duration);
+            spq.setParameter("statusIN", status);
+
+            // Tárolt eljárás futtatása
+            spq.execute();
+
+            return true; // Sikeres végrehajtás
+
+        } catch (Exception e) {
+            System.err.println("Hiba a `addAppointmentWithNotification` során: " + e.getMessage());
+            return false; // Hiba esetén visszatérés
+        } finally {
+            em.clear();
+            em.close();
+        }
+    }
 }
