@@ -2,12 +2,14 @@ import { Component } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { FormsModule } from '@angular/forms';
 import { FooterComponent } from '../footer/footer.component';
+import { LoginComponent } from "../login/login.component";
+import { RegisterComponent } from "../register/register.component";
 
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [NavbarComponent, FormsModule, FooterComponent,],
+  imports: [NavbarComponent, FormsModule, FooterComponent, LoginComponent, RegisterComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
