@@ -21,8 +21,11 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.ParameterMode;
 import javax.persistence.StoredProcedureQuery;
@@ -100,6 +103,8 @@ public class Appointments implements Serializable {
     private Patients patientId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "appointmentId")
     private Collection<Payments> paymentsCollection;
+    private String doctorName;
+    private String patientName;
 
     public Appointments() {
     }
@@ -117,6 +122,20 @@ public class Appointments implements Serializable {
         this.isDeleted = isDeleted;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public Appointments(Integer id, Integer doctorId, Integer patientId, String doctorName, String patientName, Date startTime, Date endTime, String status) {
+        this.id = id;
+        this.doctorId = new Doctors(); // Assuming Doctors has a constructor that can handle this
+        this.doctorId.setId(doctorId);
+        this.patientId = new Patients(); // Same for Patients
+        this.patientId.setId(patientId);
+
+        this.doctorName = doctorName;
+        this.patientName = patientName;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.status = status;
     }
 
     public Integer getId() {
@@ -284,4 +303,40 @@ public class Appointments implements Serializable {
             em.close();
         }
     }
+
+    public List<Appointments> getBookedAppointments() {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("getBookedAppointments");
+
+            spq.execute();
+
+            List<Appointments> toReturn = new ArrayList();
+            List<Object[]> resultList = spq.getResultList();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            for (Object[] record : resultList) {
+                Appointments u = new Appointments(
+                        Integer.parseInt(record[0].toString()), // appointment_id
+                        Integer.parseInt(record[1].toString()), // doctor_id
+                        Integer.parseInt(record[2].toString()), // patient_id
+                        record[6].toString(), // doctor_name
+                        record[7].toString(), // patient_name
+                        sdf.parse(record[8].toString()), // start_time
+                        sdf.parse(record[9].toString()), // end_time
+                        record[10].toString());
+
+                toReturn.add(u);
+            }
+            return toReturn;
+
+        } catch (Exception e) {
+            System.err.println("Hiba: " + e.getLocalizedMessage());
+            return null;
+        } finally {
+            em.clear();
+            em.close();
+        }
+    }
+
 }

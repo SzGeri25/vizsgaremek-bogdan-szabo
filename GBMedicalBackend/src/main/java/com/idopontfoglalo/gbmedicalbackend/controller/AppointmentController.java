@@ -7,6 +7,7 @@ package com.idopontfoglalo.gbmedicalbackend.controller;
 import com.idopontfoglalo.gbmedicalbackend.service.AppointmentService;
 import com.idopontfoglalo.gbmedicalbackend.service.DoctorService;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -42,4 +43,13 @@ public class AppointmentController {
         JSONObject obj = layer.addAppointmentWithNotification(doctorId, patientId, startTime, endTime, duration, status);
         return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
     }
+
+    @GET
+    @Path("getBookedAppointments")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getBookedAppointments() {
+        JSONObject obj = layer.getBookedAppointments();
+        return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
+    }
+
 }

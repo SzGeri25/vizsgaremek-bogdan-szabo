@@ -5,6 +5,8 @@
 package com.idopontfoglalo.gbmedicalbackend.service;
 
 import com.idopontfoglalo.gbmedicalbackend.model.Appointments;
+import java.util.List;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -47,4 +49,45 @@ public class AppointmentService {
         toReturn.put("statusCode", statusCode);
         return toReturn;
     }
+
+    public JSONObject getBookedAppointments() {
+        JSONObject toReturn = new JSONObject();
+        String responseStatus = "success";
+        int statusCode = 200;
+
+        try {
+            List<Appointments> bookedAppointments = layer.getBookedAppointments();
+
+            if (bookedAppointments == null || bookedAppointments.isEmpty()) {
+                responseStatus = "noRecordsFound";
+                statusCode = 404;
+            } else {
+                JSONArray appointmentsArray = new JSONArray();
+                for (Appointments appointment : bookedAppointments) {
+                    JSONObject appointmentObject = new JSONObject();
+                    appointmentObject.put("id", appointment.getId());
+                    appointmentObject.put("doctorId", appointment.getDoctorId().getId());
+                    appointmentObject.put("patientId", appointment.getPatientId().getId());
+                    appointmentObject.put("doctorName", appointment.getDoctorId().getName());
+                    appointmentObject.put("patientName", appointment.getPatientId().getFirstName() + " " + appointment.getPatientId().getLastName());
+                    appointmentObject.put("startTime", appointment.getStartTime().toString());
+                    appointmentObject.put("endTime", appointment.getEndTime().toString());
+                    appointmentObject.put("status", appointment.getStatus());
+
+                    appointmentsArray.put(appointmentObject);
+                }
+
+                toReturn.put("appointments", appointmentsArray);
+            }
+        } catch (Exception e) {
+            responseStatus = "error";
+            statusCode = 500;
+            toReturn.put("errorMessage", e.getLocalizedMessage());
+        }
+
+        toReturn.put("status", responseStatus);
+        toReturn.put("statusCode", statusCode);
+        return toReturn;
+    }
+
 }
