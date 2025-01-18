@@ -5,7 +5,9 @@
 package com.idopontfoglalo.gbmedicalbackend.service;
 
 import com.idopontfoglalo.gbmedicalbackend.model.Appointments;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -68,16 +70,17 @@ public class AppointmentService {
                     appointmentObject.put("id", appointment.getId());
                     appointmentObject.put("doctorId", appointment.getDoctorId().getId());
                     appointmentObject.put("patientId", appointment.getPatientId().getId());
-                    appointmentObject.put("doctorName", appointment.getDoctorId().getName());
-                    appointmentObject.put("patientName", appointment.getPatientId().getFirstName() + " " + appointment.getPatientId().getLastName());
                     appointmentObject.put("startTime", appointment.getStartTime().toString());
                     appointmentObject.put("endTime", appointment.getEndTime().toString());
                     appointmentObject.put("status", appointment.getStatus());
+                    appointmentObject.put("doctorName", appointment.getDoctorId().getName());
+                    appointmentObject.put("patientName", appointment.getPatientId().getFirstName() + " " + appointment.getPatientId().getLastName());
 
                     appointmentsArray.put(appointmentObject);
                 }
 
                 toReturn.put("appointments", appointmentsArray);
+
             }
         } catch (Exception e) {
             responseStatus = "error";

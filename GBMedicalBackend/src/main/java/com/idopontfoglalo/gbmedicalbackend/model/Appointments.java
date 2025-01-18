@@ -21,6 +21,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -103,8 +104,6 @@ public class Appointments implements Serializable {
     private Patients patientId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "appointmentId")
     private Collection<Payments> paymentsCollection;
-    private String doctorName;
-    private String patientName;
 
     public Appointments() {
     }
@@ -124,18 +123,24 @@ public class Appointments implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public Appointments(Integer id, Integer doctorId, Integer patientId, String doctorName, String patientName, Date startTime, Date endTime, String status) {
+    public Appointments(Integer id, Integer doctorId, Integer patientId, Date startTime, Date endTime, String status, String doctorName, String patientName) {
         this.id = id;
-        this.doctorId = new Doctors(); // Assuming Doctors has a constructor that can handle this
+        this.doctorId = new Doctors();
         this.doctorId.setId(doctorId);
+        this.doctorId.setName(doctorName);
         this.patientId = new Patients(); // Same for Patients
         this.patientId.setId(patientId);
-
-        this.doctorName = doctorName;
-        this.patientName = patientName;
         this.startTime = startTime;
         this.endTime = endTime;
         this.status = status;
+        String[] names = patientName.split(" ");
+        if (names.length >= 2) {
+            this.patientId.setFirstName(names[0]);
+            this.patientId.setLastName(names[1]);
+        } else {
+            this.patientId.setFirstName(patientName); // Ha csak egy név van
+            this.patientId.setLastName(""); // Második részt üresen hagyjuk
+        }
     }
 
     public Integer getId() {
@@ -317,20 +322,19 @@ public class Appointments implements Serializable {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             for (Object[] record : resultList) {
                 Appointments u = new Appointments(
-                        Integer.parseInt(record[0].toString()), // appointment_id
-                        Integer.parseInt(record[1].toString()), // doctor_id
-                        Integer.parseInt(record[2].toString()), // patient_id
+                        Integer.valueOf(record[0].toString()), // appointment_id
+                        Integer.valueOf(record[1].toString()), // doctor_id
+                        Integer.valueOf(record[2].toString()), // patient_id
+                        sdf.parse(record[3].toString()), // start_time
+                        sdf.parse(record[4].toString()), // end_time
+                        record[5].toString(), //status
                         record[6].toString(), // doctor_name
-                        record[7].toString(), // patient_name
-                        sdf.parse(record[8].toString()), // start_time
-                        sdf.parse(record[9].toString()), // end_time
-                        record[10].toString());
-
+                        record[7].toString()); // patient_name
                 toReturn.add(u);
             }
             return toReturn;
 
-        } catch (Exception e) {
+        } catch (NumberFormatException | ParseException e) {
             System.err.println("Hiba: " + e.getLocalizedMessage());
             return null;
         } finally {
