@@ -343,4 +343,41 @@ public class Appointments implements Serializable {
         }
     }
 
+    public List<TimeSlotDTO> getAvailableSlots(int doctorId, String startDate, String endDate) {
+        EntityManager em = emf.createEntityManager();
+        List<TimeSlotDTO> slots = new ArrayList<>();
+
+        try {
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("GetAvailableSlots");
+
+            spq.registerStoredProcedureParameter("doctorIdIN", Integer.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("startDateIN", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("endDateIN", String.class, ParameterMode.IN);
+
+            // Beállítjuk a paramétereket a stored procedure-hoz
+            spq.setParameter("doctorIdIN", doctorId);
+            spq.setParameter("startDateIN", startDate);
+            spq.setParameter("endDateIN", endDate);
+
+            spq.execute();
+
+            List<Object[]> resultList = spq.getResultList();
+            for (Object[] record : resultList) {
+                TimeSlotDTO slot = new TimeSlotDTO();
+                slot.setSlotStart(record[0].toString());
+                slot.setSlotEnd(record[1].toString());
+                slot.setDoctorId((int) record[2]);
+                slots.add(slot);
+            }
+
+        } catch (Exception e) {
+            System.err.println("Hiba: " + e.getLocalizedMessage());
+        } finally {
+            em.clear();
+            em.close();
+        }
+
+        return slots;
+    }
+
 }

@@ -5,9 +5,8 @@
 package com.idopontfoglalo.gbmedicalbackend.service;
 
 import com.idopontfoglalo.gbmedicalbackend.model.Appointments;
-import java.util.LinkedHashMap;
+import com.idopontfoglalo.gbmedicalbackend.model.TimeSlotDTO;
 import java.util.List;
-import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -81,6 +80,40 @@ public class AppointmentService {
 
                 toReturn.put("appointments", appointmentsArray);
 
+            }
+        } catch (Exception e) {
+            responseStatus = "error";
+            statusCode = 500;
+            toReturn.put("errorMessage", e.getLocalizedMessage());
+        }
+
+        toReturn.put("status", responseStatus);
+        toReturn.put("statusCode", statusCode);
+        return toReturn;
+    }
+
+    public JSONObject getAvailableSlots(int doctorId, String startDate, String endDate) {
+        JSONObject toReturn = new JSONObject();
+        String responseStatus = "success";
+        int statusCode = 200;
+
+        try {
+            List<TimeSlotDTO> availableSlots = layer.getAvailableSlots(doctorId, startDate, endDate);
+
+            if (availableSlots == null || availableSlots.isEmpty()) {
+                responseStatus = "noRecordsFound";
+                statusCode = 404;
+            } else {
+                JSONArray slotsArray = new JSONArray();
+                for (TimeSlotDTO slot : availableSlots) {
+                    JSONObject slotObject = new JSONObject();
+                    slotObject.put("slotStart", slot.getSlotStart());
+                    slotObject.put("slotEnd", slot.getSlotEnd());
+                    slotObject.put("doctorId", slot.getDoctorId());
+                    slotsArray.put(slotObject);
+                }
+
+                toReturn.put("slots", slotsArray);
             }
         } catch (Exception e) {
             responseStatus = "error";

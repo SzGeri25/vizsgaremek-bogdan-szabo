@@ -12,5 +12,6 @@ C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\ma
 C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\controller\PatientController.java
 C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\model\Schedules.java
 C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\controller\ApplicationConfig.java
+C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\model\TimeSlotDTO.java
 C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\controller\AppointmentController.java
 C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\service\DoctorService.java

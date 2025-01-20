@@ -8,6 +8,7 @@ com\idopontfoglalo\gbmedicalbackend\model\Doctors.class
 com\idopontfoglalo\gbmedicalbackend\model\Payments.class
 com\idopontfoglalo\gbmedicalbackend\controller\PatientController.class
 com\idopontfoglalo\gbmedicalbackend\model\Reminders.class
+com\idopontfoglalo\gbmedicalbackend\model\TimeSlotDTO.class
 com\idopontfoglalo\gbmedicalbackend\model\Services.class
 com\idopontfoglalo\gbmedicalbackend\config\JWT.class
 com\idopontfoglalo\gbmedicalbackend\controller\ApplicationConfig.class

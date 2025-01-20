@@ -4,13 +4,16 @@
  */
 package com.idopontfoglalo.gbmedicalbackend.controller;
 
+import com.idopontfoglalo.gbmedicalbackend.model.TimeSlotDTO;
 import com.idopontfoglalo.gbmedicalbackend.service.AppointmentService;
 import com.idopontfoglalo.gbmedicalbackend.service.DoctorService;
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -24,7 +27,7 @@ import org.json.JSONObject;
 @Path("appointments")
 public class AppointmentController {
 
-    private AppointmentService layer = new AppointmentService(); // vagy a megfelelő osztály, amely a service réteget képviseli
+    private final AppointmentService layer = new AppointmentService(); // vagy a megfelelő osztály, amely a service réteget képviseli
 
     @POST
     @Path("addAppointmentWithNotification")
@@ -50,6 +53,18 @@ public class AppointmentController {
     public Response getBookedAppointments() {
         JSONObject obj = layer.getBookedAppointments();
         return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
+    }
+
+    @GET
+    @Path("getAvailableSlots")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAvailableSlots(
+            @QueryParam("doctorId") int doctorId,
+            @QueryParam("startDate") String startDate,
+            @QueryParam("endDate") String endDate) {
+
+        JSONObject obj = layer.getAvailableSlots(doctorId, startDate, endDate);
+        return Response.status(obj.getInt("statusCode")).entity(obj.toString()).build();
     }
 
 }
