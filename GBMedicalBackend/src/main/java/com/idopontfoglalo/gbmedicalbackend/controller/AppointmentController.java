@@ -9,6 +9,7 @@ import com.idopontfoglalo.gbmedicalbackend.service.AppointmentService;
 import com.idopontfoglalo.gbmedicalbackend.service.DoctorService;
 import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -55,15 +56,11 @@ public class AppointmentController {
         return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
     }
 
-    @GET
-    @Path("getAvailableSlots")
+    @DELETE
+    @Path("cancelAppointment")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAvailableSlots(
-            @QueryParam("doctorId") int doctorId,
-            @QueryParam("startDate") String startDate,
-            @QueryParam("endDate") String endDate) {
-
-        JSONObject obj = layer.getAvailableSlots(doctorId, startDate, endDate);
+    public Response cancelAppointment(@QueryParam("appointmentId") int appointmentId) {
+        JSONObject obj = layer.cancelAppointment(appointmentId);
         return Response.status(obj.getInt("statusCode")).entity(obj.toString()).build();
     }
 

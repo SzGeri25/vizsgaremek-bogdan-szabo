@@ -380,4 +380,31 @@ public class Appointments implements Serializable {
         return slots;
     }
 
+    public boolean cancelAppointment(int id) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            // Tárolt eljárás meghívása
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("cancelAppointment");
+
+            // Bemeneti paraméterek regisztrálása
+            spq.registerStoredProcedureParameter("idIN", Integer.class, ParameterMode.IN);
+
+            // Paraméterek beállítása
+            spq.setParameter("idIN", id);
+
+            // Tárolt eljárás futtatása
+            spq.execute();
+
+            return true; // Sikeres végrehajtás
+
+        } catch (Exception e) {
+            System.err.println("Hiba a `cancelAppointment` során: " + e.getMessage());
+            return false; // Hiba esetén visszatérés
+        } finally {
+            em.clear();
+            em.close();
+        }
+    }
+
 }
