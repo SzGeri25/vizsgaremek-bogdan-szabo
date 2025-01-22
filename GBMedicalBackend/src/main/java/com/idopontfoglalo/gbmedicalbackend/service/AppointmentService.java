@@ -8,6 +8,7 @@ import com.idopontfoglalo.gbmedicalbackend.model.Appointments;
 import com.idopontfoglalo.gbmedicalbackend.model.TimeSlotDTO;
 import java.util.List;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -16,7 +17,7 @@ import org.json.JSONObject;
  */
 public class AppointmentService {
 
-    private Appointments layer = new Appointments(); // vagy a megfelelő osztály, amely a model réteget képviseli
+    private final Appointments layer = new Appointments(); // vagy a megfelelő osztály, amely a model réteget képviseli
 
     public JSONObject addAppointmentWithNotification(int doctorId, int patientId, String startTime, String endTime, int duration, String status) {
         JSONObject toReturn = new JSONObject();
@@ -81,7 +82,7 @@ public class AppointmentService {
                 toReturn.put("appointments", appointmentsArray);
 
             }
-        } catch (Exception e) {
+        } catch (JSONException e) {
             responseStatus = "error";
             statusCode = 500;
             toReturn.put("errorMessage", e.getLocalizedMessage());
@@ -115,7 +116,7 @@ public class AppointmentService {
 
                 toReturn.put("slots", slotsArray);
             }
-        } catch (Exception e) {
+        } catch (JSONException e) {
             responseStatus = "error";
             statusCode = 500;
             toReturn.put("errorMessage", e.getLocalizedMessage());
@@ -167,6 +168,40 @@ public class AppointmentService {
             // Egyéb hibák kezelése
             responseStatus = "error";
             statusCode = statusCode == 200 ? 500 : statusCode; // Ha nem volt más specifikus hiba
+            toReturn.put("error", e.getMessage());
+        }
+
+        toReturn.put("status", responseStatus);
+        toReturn.put("statusCode", statusCode);
+        return toReturn;
+    }
+
+    public JSONObject updateAppointment(int appointmentId, Integer doctorId, Integer patientId, String startTime, String endTime, String status, Integer duration) {
+        JSONObject toReturn = new JSONObject();
+        String responseStatus = "success";
+        int statusCode = 200;
+
+        try {
+            // Validate inputs
+            if (appointmentId <= 0) {
+                responseStatus = "invalidInput";
+                statusCode = 400;
+            } else {
+                // Call the DAO or database layer to execute the update
+                boolean modelResult = layer.updateAppointment(
+                        appointmentId, doctorId, patientId, startTime, endTime, status, duration
+                );
+
+                if (!modelResult) {
+                    responseStatus = "modelException";
+                    statusCode = 500;
+                } else {
+                    toReturn.put("message", "Appointment successfully updated");
+                }
+            }
+        } catch (Exception e) {
+            responseStatus = "exception";
+            statusCode = 500;
             toReturn.put("error", e.getMessage());
         }
 

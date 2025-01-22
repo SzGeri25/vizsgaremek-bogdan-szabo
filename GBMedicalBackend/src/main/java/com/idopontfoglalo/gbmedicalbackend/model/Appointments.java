@@ -407,4 +407,45 @@ public class Appointments implements Serializable {
         }
     }
 
+    public boolean updateAppointment(int appointmentId, Integer doctorId, Integer patientId,
+            String startTime, String endTime, String status, Integer duration) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            // Tárolt eljárás meghívása
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("updateAppointment");
+
+            // Bemeneti paraméterek regisztrálása
+            spq.registerStoredProcedureParameter("appointmentIdIN", Integer.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("doctorIdIN", Integer.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("patientIdIN", Integer.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("startTimeIN", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("endTimeIN", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("statusIN", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("durationIN", Integer.class, ParameterMode.IN);
+
+            // Paraméterek beállítása
+            spq.setParameter("appointmentIdIN", appointmentId);
+            spq.setParameter("doctorIdIN", doctorId);
+            spq.setParameter("patientIdIN", patientId);
+            spq.setParameter("startTimeIN", startTime);
+            spq.setParameter("endTimeIN", endTime);
+            spq.setParameter("statusIN", status);
+            spq.setParameter("durationIN", duration);
+
+            // Tárolt eljárás futtatása
+            spq.execute();
+
+            return true; // Sikeres végrehajtás
+
+        } catch (Exception e) {
+            // Részletesebb hibaüzenet és naplózás
+            System.err.println("Hiba a `updateAppointment` során: " + e.getMessage());
+            return false; // Hiba esetén visszatérés
+        } finally {
+            em.clear();
+            em.close();
+        }
+    }
+
 }

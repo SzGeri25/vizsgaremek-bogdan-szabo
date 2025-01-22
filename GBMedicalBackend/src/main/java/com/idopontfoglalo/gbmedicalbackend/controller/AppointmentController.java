@@ -12,6 +12,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -62,6 +63,25 @@ public class AppointmentController {
     public Response cancelAppointment(@QueryParam("appointmentId") int appointmentId) {
         JSONObject obj = layer.cancelAppointment(appointmentId);
         return Response.status(obj.getInt("statusCode")).entity(obj.toString()).build();
+    }
+
+    @PUT
+    @Path("updateAppointment")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateAppointment(String bodyString) {
+        JSONObject body = new JSONObject(bodyString);
+
+        int appointmentId = body.getInt("appointmentId");
+        int doctorId = body.getInt("doctorId");
+        int patientId = body.getInt("patientId");
+        String startTime = body.getString("startTime");
+        String endTime = body.getString("endTime");
+        String status = body.getString("status");
+        int duration = body.getInt("duration");
+
+        JSONObject obj = layer.updateAppointment(appointmentId, doctorId, patientId, startTime, endTime, status, duration);
+        return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
     }
 
 }
