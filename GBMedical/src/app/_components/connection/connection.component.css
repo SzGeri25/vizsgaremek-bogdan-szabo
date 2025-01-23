@@ -5,22 +5,5 @@
     justify-content: center;
 }
 
-.map-container {
-    width: 100%;
-    height: 400px; /* Fixált magasság */
-    border: 1px solid #ccc;
-    position: relative; /* Ezt hozzáadjuk */
-}
 
-.row {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.col-md-6 {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-  
   
