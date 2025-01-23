@@ -9,8 +9,10 @@ import com.idopontfoglalo.gbmedicalbackend.model.Doctors;
 import com.idopontfoglalo.gbmedicalbackend.model.Patients;
 import static com.idopontfoglalo.gbmedicalbackend.service.PatientService.isValidEmail;
 import static com.idopontfoglalo.gbmedicalbackend.service.PatientService.isValidPassword;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -122,6 +124,41 @@ public class DoctorService {
         } else {
             status = "invalidEmail";
             statusCode = 417;
+        }
+
+        toReturn.put("status", status);
+        toReturn.put("statusCode", statusCode);
+        return toReturn;
+    }
+
+    public JSONObject getAllDoctors() {
+        JSONObject toReturn = new JSONObject();
+        String status = "success";
+        int statusCode = 200;
+        List<Doctors> modelResult = layer.getAllDoctors();
+
+        if (modelResult == null) {
+            status = "ModelException";
+            statusCode = 500;
+        } else if (modelResult.isEmpty()) {
+            status = "NoDoctorFound";
+            statusCode = 417;
+        } else {
+            JSONArray result = new JSONArray();
+
+            for (Doctors actualDoctor : modelResult) {
+                JSONObject toAdd = new JSONObject();
+
+                toAdd.put("id", actualDoctor.getId());
+                toAdd.put("name", actualDoctor.getName());
+                toAdd.put("email", actualDoctor.getEmail());
+                toAdd.put("phoneNumber", actualDoctor.getPhoneNumber());
+                toAdd.put("bio", actualDoctor.getBio());
+
+                result.put(toAdd);
+            }
+
+            toReturn.put("result", result);
         }
 
         toReturn.put("status", status);

@@ -4,12 +4,14 @@
  */
 package com.idopontfoglalo.gbmedicalbackend.controller;
 
+import com.idopontfoglalo.gbmedicalbackend.config.JWT;
 import com.idopontfoglalo.gbmedicalbackend.model.Doctors;
 import com.idopontfoglalo.gbmedicalbackend.model.Patients;
 import com.idopontfoglalo.gbmedicalbackend.service.DoctorService;
 import com.idopontfoglalo.gbmedicalbackend.service.PatientService;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -83,6 +85,14 @@ public class DoctorController {
         JSONObject body = new JSONObject(bodyString);
 
         JSONObject obj = layer.loginDoctor(body.getString("email"), body.getString("password"));
+        return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
+    }
+
+    @GET
+    @Path("getAllDoctors")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllDoctors() {
+        JSONObject obj = layer.getAllDoctors();
         return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
     }
 }

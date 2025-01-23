@@ -25,6 +25,7 @@ import jakarta.persistence.TemporalType;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -161,6 +162,14 @@ public class Doctors implements Serializable {
         this.isDeleted = isDeleted;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public Doctors(Integer id, String name, String email, String phoneNumber, String bio) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.bio = bio;
     }
 
     public Doctors(String name, String email, String phoneNumber, String password, String bio) {
@@ -410,6 +419,39 @@ public class Doctors implements Serializable {
             return toReturn;
 
         } catch (NumberFormatException | ParseException e) {
+            System.err.println("Hiba: " + e.getLocalizedMessage());
+            return null;
+        } finally {
+            em.clear();
+            em.close();
+        }
+    }
+
+    public List<Doctors> getAllDoctors() {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("getAllDoctors");
+            spq.execute();
+
+            List<Doctors> toReturn = new ArrayList();
+            List<Object[]> resultList = spq.getResultList();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            for (Object[] record : resultList) {
+                Doctors u = new Doctors(
+                        Integer.valueOf(record[0].toString()),
+                        record[1].toString(),
+                        record[2].toString(),
+                        record[3].toString(),
+                        record[4].toString()
+                );
+
+                toReturn.add(u);
+            }
+
+            return toReturn;
+
+        } catch (Exception e) {
             System.err.println("Hiba: " + e.getLocalizedMessage());
             return null;
         } finally {
