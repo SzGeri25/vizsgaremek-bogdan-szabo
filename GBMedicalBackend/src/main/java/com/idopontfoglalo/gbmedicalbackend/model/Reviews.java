@@ -19,9 +19,17 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.ParameterMode;
+import javax.persistence.Persistence;
+import javax.persistence.StoredProcedureQuery;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.json.JSONObject;
 
 /**
  *
@@ -78,6 +86,8 @@ public class Reviews implements Serializable {
     @JoinColumn(name = "patient_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Patients patientId;
+
+    static EntityManagerFactory emf = Persistence.createEntityManagerFactory("com.idopontfoglalo_GBMedicalBackend_war_1.0-SNAPSHOTPU");
 
     public Reviews() {
     }
@@ -190,6 +200,45 @@ public class Reviews implements Serializable {
     @Override
     public String toString() {
         return "com.idopontfoglalo.gbmedicalbackend.model.Reviews[ id=" + id + " ]";
+    }
+
+    public List<JSONObject> getReviewsByDoctorId(int doctorId) {
+        EntityManager em = emf.createEntityManager();
+        List<JSONObject> reviews = new ArrayList<>();
+
+        try {
+            // Tárolt eljárás meghívása
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("getReviewsByDoctorId");
+
+            // Paraméter regisztrálása és beállítása
+            spq.registerStoredProcedureParameter("doctorIdIN", Integer.class, ParameterMode.IN);
+            spq.setParameter("doctorIdIN", doctorId);
+
+            // Tárolt eljárás futtatása
+            List<Object[]> result = spq.getResultList();
+
+            // Eredmény feldolgozása
+            for (Object[] row : result) {
+                JSONObject review = new JSONObject();
+                review.put("id", row[0]);
+                review.put("doctorId", row[1]);
+                review.put("patientId", row[2]);
+                review.put("rating", row[3]);
+                review.put("reviewText", row[4]);
+                review.put("createdAt", row[5]);
+                review.put("doctorName", row[6]);
+                review.put("patientName", row[7]);
+
+                reviews.add(review);
+            }
+        } catch (Exception e) {
+            System.err.println("Hiba a `getReviewsByDoctorId` során: " + e.getMessage());
+        } finally {
+            em.clear();
+            em.close();
+        }
+
+        return reviews;
     }
 
 }

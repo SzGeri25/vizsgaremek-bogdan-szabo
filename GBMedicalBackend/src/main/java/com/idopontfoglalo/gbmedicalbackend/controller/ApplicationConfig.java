@@ -31,6 +31,7 @@ public class ApplicationConfig extends Application {
         resources.add(com.idopontfoglalo.gbmedicalbackend.controller.AppointmentController.class);
         resources.add(com.idopontfoglalo.gbmedicalbackend.controller.DoctorController.class);
         resources.add(com.idopontfoglalo.gbmedicalbackend.controller.PatientController.class);
+        resources.add(com.idopontfoglalo.gbmedicalbackend.controller.ReviewController.class);
     }
 
 }

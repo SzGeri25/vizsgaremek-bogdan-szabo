@@ -4,7 +4,6 @@
  */
 package com.idopontfoglalo.gbmedicalbackend.model;
 
-import static com.idopontfoglalo.gbmedicalbackend.model.Patients.emf;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,11 +18,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.StoredProcedureQuery;
 import javax.validation.constraints.NotNull;
 
 /**
