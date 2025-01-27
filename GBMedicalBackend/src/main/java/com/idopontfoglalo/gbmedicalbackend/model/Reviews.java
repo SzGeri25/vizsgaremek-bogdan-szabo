@@ -241,4 +241,37 @@ public class Reviews implements Serializable {
         return reviews;
     }
 
+    public boolean addReview(int doctorId, int patientId, int rating, String reviewText) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            // Tárolt eljárás meghívása
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("addReview");
+
+            // Paraméterek regisztrálása
+            spq.registerStoredProcedureParameter("doctorIdIN", Integer.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("patientIdIN", Integer.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("ratingIN", Integer.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("reviewTextIN", String.class, ParameterMode.IN);
+
+            // Paraméterek átadása
+            spq.setParameter("doctorIdIN", doctorId);
+            spq.setParameter("patientIdIN", patientId);
+            spq.setParameter("ratingIN", rating);
+            spq.setParameter("reviewTextIN", reviewText);
+
+            // Tárolt eljárás futtatása
+            spq.execute();
+
+            return true; // Sikeres futtatás
+
+        } catch (Exception e) {
+            System.err.println("Hiba az addReview eljárás során: " + e.getMessage());
+            return false; // Hiba esetén false
+        } finally {
+            em.clear();
+            em.close();
+        }
+    }
+
 }
