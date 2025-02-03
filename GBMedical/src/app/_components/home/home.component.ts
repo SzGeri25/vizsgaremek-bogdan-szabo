@@ -5,15 +5,14 @@ import { FooterComponent } from '../footer/footer.component';
 import { LoginComponent } from "../login/login.component";
 import { RegisterComponent } from "../register/register.component";
 import { CalendarComponent } from '../calendar/calendar.component';
-import { ConnectionComponent } from '../connection/connection.component';
+import { ContactComponent } from "../contact/contact.component";
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [NavbarComponent, FormsModule, FooterComponent, LoginComponent, RegisterComponent, CalendarComponent, ConnectionComponent],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+    selector: 'app-home',
+    imports: [NavbarComponent, FormsModule, FooterComponent, LoginComponent, RegisterComponent, CalendarComponent, ContactComponent],
+    templateUrl: './home.component.html',
+    styleUrl: './home.component.css'
 })
 export class HomeComponent {
-  
+
 }

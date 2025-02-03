@@ -4,11 +4,10 @@ import { FooterComponent } from '../footer/footer.component';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-specialists',
-  standalone: true,
-  imports: [NavbarComponent, FooterComponent, FormsModule],
-  templateUrl: './specialists.component.html',
-  styleUrl: './specialists.component.css'
+    selector: 'app-specialists',
+    imports: [NavbarComponent, FooterComponent, FormsModule],
+    templateUrl: './specialists.component.html',
+    styleUrl: './specialists.component.css'
 })
 export class SpecialistsComponent {
 

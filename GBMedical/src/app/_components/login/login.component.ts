@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { NavbarComponent } from "../navbar/navbar.component";
+import { FooterComponent } from '../footer/footer.component';
+
 
 @Component({
-  selector: 'app-login',
-  standalone: true,  // Ezzel standalone lesz!
-  imports: [CommonModule, ReactiveFormsModule], // Szükséges importok
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+    selector: 'app-login', // Ezzel standalone lesz!
+    imports: [CommonModule, ReactiveFormsModule, NavbarComponent, FooterComponent], // Szükséges importok
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;

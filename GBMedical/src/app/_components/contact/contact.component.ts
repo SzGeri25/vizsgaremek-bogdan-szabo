@@ -6,12 +6,12 @@ import { ChangeDetectorRef } from '@angular/core';
 @Component({
   selector: 'app-connection',
   standalone: true,
-  templateUrl: './connection.component.html',
-  styleUrls: ['./connection.component.css']
+  templateUrl: './contact.component.html',
+  styleUrls: ['./contact.component.css']
 })
 
 
-export class ConnectionComponent implements AfterViewInit {
+export class ContactComponent implements AfterViewInit {
   @ViewChild('mapContainer', { static: false }) mapContainer!: ElementRef;
   private map!: L.Map;
 
@@ -35,5 +35,5 @@ export class ConnectionComponent implements AfterViewInit {
 
       this.map.invalidateSize(); // 🔹 Fontos! Frissíti a térképet, ha az nem megfelelően renderelődött
     }, 300); // Késleltetés, hogy a DOM teljesen betöltődjön
-  }  
+  }
 }

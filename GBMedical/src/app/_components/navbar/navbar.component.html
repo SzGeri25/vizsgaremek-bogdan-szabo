@@ -1,34 +1,37 @@
 <nav class="navbar navbar-expand-lg">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#"><img src="Logo-removedbg.png" alt="Logo" class="img-fluid navbar-logo"></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" href="#"></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Kezdőlap</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Szakembereink</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Szolgáltatásaink</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Kapcsolat</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Időpontfoglalás</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Bejelentkezés</a>
-          </li>
-        </ul>
-      </div>
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/">
+      <img src="Logo-removedbg.png" alt="Logo" class="img-fluid navbar-logo" href="javascript:void(0)" (click)="toHome()">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="toHome()">Kezdőlap</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="toSpecialists()">Szakembereink</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="toServices()">Szolgáltatásaink</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="toContact()">Kapcsolat</a>
+        </li>
+      </ul>
+
+      <!-- Jobbra igazított menüelemek -->
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="toLogin()">Bejelentkezés</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="toRegister()">Regisztráció</a>
+        </li>
+      </ul>
     </div>
-  </nav>
+  </div>
+</nav>

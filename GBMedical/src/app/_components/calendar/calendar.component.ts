@@ -4,11 +4,10 @@ import { FullCalendarModule } from '@fullcalendar/angular'; // A szükséges mod
 import { CalendarOptions } from '@fullcalendar/core';  // Módosított importálás
 
 @Component({
-  selector: 'app-calendar',
-  templateUrl: './calendar.component.html',
-  styleUrls: ['./calendar.component.css'],
-  imports: [FullCalendarModule],
-  standalone: true,
+    selector: 'app-calendar',
+    templateUrl: './calendar.component.html',
+    styleUrls: ['./calendar.component.css'],
+    imports: [FullCalendarModule]
 })
 export class CalendarComponent implements OnInit {
   calendarOptions: CalendarOptions = { // Konfigurációs objektum
