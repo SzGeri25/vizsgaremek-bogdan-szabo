@@ -1,26 +1,35 @@
-.card{
+.card {
     text-align: center;
     justify-content: center;
     align-items: center;
     margin: 20px;
     padding: 20px;
     background-color: #f5f5f5;
+    border-radius: 10px;
+    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.1); 
+    transition: box-shadow 0.3s ease-in-out;
 }
 
-.card-title{
+.card:hover {
+    box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.2); 
+    cursor: pointer;
+}
+
+.card-title {
     font-size: 20px;
 }
 
-.card-text{
+.card-text {
     font-size: 15px;
 }
 
-.btn{
+.btn {
     font-size: 15px;
     background-color: #008080;
+    color: white;
 }
 
-.card-img-top{
+.card-img-top {
     width: 13rem;
     justify-content: center;
 }
