@@ -1,108 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <app-navbar></app-navbar>
+<app-navbar></app-navbar>
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col">
-            <div class="card">
-                <img src="doctor.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                  <h5 class="card-title">John Doe</h5>
-                  <p class="card-text">johndoegmail.com</p>
-                  <p class="phoneNumber">+36 XX XXX XXXX</p>
-                  <a href="#" class="btn btn-primary">Részletek...</a>
-                </div>
-              </div>
+<div class="container mt-4">
+  <!-- Hibaüzenet, ha a fetch során probléma merül fel -->
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Doktorkártyák megjelenítése -->
+  <div class="row">
+    <div class="col-md-4 mb-4" *ngFor="let doctor of doctors">
+      <div class="card h-100">
+        <div class="card-body">
+          <img src="doctor.jpg" alt="doctor" class="card-img">
+          <h5 class="card-title">{{ doctor.name }}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">ID: {{ doctor.id }}</h6>
+          <p class="card-text">
+            <strong>Bio:</strong> {{ doctor.bio || 'Nincs elérhető leírás.' }}
+          </p>
+          <p class="card-text">
+            <strong>Telefon:</strong> {{ doctor.phoneNumber }}
+          </p>
+          <p class="card-text">
+            <strong>Email:</strong> {{ doctor.email }}
+          </p>
         </div>
-        <div class="col">
-            <div class="card">
-                <img src="doctor.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                  <h5 class="card-title">John Doe</h5>
-                  <p class="card-text">johndoegmail.com</p>
-                  <p class="phoneNumber">+36 XX XXX XXXX</p>
-                  <a href="#" class="btn btn-primary">Részletek...</a>
-                </div>
-              </div>
-        </div>
-        <div class="col">
-            <div class="card">
-                <img src="doctor.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                  <h5 class="card-title">John Doe</h5>
-                  <p class="card-text">johndoegmail.com</p>
-                  <p class="phoneNumber">+36 XX XXX XXXX</p>
-                  <a href="#" class="btn btn-primary">Részletek...</a>
-                </div>
-              </div>
-        </div>
-        <div class="col">
-            <div class="card">
-                <img src="doctor.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                  <h5 class="card-title">John Doe</h5>
-                  <p class="card-text">johndoegmail.com</p>
-                  <p class="phoneNumber">+36 XX XXX XXXX</p>
-                  <a href="#" class="btn btn-primary">Részletek...</a>
-                </div>
-              </div>
-        </div>
+      </div>
     </div>
-    <div class="row">
-        <div class="col">
-            <div class="card">
-                <img src="doctor.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                  <h5 class="card-title">John Doe</h5>
-                  <p class="card-text">johndoegmail.com</p>
-                  <p class="phoneNumber">+36 XX XXX XXXX</p>
-                  <a href="#" class="btn btn-primary">Részletek...</a>
-                </div>
-              </div>
-        </div>
-        <div class="col">
-            <div class="card">
-                <img src="doctor.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                  <h5 class="card-title">John Doe</h5>
-                  <p class="card-text">johndoegmail.com</p>
-                  <p class="phoneNumber">+36 XX XXX XXXX</p>
-                  <a href="#" class="btn btn-primary">Részletek...</a>
-                </div>
-              </div>
-        </div>
-        <div class="col">
-            <div class="card">
-                <img src="doctor.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                  <h5 class="card-title">John Doe</h5>
-                  <p class="card-text">johndoegmail.com</p>
-                  <p class="phoneNumber">+36 XX XXX XXXX</p>
-                  <a href="#" class="btn btn-primary">Részletek...</a>
-                </div>
-              </div>
-        </div>
-        <div class="col">
-            <div class="card">
-                <img src="doctor.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                  <h5 class="card-title">John Doe</h5>
-                  <p class="card-text">johndoegmail.com</p>
-                  <p class="phoneNumber">+36 XX XXX XXXX</p>
-                  <a href="#" class="btn btn-primary">Részletek...</a>
-                </div>
-              </div>
-        </div>
-    </div>
+  </div>
 </div>
 
 <app-footer></app-footer>
-</body>
-</html>
