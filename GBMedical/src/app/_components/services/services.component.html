@@ -1,1 +1,5 @@
-<p>services works!</p>
+ <select>
+    <option *ngFor="let service of services$ | async" [value]="service.name">
+    {{ service.name }}
+    </option>
+</select>

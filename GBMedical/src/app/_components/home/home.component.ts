@@ -6,10 +6,11 @@ import { LoginComponent } from "../login/login.component";
 import { RegisterComponent } from "../register/register.component";
 import { CalendarComponent } from '../calendar/calendar.component';
 import { ContactComponent } from "../contact/contact.component";
+import { ServicesComponent } from '../services/services.component';
 
 @Component({
     selector: 'app-home',
-    imports: [NavbarComponent, FormsModule, FooterComponent, LoginComponent, RegisterComponent, CalendarComponent, ContactComponent],
+    imports: [NavbarComponent, FormsModule, FooterComponent, LoginComponent, RegisterComponent, CalendarComponent, ContactComponent, ServicesComponent],
     templateUrl: './home.component.html',
     styleUrl: './home.component.css'
 })
