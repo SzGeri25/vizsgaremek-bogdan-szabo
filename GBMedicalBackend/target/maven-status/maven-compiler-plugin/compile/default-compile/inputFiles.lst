@@ -3,6 +3,7 @@ C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\ma
 C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\model\Patients.java
 C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\config\JWT.java
 C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\controller\DoctorController.java
+C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\filters\CorsFilter.java
 C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\model\Payments.java
 C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\model\Reminders.java
 C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\model\Reviews.java

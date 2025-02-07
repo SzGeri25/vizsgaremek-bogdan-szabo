@@ -17,3 +17,4 @@ com\idopontfoglalo\gbmedicalbackend\controller\ApplicationConfig.class
 com\idopontfoglalo\gbmedicalbackend\model\Patients.class
 com\idopontfoglalo\gbmedicalbackend\model\Appointments.class
 com\idopontfoglalo\gbmedicalbackend\service\PatientService.class
+com\idopontfoglalo\gbmedicalbackend\filters\CorsFilter.class
