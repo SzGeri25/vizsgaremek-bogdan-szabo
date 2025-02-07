@@ -26,11 +26,11 @@ export class RegisterComponent {
 
     // Összeállítjuk az adatobjektumot a backend által elvárt formában
     const patientData = {
-      firstNameIN: this.firstName,
-      lastNameIN: this.lastName,
-      emailIN: this.email,
-      passwordIN: this.password,
-      phoneNumberIN: this.phoneNumber
+      firstName: this.firstName,
+      lastName: this.lastName,
+      email: this.email,
+      password: this.password,
+      phoneNumber: this.phoneNumber
     };
 
     try {
