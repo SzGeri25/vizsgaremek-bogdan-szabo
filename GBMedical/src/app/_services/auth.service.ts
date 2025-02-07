@@ -10,8 +10,8 @@ export class AuthService {
   // Async login metódus
   async login(email: string, password: string): Promise<any> {
     const loginData = {
-      emailIN: email,
-      passwordIN: password
+      email: email,
+      password: password
     };
 
     try {

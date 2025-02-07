@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { NavbarComponent } from "../navbar/navbar.component";
 import { FooterComponent } from '../footer/footer.component';
 import { AuthService } from '../../_services/auth.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -17,13 +18,17 @@ export class LoginComponent {
   email: string = '';
   password: string = '';
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   async onSubmit(event: Event): Promise<void> {
     event.preventDefault();
     try {
       const result = await this.authService.login(this.email, this.password);
       console.log('Sikeres login:', result);
+      alert('Sikeres bejelentkezés');
+
+      // Navigáljunk tovább a főoldalra
+      this.router.navigate(['/home']);
       // Itt kezeld a további logikát (pl. navigáció)
     } catch (error) {
       console.error('Login sikertelen:', error);
