@@ -1,7 +1,8 @@
 <nav class="navbar navbar-expand-lg">
   <div class="container-fluid">
     <a class="navbar-brand" routerLink="/">
-      <img src="Logo-removedbg.png" alt="Logo" class="img-fluid navbar-logo" href="javascript:void(0)" (click)="toHome()">
+      <img src="Logo-removedbg.png" alt="Logo" class="img-fluid navbar-logo" href="javascript:void(0)"
+        (click)="toHome()">
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,11 +26,16 @@
 
       <!-- Jobbra igazított menüelemek -->
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link" href="javascript:void(0)" (click)="toLogin()">Bejelentkezés</a>
+        <li class="nav-item" *ngIf="!isAuthenticated">
+          <a class="nav-link" href="javascript:void(0)" (click)="toLogin()" routerLink="/login">Bejelentkezés</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="javascript:void(0)" (click)="toRegister()">Regisztráció</a>
+        <li class="nav-item" *ngIf="!isAuthenticated">
+          <a class="nav-link" href="javascript:void(0)" (click)="toRegister()" routerLink="/register">Regisztráció</a>
+        </li>
+
+        <!-- Ha a felhasználó be van jelentkezve -->
+        <li class="nav-item" *ngIf="isAuthenticated">
+          <a class="nav-link" href="javascript:void(0)" (click)="onLogout()">Kijelentkezés</a>
         </li>
       </ul>
     </div>
