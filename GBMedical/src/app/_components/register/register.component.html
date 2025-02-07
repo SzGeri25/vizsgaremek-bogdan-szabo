@@ -1,31 +1,25 @@
 <app-navbar></app-navbar>
 
 <div class="container">
-    <form action="" id="form">
+    <form action="" id="form" (submit)="onSubmit($event)">
         <h1>Regisztráció</h1>
         <div class="input-group">
             <div class="container">
                 <div class="row">
-                    <div class="col">
-                        <label for="Name" id="name">Vezetéknév:</label>
-                        <input type="name" id="name">
+                        <label for="firstName">Vezetéknév:</label>
+                        <input [(ngModel)]="firstName" name="firstName" placeholder="Keresztnév" required>
                         <div class="error"></div>
-                        <label for="Name" id="name">Keresztnév:</label>
-                        <input type="name" id="name">
+                        <label for="lastName">Keresztnév:</label>
+                        <input type="text" [(ngModel)]="lastName" name="lastName" placeholder="Vezetéknév" required>
                         <div class="error"></div>
-                    </div>
-                </div>
-                <div class="row">
-                    
-                        <label for="Email">Email cím:</label>
-                        <input type="email" id="email" name="email">
+                        <label for="Email">E-mail cím:</label>
+                        <input type="email" [(ngModel)]="email" name="email" placeholder="Email" required>
                         <div class="error"></div>
                         <label for="password">Jelszó:</label>
-                        <input type="password" id="password" name="password">
+                        <input type="password" [(ngModel)]="password" name="password" placeholder="Jelszó" required>
                         <div class="error"></div>
-                        <label for="cpassword">Jelszó megerősítése:</label>
-                            <input type="password" id="cpassword" name="cpassword">
-                            <div class="error"></div>
+                            <label for="phoneNumber">Telefonszám:</label>
+                        <input type="text" [(ngModel)]="phoneNumber" name="phoneNumber" placeholder="Telefonszám" required>
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col xxl-6">

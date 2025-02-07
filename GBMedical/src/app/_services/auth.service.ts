@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class AuthService {
 
-  private baseUrl = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/patients';
+  private baseUrlLogin = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/patients';
 
   // Async login metódus
   async login(email: string, password: string): Promise<any> {
@@ -15,7 +15,7 @@ export class AuthService {
     };
 
     try {
-      const response = await fetch(`${this.baseUrl}/loginPatient`, {
+      const response = await fetch(`${this.baseUrlLogin}/loginPatient`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -35,6 +35,33 @@ export class AuthService {
     } catch (error) {
       // Itt lehet pl. loggolni, vagy tovább dobni az error-t
       console.error('Login hiba:', error);
+      throw error;
+    }
+  }
+
+
+  private baseUrlRegister = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/patients';
+
+  // Async register metódus
+  async register(patientData: any): Promise<any> {
+    try {
+      const response = await fetch(`${this.baseUrlRegister}/registerPatient`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(patientData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        throw new Error(`Hiba történt: ${response.status} - ${errorData}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Regisztráció hiba:', error);
       throw error;
     }
   }
