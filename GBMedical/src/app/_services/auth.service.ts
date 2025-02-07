@@ -1,21 +1,25 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthService {
+  // A bejelentkezés kezdetben false, de ellenőrizheted a localStorage-t is
+  private isAuthenticatedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(!!localStorage.getItem('authToken'));
 
-  private baseUrlLogin = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/patients';
+ 
+  // Observable, amelyre a komponensek feliratkozhatnak
+  public isAuthenticated$: Observable<boolean> = this.isAuthenticatedSubject.asObservable();
 
-  // Async login metódus
+  constructor() { }
+
   async login(email: string, password: string): Promise<any> {
-    const loginData = {
-      email: email,
-      password: password
-    };
+    const loginData = { email, password };
 
     try {
-      const response = await fetch(`${this.baseUrlLogin}/loginPatient`, {
+
+      const response = await fetch('http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/patients/loginPatient', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -24,16 +28,22 @@ export class AuthService {
       });
 
       if (!response.ok) {
-        // Ha a HTTP státuszkód nem 2xx, hibakezelés
         const errorData = await response.text();
         throw new Error(`Hiba történt: ${response.status} - ${errorData}`);
       }
 
-      // A válasz JSON formátumú
       const data = await response.json();
+      console.log('Felhasználó adatai tokennel együtt:', data);
+
+      // Token és felhasználói adatok mentése
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('userData', JSON.stringify(data.user));
+
+      // Frissítsd az autentikációs állapotot, hogy a feliratkozott komponensek (pl. Navbar) értesüljenek
+      this.isAuthenticatedSubject.next(true);
+
       return data;
     } catch (error) {
-      // Itt lehet pl. loggolni, vagy tovább dobni az error-t
       console.error('Login hiba:', error);
       throw error;
     }
@@ -67,4 +77,10 @@ export class AuthService {
   }
 
 
+
+  logout(): void {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userData');
+    this.isAuthenticatedSubject.next(false);
+  }
 }

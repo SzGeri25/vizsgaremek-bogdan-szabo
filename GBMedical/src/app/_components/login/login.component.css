@@ -1,6 +1,4 @@
-
-
-#form{
+#form {
     width: 400px;
     margin: 15vh auto 0 auto;
     background-color: #008080;
@@ -8,10 +6,11 @@
     padding: 30px;
     margin-bottom: 150px;
     color: #f5f5f5;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Lágy árnyék */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    /* Lágy árnyék */
 }
 
-h1{
+h1 {
     text-align: center;
     color: #f5f5f5;
 }
@@ -30,17 +29,19 @@ h1{
     padding: 10px;
     border: 1px solid rgb(34, 193, 195);
     height: 35px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15); /* Lágy árnyék */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
+    /* Lágy árnyék */
     transition: box-shadow 0.3s ease-in-out;
 }
 
 /* Ha az input mezőre fókuszálunk, az árnyék erősebb lesz */
 .input-group input:focus {
     outline: none;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Erősebb árnyék fókuszáláskor */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    /* Erősebb árnyék fókuszáláskor */
 }
 
-.registerButton{
+.registerButton {
     background-color: #f5f5f5;
     color: black;
     border-radius: 20px;
@@ -49,22 +50,22 @@ h1{
     padding: 0 20px;
     position: relative;
     right: 11px;
-    margin-top: 5px; 
+    margin-top: 5px;
 }
 
-.loginButton{
+.loginButton {
     background-color: black;
     color: #f5f5f5;
-    border-radius: 20px;
+    border-radius: 20px !important;
     height: 35px;
     border: none;
     padding: 0 20px;
     width: 100%;
     position: relative;
-    left: 13px;
     top: 4px;
-
+    display: block;
 }
+
 
 .input-group input:focus {
     outline: none;
@@ -167,7 +168,20 @@ h1{
     margin-bottom: 15px;
 }
 
-.modal-inner img{
-    width:380px;
+.modal-inner img {
+    width: 380px;
 }
 
+/* Hibaüzenet stílusa */
+.error {
+    color: #ff4d4d;
+    font-size: 14px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+/* Piros szegély, ha az input mező hibás */
+.error-border {
+    border: 1px solid #ff4d4d !important;
+    box-shadow: 0px 0px 5px rgba(255, 77, 77, 0.5);
+}

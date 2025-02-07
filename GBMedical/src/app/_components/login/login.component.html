@@ -1,32 +1,36 @@
 <app-navbar></app-navbar>
 
 <div class="container">
-    <form action="" id="form" (submit)="onSubmit($event)">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" id="form" novalidate>
         <h1>Bejelentkezés</h1>
         <div class="input-group">
-            <label for="Email">Email cím:</label>
-            <input type="email" [(ngModel)]="email" name="email" placeholder="Email" required>
-            <div class="error"></div>
-            <label for="password">Jelszó:</label>
-            <input type="password" [(ngModel)]="password" name="password" placeholder="Password" required>
-            <div class="error"></div>
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col xxl-6">
-                        <button type="submit" class="loginButton">Bejelentkezés</button>
-                    </div>
-                </div>
+            <label for="email">Email cím:</label>
+            <input type="email" formControlName="email" id="email" class="input-field"
+                [ngClass]="{ 'error-border': email?.invalid && email?.touched }">
+            <div class="error" *ngIf="email?.invalid && email?.touched">
+                * Érvénytelen email cím
             </div>
-        </div>
-        
-        <div class="modal" id="modal">
-            <div class="modal-inner">
-                <h2>Sikeresen regisztráltál!</h2>
-                <button id="closeModal"></button>
-            </div>
-        </div>
 
+            <label for="password">Jelszó:</label>
+            <input type="password" formControlName="password" id="password" class="input-field"
+                [ngClass]="{ 'error-border': password?.invalid && password?.touched }">
+            <div class="error" *ngIf="password?.invalid && password?.touched">
+                * A jelszó legalább 8 karakter hosszú kell legyen
+            </div>
+
+            <button type="submit" class="loginButton" [disabled]="loginForm.invalid">
+                Bejelentkezés
+            </button>
+        </div>
     </form>
+</div>
+
+<!-- Sikeres bejelentkezés modális ablak -->
+<div class="modal" [ngClass]="{ 'open': showModal }">
+    <div class="modal-inner">
+        <h2>Sikeres bejelentkezés!</h2>
+        <button class="registerButton" (click)="closeModal()">Bezárás</button>
+    </div>
 </div>
 
 <app-footer></app-footer>
