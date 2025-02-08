@@ -18,8 +18,17 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.StoredProcedureQuery;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -86,6 +95,10 @@ public class Services implements Serializable {
     @ManyToMany(mappedBy = "servicesCollection")
     private Collection<Doctors> doctorsCollection;
 
+    static EntityManagerFactory emf = Persistence.createEntityManagerFactory("com.idopontfoglalo_GBMedicalBackend_war_1.0-SNAPSHOTPU");
+    private Doctors doctorId;
+    private ArrayList<String> doctorNames;
+
     public Services() {
     }
 
@@ -102,6 +115,17 @@ public class Services implements Serializable {
         this.isDeleted = isDeleted;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public Services(Integer id, String name, String description, int price, int duration, String doctorNames) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.duration = duration;
+
+        // Split the doctorNames string by commas to create a list of doctor names
+        this.doctorNames = new ArrayList<>(Arrays.asList(doctorNames.split(", ")));
     }
 
     public Integer getId() {
@@ -184,6 +208,10 @@ public class Services implements Serializable {
         this.doctorsCollection = doctorsCollection;
     }
 
+    public List<String> getDoctorNames() {
+        return doctorNames;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -207,6 +235,41 @@ public class Services implements Serializable {
     @Override
     public String toString() {
         return "com.idopontfoglalo.gbmedicalbackend.model.Services[ id=" + id + " ]";
+    }
+
+    public List<Services> getAllServices() {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("getAllServices");
+
+            spq.execute();
+
+            List<Services> toReturn = new ArrayList<>();
+            List<Object[]> resultList = spq.getResultList();
+
+            for (Object[] record : resultList) {
+                Services s = new Services(
+                        Integer.valueOf(record[0].toString()), // Service ID
+                        record[1].toString(), // Service name
+                        record[2].toString(), // Service description
+                        Integer.parseInt(record[3].toString()), // Price
+                        Integer.parseInt(record[4].toString()), // Duration
+                        record[5] != null ? record[5].toString() : "" // Doctor names (comma-separated string)
+                );
+
+                toReturn.add(s);
+            }
+
+            return toReturn;
+
+        } catch (NumberFormatException e) {
+            System.err.println("Hiba: " + e.getLocalizedMessage());
+            return null;
+        } finally {
+            em.clear();
+            em.close();
+        }
     }
 
 }

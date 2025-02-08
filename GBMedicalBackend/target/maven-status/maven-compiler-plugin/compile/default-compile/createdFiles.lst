@@ -1,5 +1,6 @@
 com\idopontfoglalo\gbmedicalbackend\service\AppointmentService.class
 com\idopontfoglalo\gbmedicalbackend\service\DoctorService.class
+com\idopontfoglalo\gbmedicalbackend\controller\ServicesController.class
 com\idopontfoglalo\gbmedicalbackend\model\Reviews.class
 com\idopontfoglalo\gbmedicalbackend\controller\AppointmentController.class
 com\idopontfoglalo\gbmedicalbackend\model\Schedules.class
@@ -7,6 +8,7 @@ com\idopontfoglalo\gbmedicalbackend\controller\DoctorController.class
 com\idopontfoglalo\gbmedicalbackend\model\Doctors.class
 com\idopontfoglalo\gbmedicalbackend\controller\ReviewController.class
 com\idopontfoglalo\gbmedicalbackend\model\Payments.class
+com\idopontfoglalo\gbmedicalbackend\service\ServicesService.class
 com\idopontfoglalo\gbmedicalbackend\controller\PatientController.class
 com\idopontfoglalo\gbmedicalbackend\model\Reminders.class
 com\idopontfoglalo\gbmedicalbackend\service\ReviewService.class
