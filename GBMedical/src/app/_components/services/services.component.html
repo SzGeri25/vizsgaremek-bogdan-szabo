@@ -1,5 +1,16 @@
- <select>
-    <option *ngFor="let service of services$ | async" [value]="service.name">
-    {{ service.name }}
-    </option>
-</select>
+<app-navbar></app-navbar>
+
+<div class="container">
+    <div class="select-wrapper">
+        <select>
+            <option disabled selected>Válassz szolgáltatásaink közül</option>
+            <option *ngFor="let service of services" [value]="service.name">
+                {{ service.name }}
+            </option>
+        </select>
+    </div>
+</div>
+
+
+
+<app-footer></app-footer>

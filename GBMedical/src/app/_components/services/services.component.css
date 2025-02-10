@@ -1,0 +1,96 @@
+/* Középre igazítás */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f7fa;
+    /* világos háttér */
+}
+
+/* A select box stílusai */
+select {
+    width: 100%;
+    max-width: 440px;
+    /* szélesebb select */
+    padding: 12px 50px 12px 20px;
+    /* balra 20px, jobbra 40px, így nem lóg bele a nyíl */
+    font-size: 16px;
+    font-weight: 500;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #495057;
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    position: relative;
+}
+
+/* Fókuszáláskor szín és árnyék változás */
+select:focus {
+    border-color: #0056b3;
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
+    transform: scale(1.05);
+    /* Kicsit nagyobb lesz, amikor fókuszálva van */
+}
+
+/* Az opciók stílusa */
+option {
+    padding: 10px;
+    font-size: 16px;
+}
+
+/* Disable opciók stílusa */
+option:disabled {
+    color: #6c757d;
+}
+
+/* Egyedi nyíl elem a select mögött */
+select::-ms-expand {
+    display: none;
+}
+
+.select-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.select-wrapper::after {
+    content: '\25BC';
+    /* lefelé mutató nyíl */
+    font-size: 16px;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    transition: transform 0.3s ease, font-size 0.3s ease;
+}
+
+/* Animáció: A select elem átmenete */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Alkalmazzuk az animációt a select elemre */
+select {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* A legelső opció szövegét testreszabjuk */
+option:first-child {
+    color: #888;
+    /* szürke szín az első opcióra */
+    font-style: italic;
+}
