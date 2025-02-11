@@ -1,14 +1,14 @@
-<nav class="navbar navbar-expand-lg navbar-light">
+<nav class="navbar navbar-expand-lg">
   <div class="container-fluid">
     <a class="navbar-brand" routerLink="/">
       <img src="Logo-removedbg.png" alt="Logo" class="img-fluid navbar-logo" href="javascript:void(0)"
         (click)="toHome()">
     </a>
-    <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+    <button (click)="toggleMenu()" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent" [ngClass]="{'show': isMenuOpen}">
       <ul class="navbar-nav mb-2 mb-lg-0">
         <li class="nav-item">
           <a class="nav-link" href="javascript:void(0)" (click)="toHome()">Kezdőlap</a>

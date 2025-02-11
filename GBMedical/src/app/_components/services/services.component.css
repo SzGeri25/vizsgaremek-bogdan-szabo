@@ -1,16 +1,10 @@
 /* Középre igazítás */
 .container {
     display: flex;
-    flex-direction: column;
-    /* egymás alá rendezés */
+    justify-content: center;
     align-items: center;
-    /* vízszintes középre igazítás */
-    justify-content: flex-start;
-    /* a tartalom a konténer tetejéhez igazodik */
-    padding-top: 20px;
-    /* szükség esetén további távolság a navbar-tól */
+    height: 100vh;
     background-color: #f4f7fa;
-    height: 60vh;
     /* világos háttér */
 }
 
@@ -20,7 +14,7 @@ select {
     max-width: 440px;
     /* szélesebb select */
     padding: 12px 50px 12px 20px;
-    /* balra 20px, jobbra 50px, így nem lóg bele a nyíl */
+    /* balra 20px, jobbra 40px, így nem lóg bele a nyíl */
     font-size: 16px;
     font-weight: 500;
     border: 2px solid #007bff;
@@ -99,25 +93,4 @@ option:first-child {
     color: #888;
     /* szürke szín az első opcióra */
     font-style: italic;
-}
-
-.service-details {
-    margin-top: 30px;
-    padding: 15px;
-    border: 2px solid #007bff;
-    border-radius: 8px;
-    background: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    text-align: left;
-}
-
-.service-details h2 {
-    color: #007bff;
-    font-size: 20px;
-}
-
-.service-details p {
-    font-size: 16px;
-    margin: 5px 0;
 }

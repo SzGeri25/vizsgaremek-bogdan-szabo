@@ -1,4 +1,4 @@
-.navbar {
+.navbar{
     background-color: #008080;
     padding: 5px 20px;
     display: flex;
@@ -9,7 +9,7 @@
 }
 
 /*Navbar ul beállítások*/
-.navbar-nav {
+.navbar-nav{
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -20,7 +20,7 @@
 }
 
 /*Navbar li beállítások*/
-.nav-item {
+.nav-item{
     padding: 10px 15px;
     font-size: 16px;
     cursor: pointer;
@@ -30,114 +30,16 @@
 
 
 
-.nav-item:hover {
+.nav-item:hover{
     transform: scale(1.05);
     border-radius: 5px;
 }
 
-.navbar-logo {
+.navbar-logo{
     width: 70px;
     cursor: pointer;
 }
 
-.nav-link {
+.nav-link{
     color: #f5f5f5 !important;
-}
-
-@media (max-width: 991.98px) {
-    .navbar-collapse {
-        position: fixed;
-        top: 80px;
-        /* A navbar magassága alatt kezdődik */
-        right: 0;
-        /* A jobb oldalra igazítjuk */
-        width: 250px;
-        /* A menü szélessége */
-        height: 100%;
-        background-color: #333;
-        /* Menü háttérszíne */
-        overflow-y: auto;
-        /* Görgethető, ha túl hosszú */
-
-        /* Alaphelyzetben off-screen jobbra */
-        transform: translateX(100%);
-
-        /* Animáció: csúszás 0.2s alatt */
-        transition: transform 0.2s ease-in-out;
-
-        z-index: 1050;
-    }
-
-    /* Ha a menü látható (a .show osztályt adja hozzá a Bootstrap) */
-    .navbar-collapse.show {
-        transform: translateX(0);
-    }
-}
-
-
-.navbar-toggler {
-    border-color: #fff;
-}
-
-.navbar-toggler-icon {
-    background-image: none !important;
-    background-color: var(--bs-gray-800);
-    height: 3px;
-    width: 25px;
-    margin: 10px 0;
-    position: relative;
-    transition: all 0.35s ease-out;
-    transform-origin: center;
-}
-
-.navbar-toggler-icon::before {
-    display: block;
-    background-color: var(--bs-gray-800);
-    height: 3px;
-    content: "";
-    position: relative;
-    top: -7px;
-    transition: all 0.15s ease-out;
-    /*taken down to hide quicker*/
-    transform-origin: center;
-}
-
-.navbar-toggler-icon::after {
-    display: block;
-    background-color: var(--bs-gray-800);
-    height: 3px;
-    content: "";
-    position: relative;
-    top: 4px;
-    transition: all 0.35s ease-out;
-    transform-origin: center;
-}
-
-.navbar-light .navbar-toggler-icon,
-.navbar-light .navbar-toggler-icon::before,
-.navbar-light .navbar-toggler-icon::after {
-    background-color: #fff !important;
-}
-
-.navbar-toggler:not(.collapsed) .navbar-toggler-icon {
-    transform: rotate(45deg);
-}
-
-.navbar-toggler:not(.collapsed) .navbar-toggler-icon::before {
-    opacity: 0;
-}
-
-.navbar-toggler:not(.collapsed) .navbar-toggler-icon::after {
-    transform: rotate(-90deg) translateX(7px);
-}
-
-.navbar-toggler:focus,
-.navbar-toggler:active {
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
-    border-radius: 5px;
-}
-
-/* Ha a gomb visszakapja a .collapsed osztályt, eltűnik a shadow */
-.navbar-toggler.collapsed {
-    box-shadow: none !important;
 }
