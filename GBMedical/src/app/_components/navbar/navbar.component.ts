@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../_services/auth.service';
 import { CommonModule } from '@angular/common';
@@ -12,9 +12,20 @@ import { CommonModule } from '@angular/common';
 })
 export class NavbarComponent implements OnInit {
     isAuthenticated: boolean = false;
+    isMenuOpen = false; // Kezdetben zárt menü
 
+    constructor(private router: Router, private authService: AuthService, private eRef: ElementRef) { };
 
-    constructor(private router: Router, private authService: AuthService) { };
+    toggleMenu(): void {
+        this.isMenuOpen = !this.isMenuOpen;
+    }
+    
+    @HostListener('document:click', ['$event'])
+    onClickOutside(event: Event): void {
+        if (!this.eRef.nativeElement.contains(event.target)) {
+            this.isMenuOpen = false;
+        }
+    }
 
     ngOnInit(): void {
         // Feliratkozás az autentikációs állapot változására
