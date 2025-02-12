@@ -34,6 +34,10 @@ export class NavbarComponent implements OnInit {
         });
     }
 
+    toCalendar(): void {
+        this.router.navigate(['/calendar']);
+    }
+
     toLogin(): void {
         this.router.navigate(['/login']);
     }

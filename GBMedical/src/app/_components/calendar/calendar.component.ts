@@ -1,37 +1,39 @@
-import { Component, OnInit } from '@angular/core';
-import { AppointmentService } from '../../_services/appointments.service';
-import { FullCalendarModule } from '@fullcalendar/angular'; // A szükséges modul importálása
-import { CalendarOptions } from '@fullcalendar/core';  // Módosított importálás
+import { Component } from '@angular/core';
+import { FullCalendarModule } from '@fullcalendar/angular'; // FullCalendar modul importálása
+import { CalendarOptions } from '@fullcalendar/core';       // Típusellenőrzéshez
+import dayGridPlugin from '@fullcalendar/daygrid';            // DayGrid plugin
+import interactionPlugin from '@fullcalendar/interaction';
+import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
-    selector: 'app-calendar',
-    templateUrl: './calendar.component.html',
-    styleUrls: ['./calendar.component.css'],
-    imports: [FullCalendarModule]
+  selector: 'app-calendar',
+  standalone: true,
+  imports: [FullCalendarModule, NavbarComponent],
+  templateUrl: './calendar.component.html',
+  styleUrl: './calendar.component.css'
 })
-export class CalendarComponent implements OnInit {
-  calendarOptions: CalendarOptions = { // Konfigurációs objektum
+export class CalendarComponent {
+
+  // A naptár beállításai
+  calendarOptions: CalendarOptions = {
     initialView: 'dayGridMonth',
-    events: [],
+    locale: 'hu',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,dayGridWeek,dayGridDay'
+    },
+    buttonText: {
+      today: 'Ma',
+      month: 'Hónap',
+      week: 'Hét',
+      day: 'Nap'
+    },
+    plugins: [dayGridPlugin],
+    // Példa események, ezeket később dinamikusan töltheted be az API-ból
+    events: [
+      { title: 'Esemény 1', date: '2025-02-15' },
+      { title: 'Esemény 2', date: '2025-02-20' }
+    ]
   };
-
-  constructor(private appointmentService: AppointmentService) {}
-
-  ngOnInit(): void {
-    this.loadAppointments();
-  }
-
-  loadAppointments(): void {
-    this.appointmentService.getBookedAppointments().subscribe(data => {
-      const events = data.appointments.map((appointment: { patientName: any; doctorName: any; startTime: string | number | Date; endTime: string | number | Date; status: any; }) => ({
-        title: `${appointment.patientName} with ${appointment.doctorName}`,
-        start: new Date(appointment.startTime),
-        end: new Date(appointment.endTime),
-        description: `Status: ${appointment.status}`
-      }));
-
-      // Frissítjük a calendarOptions-t az API adatokkal
-      this.calendarOptions.events = events;
-    });
-  }
 }

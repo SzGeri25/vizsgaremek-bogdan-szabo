@@ -5,16 +5,18 @@ import { SpecialistsComponent } from './_components/specialists/specialists.comp
 import { LoginComponent } from './_components/login/login.component';
 import { RegisterComponent } from './_components/register/register.component';
 import { ServicesComponent } from './_components/services/services.component';
+import { CalendarComponent } from './_components/calendar/calendar.component';
 
 
 export const routes: Routes = [
     { path: '', pathMatch: 'full', redirectTo: '/home' },
     { path: 'home', component: HomeComponent },
     { path: 'contact', component: ContactComponent },
-    {path: 'specialists', component: SpecialistsComponent},
-    {path: 'login', component: LoginComponent},
-    {path: 'register', component: RegisterComponent},
-    {path: 'services', component: ServicesComponent},
+    { path: 'specialists', component: SpecialistsComponent },
+    { path: 'login', component: LoginComponent },
+    { path: 'register', component: RegisterComponent },
+    { path: 'services', component: ServicesComponent },
+    { path: 'calendar', component: CalendarComponent },
 
 
 
