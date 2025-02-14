@@ -4,14 +4,17 @@ import { FullCalendarModule } from '@fullcalendar/angular'; // FullCalendar modu
 import { CalendarOptions } from '@fullcalendar/core';       // Típusellenőrzéshez
 import dayGridPlugin from '@fullcalendar/daygrid';         // DayGrid plugin
 import { NavbarComponent } from '../navbar/navbar.component';
-import { lastValueFrom } from 'rxjs';                      // Az RxJS új megoldása
+import { lastValueFrom } from 'rxjs';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { EventDetailsModalComponent, EventDetailsData } from '../event-details-modal/event-details-modal.component';
+
 
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [FullCalendarModule, NavbarComponent],
+  imports: [FullCalendarModule, NavbarComponent, MatDialogModule],
   templateUrl: './calendar.component.html',
-  styleUrl: './calendar.component.css'
+  styleUrls: ['./calendar.component.css']
 })
 export class CalendarComponent implements OnInit {
 
@@ -31,12 +34,13 @@ export class CalendarComponent implements OnInit {
       day: 'Nap'
     },
     plugins: [dayGridPlugin],
-    events: []
+    events: [],
+    eventClick: this.handleEventClick.bind(this) // Eseményre kattintás kezelés
   };
 
   private apiUrl = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/appointments/getBookedAppointments';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private dialog: MatDialog) { }
 
   async ngOnInit(): Promise<void> {
     await this.fetchAppointments();
@@ -50,19 +54,12 @@ export class CalendarComponent implements OnInit {
       }
 
       const responseData = await response.json();
-      console.log('API válasz:', responseData); // 🔍 Ellenőrizd az API válaszát!
 
       if (responseData && responseData.status === 'success' && responseData.appointments) {
         const events = responseData.appointments.map((appointment: any) => {
-          console.log('Eredeti startTime:', appointment.startTime); // 🔍 Nézd meg az eredeti dátumot
-          console.log('Eredeti endTime:', appointment.endTime);
-
-          // Dátum konvertálás, figyelembe véve a CET időzónát
-          const startTime = new Date(appointment.startTime).toISOString();
-          const endTime = new Date(appointment.endTime).toISOString();
-
-          console.log('Konvertált startTime:', startTime); // 🔍 Nézd meg a konvertált dátumot
-          console.log('Konvertált endTime:', endTime);
+          // Mivel a backend már ISO formátumú dátumokat ad, közvetlenül használhatjuk őket
+          const startTime = appointment.startTime;
+          const endTime = appointment.endTime;
 
           return {
             id: appointment.id,
@@ -77,9 +74,9 @@ export class CalendarComponent implements OnInit {
           };
         });
 
-        console.log('Események listája:', events); // 🔍 Nézd meg az átalakított eseményeket!
-
-        this.calendarOptions = { ...this.calendarOptions, events }; // Objektum frissítés
+        console.log('Események listája:', events);
+        // Frissítjük a naptár opciókat az új eseményekkel
+        this.calendarOptions = { ...this.calendarOptions, events };
       } else {
         console.error('Nem megfelelő API válasz:', responseData);
       }
@@ -88,4 +85,20 @@ export class CalendarComponent implements OnInit {
     }
   }
 
+  // Eseményre kattintás esetén megjelenítjük a részleteket
+  handleEventClick(info: any): void {
+    const data: EventDetailsData = {
+      title: info.event.title,
+      start: info.event.start ? info.event.start.toLocaleString() : '',
+      end: info.event.end ? info.event.end.toLocaleString() : '',
+      status: info.event.extendedProps.status,
+      doctorId: info.event.extendedProps.doctorId,
+      patientId: info.event.extendedProps.patientId
+    };
+
+    this.dialog.open(EventDetailsModalComponent, {
+      data,
+      width: '400px'
+    });
+  }
 }
