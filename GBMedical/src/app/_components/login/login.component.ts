@@ -16,13 +16,14 @@ import { FooterComponent } from '../footer/footer.component';
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   showModal: boolean = false; // Modális ablak állapota
+  showPassword: boolean = false; // Jelszó láthatósága
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, Validators.minLength(8)]]
     });
   }
 
@@ -51,5 +52,9 @@ export class LoginComponent implements OnInit {
 
   closeModal() {
     this.showModal = false;
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
   }
 }

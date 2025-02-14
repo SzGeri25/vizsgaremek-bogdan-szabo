@@ -71,68 +71,6 @@ h1 {
     outline: none;
 }
 
-/*.register{
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    transition: 200ms ease-in-out;
-    border: 1px solid black;
-    border-radius: 10px;
-    z-index: 10;
-    background-color: white;
-    width: 500px;
-    max-width: 80%;
-}
-
-.register:active{
-    transform: translate(-50%, -50%) scale(0);
-}
-
-.register-header{
-    padding: 10px 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid black;
-}
-
-.register-header .title{
-    font-size: 1.25rem;
-    font-weight: bold;
-}
-
-.register-header .close-button{
-    cursor: pointer;
-    border: none;
-    outline: none;
-    background: none;
-    font-size: 1.25rem;
-    font-weight: bold;
-}
-
-.register.body{
-    padding: 10px 15px;
-}
-
-#overlay{
-    position: fixed;
-    opacity: 0;
-    transition: 200ms ease-in-out;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgb(0, 0, 0, .5);
-    pointer-events: none;
-}
-
-#overlay:active {
-    opacity: 0;
-    pointer-events: all;
-
-}*/
-
 .modal {
     background-color: rgba(0, 0, 0, 0.3);
     opacity: 0;
@@ -185,3 +123,35 @@ h1 {
     border: 1px solid #ff4d4d !important;
     box-shadow: 0px 0px 5px rgba(255, 77, 77, 0.5);
 }
+
+.password-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
+}
+
+.input-field {
+    flex-grow: 1;
+    padding-right: 40px;
+    height: 35px; 
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 43%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #333;
+    padding: 0;
+    height: 100%; /* Input mező teljes magassága */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+

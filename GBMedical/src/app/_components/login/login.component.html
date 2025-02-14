@@ -12,11 +12,17 @@
             </div>
 
             <label for="password">Jelszó:</label>
-            <input type="password" formControlName="password" id="password" class="input-field"
-                [ngClass]="{ 'error-border': password?.invalid && password?.touched }">
+            <div class="password-wrapper">
+                <input [type]="showPassword ? 'text' : 'password'" formControlName="password" id="password"
+                    class="input-field" [ngClass]="{ 'error-border': password?.invalid && password?.touched }">
+                <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
+                    {{ showPassword ? '🚫' : '👁️' }}
+                </button>
+            </div>
             <div class="error" *ngIf="password?.invalid && password?.touched">
                 * A jelszó legalább 8 karakter hosszú kell legyen
             </div>
+
 
             <button type="submit" class="loginButton" [disabled]="loginForm.invalid">
                 Bejelentkezés
