@@ -6,6 +6,7 @@ package com.idopontfoglalo.gbmedicalbackend.service;
 
 import com.idopontfoglalo.gbmedicalbackend.model.Appointments;
 import com.idopontfoglalo.gbmedicalbackend.model.TimeSlotDTO;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -65,13 +66,20 @@ public class AppointmentService {
                 statusCode = 404;
             } else {
                 JSONArray appointmentsArray = new JSONArray();
+
+                // ISO 8601 formátum: például "2025-01-22T10:00:00+01:00"
+                SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+
                 for (Appointments appointment : bookedAppointments) {
                     JSONObject appointmentObject = new JSONObject();
                     appointmentObject.put("id", appointment.getId());
                     appointmentObject.put("doctorId", appointment.getDoctorId().getId());
                     appointmentObject.put("patientId", appointment.getPatientId().getId());
-                    appointmentObject.put("startTime", appointment.getStartTime().toString());
-                    appointmentObject.put("endTime", appointment.getEndTime().toString());
+
+                    // Dátumok ISO formátumra alakítása
+                    appointmentObject.put("startTime", isoFormat.format(appointment.getStartTime()));
+                    appointmentObject.put("endTime", isoFormat.format(appointment.getEndTime()));
+
                     appointmentObject.put("status", appointment.getStatus());
                     appointmentObject.put("doctorName", appointment.getDoctorId().getName());
                     appointmentObject.put("patientName", appointment.getPatientId().getFirstName() + " " + appointment.getPatientId().getLastName());
