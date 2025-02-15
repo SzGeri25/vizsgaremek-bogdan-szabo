@@ -126,4 +126,52 @@ public class PatientService {
         toReturn.put("statusCode", statusCode);
         return toReturn;
     }
+
+    public JSONObject deletePatient(int id) {
+        JSONObject toReturn = new JSONObject();
+        String responseStatus = "success";
+        int statusCode = 200;
+
+        try {
+            if (id <= 0) {
+                responseStatus = "invalidInput";
+                statusCode = 400;
+                throw new IllegalArgumentException("Invalid patient ID provided.");
+            } else {
+                boolean modelResult = layer.deletePatient(id);
+
+                if (!modelResult) {
+                    responseStatus = "modelException";
+                    statusCode = 500;
+                }
+                if (modelResult == false) {
+                    responseStatus = "notFound";
+                    statusCode = 404;
+                    throw new Exception("Patient not found or cannot be deleted.");
+                } else {
+                    JSONObject result = new JSONObject();
+                    result.put("message", "Patient successfully deleted");
+                    result.put("patientId", layer.getId());
+                    result.put("firstName", layer.getFirstName());
+                    result.put("lastName", layer.getLastName());
+                    result.put("email", layer.getEmail());
+                    result.put("phoneNumber", layer.getPhoneNumber());
+
+                    toReturn.put("result", result);
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            // Rossz bemeneti adatok kezelése
+            toReturn.put("error", e.getMessage());
+        } catch (Exception e) {
+            // Egyéb hibák kezelése
+            responseStatus = "error";
+            statusCode = statusCode == 200 ? 500 : statusCode; // Ha nem volt más specifikus hiba
+            toReturn.put("error", e.getMessage());
+        }
+
+        toReturn.put("status", responseStatus);
+        toReturn.put("statusCode", statusCode);
+        return toReturn;
+    }
 }

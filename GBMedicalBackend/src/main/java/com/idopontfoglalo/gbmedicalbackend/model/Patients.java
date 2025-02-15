@@ -404,4 +404,31 @@ public class Patients implements Serializable {
         }
     }
 
+    public boolean deletePatient(int id) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            // Tárolt eljárás meghívása
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("deletePatient");
+
+            // Bemeneti paraméterek regisztrálása
+            spq.registerStoredProcedureParameter("patientIdIN", Integer.class, ParameterMode.IN);
+
+            // Paraméterek beállítása
+            spq.setParameter("patientIdIN", id);
+
+            // Tárolt eljárás futtatása
+            spq.execute();
+
+            return true; // Sikeres végrehajtás
+
+        } catch (Exception e) {
+            System.err.println("Hiba a `deletePatient` során: " + e.getMessage());
+            return false; // Hiba esetén visszatérés
+        } finally {
+            em.clear();
+            em.close();
+        }
+    }
+
 }
