@@ -1,12 +1,22 @@
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
-            <h1>Main Text</h1>
-            <h3>Lorem ipsum dolor sit amet, consectetuer adipiscing elit...</h3>
-            <button id="appointmentBooking">Időpontfoglalás</button>
+<app-navbar></app-navbar>
+
+<body>
+    <div class="container">
+        <div class="map">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1384.8414497706992!2d18.21789181481935!3d46.03747538497165!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4742b3b64547f9ff%3A0x81835de2edb802f1!2sBaranya%20V%C3%A1rmegyei%20SZC%20Simonyi%20K%C3%A1roly%20Technikum%20%C3%A9s%20Szakk%C3%A9pz%C5%91%20Iskola!5e0!3m2!1shu!2shu!4v1739809137524!5m2!1shu!2shu"
+                width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
-            <script async src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+        <div class="contact-info">
+            <h2>Vegye fel velünk a kapcsolatot</h2>
+            <p><span class="icon">📞</span>+36 72 550 710</p>
+            <p><span class="icon">🏠</span>Pécs, Malomvölgyi út 1/b, 7636</p>
+            <p><span class="icon">✉️</span>kszki&#64;simonyi.edu.hu</p>
+            <h3>Nyitvatartás</h3>
+            <p>Hétfő - Péntek: 08:00 – 20:00</p>
         </div>
     </div>
-</div>
+</body>
+
+<app-footer></app-footer>
