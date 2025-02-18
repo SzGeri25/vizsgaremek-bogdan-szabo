@@ -57,6 +57,21 @@ public class AppointmentController {
         return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
     }
 
+    @GET
+    @Path("getAvailableSlots")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAvailableSlots(
+            @QueryParam("doctorId") int doctorId,
+            @QueryParam("startDate") String startDate,
+            @QueryParam("endDate") String endDate) {
+
+        JSONObject obj = layer.getAvailableSlots(doctorId, startDate, endDate);
+        return Response.status(obj.getInt("statusCode"))
+                .entity(obj.toString())
+                .type(MediaType.APPLICATION_JSON)
+                .build();
+    }
+
     @DELETE
     @Path("cancelAppointment")
     @Produces(MediaType.APPLICATION_JSON)
