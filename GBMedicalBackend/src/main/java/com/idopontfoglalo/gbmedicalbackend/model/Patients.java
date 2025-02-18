@@ -431,4 +431,30 @@ public class Patients implements Serializable {
         }
     }
 
+    public Boolean changePassword(Integer patientId, String newPassword, Integer creator) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("changePassword");
+
+            spq.registerStoredProcedureParameter("patientIdIN", Integer.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("newPasswordIN", String.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("creatorIN", Integer.class, ParameterMode.IN);
+
+            spq.setParameter("patientIdIN", patientId);
+            spq.setParameter("newPasswordIN", newPassword);
+            spq.setParameter("creatorIN", creator);
+
+            spq.execute();
+
+            return true;
+        } catch (Exception e) {
+            System.err.println("Hiba: " + e.getLocalizedMessage());
+            return false;
+        } finally {
+            em.clear();
+            em.close();
+        }
+    }
+
 }

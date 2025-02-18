@@ -174,4 +174,53 @@ public class PatientService {
         toReturn.put("statusCode", statusCode);
         return toReturn;
     }
+
+    public JSONObject changePassword(Integer patientId, String newPassword, Integer creator) {
+        JSONObject toReturn = new JSONObject();
+        String status = "success";
+        int statusCode = 200;
+
+        if (patientId == creator) {
+            Boolean modelResult = layer.changePassword(patientId, newPassword, creator);
+            if (!modelResult) {
+                status = "ModelException";
+                statusCode = 500;
+            }
+        } else {
+            status = "PermissionError";
+            statusCode = 417;
+        }
+
+        toReturn.put("status", status);
+        toReturn.put("statusCode", statusCode);
+        return toReturn;
+    }
+
+    public JSONObject getPatientById(Integer id) {
+        JSONObject toReturn = new JSONObject();
+        String status = "success";
+        int statusCode = 200;
+        Patients modelResult = new Patients(id);
+
+        if (modelResult.getEmail() == null) {
+            status = "PatientNotFound";
+            statusCode = 417;
+        } else {
+            JSONObject patient = new JSONObject();
+
+            patient.put("id", modelResult.getId());
+            patient.put("firstName", modelResult.getFirstName());
+            patient.put("lastName", modelResult.getLastName());
+            patient.put("email", modelResult.getEmail());
+            patient.put("phoneNumber", modelResult.getPhoneNumber());
+            patient.put("isAdmin", modelResult.getIsAdmin());
+            patient.put("isDeleted", modelResult.getIsDeleted());
+            patient.put("createdAt", modelResult.getCreatedAt());
+
+            toReturn.put("result", patient);
+        }
+        toReturn.put("status", status);
+        toReturn.put("statusCode", statusCode);
+        return toReturn;
+    }
 }

@@ -14,7 +14,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.impl.TextCodec;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.WeakKeyException;
 import java.time.Instant;
@@ -44,7 +44,7 @@ public class JWT {
                 .setExpiration(Date.from(now.plus(1, ChronoUnit.DAYS)))
                 .signWith(
                         SignatureAlgorithm.HS256,
-                        TextCodec.BASE64.decode(SIGN)
+                        Decoders.BASE64.decode(SIGN)
                 )
                 .compact();
 
@@ -64,7 +64,7 @@ public class JWT {
                 .setExpiration(Date.from(now.plus(1, ChronoUnit.DAYS)))
                 .signWith(
                         SignatureAlgorithm.HS256,
-                        TextCodec.BASE64.decode(SIGN)
+                        Decoders.BASE64.decode(SIGN)
                 )
                 .compact();
 
@@ -97,5 +97,14 @@ public class JWT {
         Boolean isAdmin = result.getBody().get("isAdmin", Boolean.class);
 
         return isAdmin;
+    }
+
+    public static Integer getPatientIdByToken(String jwt) {
+        Jws<Claims> result;
+        result = Jwts.parser().setSigningKey(Keys.hmacShaKeyFor(SECRET)).parseClaimsJws(jwt);
+
+        int patientId = result.getBody().get("id", Integer.class);
+
+        return patientId;
     }
 }

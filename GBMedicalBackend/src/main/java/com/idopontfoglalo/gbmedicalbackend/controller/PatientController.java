@@ -4,11 +4,13 @@
  */
 package com.idopontfoglalo.gbmedicalbackend.controller;
 
+import com.idopontfoglalo.gbmedicalbackend.config.JWT;
 import com.idopontfoglalo.gbmedicalbackend.model.Patients;
 import com.idopontfoglalo.gbmedicalbackend.service.PatientService;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -92,6 +94,23 @@ public class PatientController {
     public Response deletePatient(@QueryParam("patientId") int patientId) {
         JSONObject obj = layer.deletePatient(patientId);
         return Response.status(obj.getInt("statusCode")).entity(obj.toString()).build();
+    }
+
+    @PUT
+    @Path("changePassword")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response changePassword(@HeaderParam("token") String jwt, @QueryParam("patientId") Integer patientId, String bodyString) {
+        int isValid = JWT.validateJWT(jwt);
+
+        if (isValid == 1) {
+            JSONObject obj = layer.getPatientById(JWT.getPatientIdByToken(jwt));
+            return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
+        } else if (isValid == 2) {
+            return Response.status(498).entity("InvalidToken").type(MediaType.APPLICATION_JSON).build();
+        } else {
+            return Response.status(401).entity("TokenExpired").type(MediaType.APPLICATION_JSON).build();
+        }
+
     }
 
 }
