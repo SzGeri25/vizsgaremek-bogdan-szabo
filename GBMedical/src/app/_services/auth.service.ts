@@ -8,7 +8,6 @@ export class AuthService {
   // A bejelentkezés kezdetben false, de ellenőrizheted a localStorage-t is
   private isAuthenticatedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(!!localStorage.getItem('authToken'));
 
- 
   // Observable, amelyre a komponensek feliratkozhatnak
   public isAuthenticated$: Observable<boolean> = this.isAuthenticatedSubject.asObservable();
 

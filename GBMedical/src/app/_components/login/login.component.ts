@@ -57,4 +57,9 @@ export class LoginComponent implements OnInit {
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
+
+  goToChangePassword(): void {
+    this.router.navigate(['/changePassword']);
+  }
+  
 }

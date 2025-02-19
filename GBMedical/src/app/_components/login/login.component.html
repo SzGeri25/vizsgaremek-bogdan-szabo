@@ -23,6 +23,10 @@
                 * A jelszó legalább 8 karakter hosszú kell legyen
             </div>
 
+            <!-- "Elfelejtetted a jelszavad?" link -->
+            <p class="forgot-password">
+                <a (click)="goToChangePassword()">Elfelejtetted a jelszavad?</a>
+            </p>
 
             <button type="submit" class="loginButton" [disabled]="loginForm.invalid">
                 Bejelentkezés
