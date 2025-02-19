@@ -103,14 +103,29 @@ public class PatientController {
         int isValid = JWT.validateJWT(jwt);
 
         if (isValid == 1) {
-            JSONObject obj = layer.getPatientById(JWT.getPatientIdByToken(jwt));
-            return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
-        } else if (isValid == 2) {
-            return Response.status(498).entity("InvalidToken").type(MediaType.APPLICATION_JSON).build();
-        } else {
-            return Response.status(401).entity("TokenExpired").type(MediaType.APPLICATION_JSON).build();
-        }
+            // Kinyerjük az új jelszót a body-ból
+            JSONObject jsonBody = new JSONObject(bodyString);
+            String newPassword = jsonBody.getString("newPassword");
+            // A tokenből kinyerjük a felhasználó azonosítóját
+            Integer creator = JWT.getPatientIdByToken(jwt);
 
+            // Meghívjuk a changePassword logikát
+            JSONObject obj = layer.changePassword(patientId, newPassword, creator);
+            return Response.status(obj.getInt("statusCode"))
+                    .entity(obj.toString())
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+        } else if (isValid == 2) {
+            return Response.status(498)
+                    .entity("InvalidToken")
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+        } else {
+            return Response.status(401)
+                    .entity("TokenExpired")
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+        }
     }
 
 }

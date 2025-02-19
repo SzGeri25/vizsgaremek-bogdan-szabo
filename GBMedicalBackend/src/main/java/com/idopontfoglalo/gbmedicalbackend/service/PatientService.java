@@ -180,7 +180,7 @@ public class PatientService {
         String status = "success";
         int statusCode = 200;
 
-        if (patientId == creator) {
+        if (patientId.equals(creator)) {
             Boolean modelResult = layer.changePassword(patientId, newPassword, creator);
             if (!modelResult) {
                 status = "ModelException";
