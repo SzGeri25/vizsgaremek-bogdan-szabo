@@ -39,7 +39,7 @@ public class PasswordResetController {
             PasswordResetTokens tokenEntity = passwordResetService.createPasswordResetToken(email);
 
             // Összeállítjuk a visszaállító linket
-            String resetLink = "https://yourdomain.com/resetPasswordPage?token="
+            String resetLink = "http://localhost:4200/newPassword?token="
                     + tokenEntity.getToken() + "&email=" + URLEncoder.encode(email, "UTF-8");
 
             // Email küldése a visszaállító linkkel
