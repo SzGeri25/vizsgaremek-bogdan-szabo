@@ -58,8 +58,8 @@ export class LoginComponent implements OnInit {
     this.showPassword = !this.showPassword;
   }
 
-  goToChangePassword(): void {
-    this.router.navigate(['/changePassword']);
+  toForgotPassword(): void {
+    this.router.navigate(['/forgotPassword']);
   }
   
 }

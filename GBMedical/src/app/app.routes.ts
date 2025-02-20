@@ -6,8 +6,8 @@ import { LoginComponent } from './_components/login/login.component';
 import { RegisterComponent } from './_components/register/register.component';
 import { ServicesComponent } from './_components/services/services.component';
 import { CalendarComponent } from './_components/calendar/calendar.component';
-import { ChangePasswordComponent } from './_components/change-password/change-password.component';
-
+import { ForgotPasswordComponent } from './_components/forgot-password/forgot-password.component';
+import { NewPasswordComponent } from './_components/new-password/new-password.component';
 
 export const routes: Routes = [
     { path: '', pathMatch: 'full', redirectTo: '/home' },
@@ -18,7 +18,8 @@ export const routes: Routes = [
     { path: 'register', component: RegisterComponent },
     { path: 'services', component: ServicesComponent },
     { path: 'calendar', component: CalendarComponent },
-    { path: 'changePassword', component: ChangePasswordComponent },
+    { path: 'forgotPassword', component: ForgotPasswordComponent},
+    { path: 'newPassword', component: NewPasswordComponent},
 
 
     { path: '**', redirectTo: '' } // 404 esetén visszairányítás a Home-ra, ez legyen legalul!!!

@@ -16,7 +16,7 @@
                 <input [type]="showPassword ? 'text' : 'password'" formControlName="password" id="password"
                     class="input-field" [ngClass]="{ 'error-border': password?.invalid && password?.touched }">
                 <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
-                    {{ showPassword ? '🚫' : '👁️' }}
+                    <i [class] = "showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
                 </button>
             </div>
             <div class="error" *ngIf="password?.invalid && password?.touched">
@@ -25,7 +25,7 @@
 
             <!-- "Elfelejtetted a jelszavad?" link -->
             <p class="forgot-password">
-                <a (click)="goToChangePassword()">Elfelejtetted a jelszavad?</a>
+                <a (click)="toForgotPassword()">Elfelejtetted a jelszavad?</a>
             </p>
 
             <button type="submit" class="loginButton" [disabled]="loginForm.invalid">
