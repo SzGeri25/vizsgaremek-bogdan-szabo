@@ -33,6 +33,7 @@ public class ApplicationConfig extends Application {
         resources.add(com.idopontfoglalo.gbmedicalbackend.controller.ReviewController.class);
         resources.add(com.idopontfoglalo.gbmedicalbackend.controller.ServicesController.class);
         resources.add(com.idopontfoglalo.gbmedicalbackend.filters.CorsFilter.class);
+        resources.add(com.idopontfoglalo.gbmedicalbackend.controller.PasswordResetController.class);
     }
 
 }
