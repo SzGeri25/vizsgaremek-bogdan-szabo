@@ -55,4 +55,41 @@ public class PasswordResetController {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseJson.toString()).build();
         }
     }
+
+    /**
+     * Jelszó visszaállító endpoint. A felhasználónak meg kell adnia az email
+     * címét, a kapott tokent és az új jelszót.
+     */
+    @POST
+    @Path("resetPassword")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response resetPassword(String body) {
+        try {
+            JSONObject json = new JSONObject(body);
+            String email = json.getString("email");
+            String token = json.getString("token");
+            String newPassword = json.getString("newPassword");
+
+            // Ellenőrizzük a tokent az adatbázisban
+            boolean isValidToken = passwordResetService.validateToken(email, token);
+
+            if (!isValidToken) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity(new JSONObject().put("message", "Érvénytelen vagy lejárt token!").toString())
+                        .build();
+            }
+
+            // Jelszó frissítése
+            passwordResetService.updatePatientPassword(email, newPassword);
+
+            return Response.ok(new JSONObject().put("message", "A jelszavad sikeresen frissült!").toString()).build();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(new JSONObject().put("message", "Hiba történt a jelszó visszaállítása során.").toString())
+                    .build();
+        }
+    }
+
 }
