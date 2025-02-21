@@ -27,7 +27,7 @@ export class ForgotPasswordComponent {
     this.http.post('http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/password/forgotPassword', requestBody)
       .subscribe({
         next: () => this.message = 'A visszaállító email elküldve!',
-        error: () => this.message = 'Hiba történt, próbáld újra később.'
+        error: () => this.message = 'Hibás vagy nem található az email cím! Regisztráltál már?'
       });
   }
 }
