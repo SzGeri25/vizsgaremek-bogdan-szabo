@@ -5,6 +5,7 @@
 package com.idopontfoglalo.gbmedicalbackend.controller;
 
 import com.idopontfoglalo.gbmedicalbackend.model.PasswordResetTokens;
+import com.idopontfoglalo.gbmedicalbackend.model.Patients;
 import com.idopontfoglalo.gbmedicalbackend.service.PasswordResetService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -35,6 +36,14 @@ public class PasswordResetController {
             JSONObject json = new JSONObject(body);
             String email = json.getString("email");
 
+            // Ellenőrizzük, hogy létezik-e a felhasználó az isPatientExists metódussal
+            if (!Patients.isPatientExists(email)) {
+                JSONObject responseJson = new JSONObject();
+                responseJson.put("message", "Az email cím nem található. Biztos regisztráltál már?");
+                responseJson.put("statusCode", Response.Status.NOT_FOUND.getStatusCode());
+                return Response.status(Response.Status.NOT_FOUND).entity(responseJson.toString()).build();
+            }
+
             // Token generálása és adatbázisba mentése
             PasswordResetTokens tokenEntity = passwordResetService.createPasswordResetToken(email);
 
@@ -47,11 +56,13 @@ public class PasswordResetController {
 
             JSONObject responseJson = new JSONObject();
             responseJson.put("message", emailSent ? "A visszaállító email elküldve." : "Hiba történt az email küldése során.");
+            responseJson.put("statusCode", Response.Status.OK.getStatusCode());
             return Response.ok(responseJson.toString()).build();
         } catch (Exception ex) {
             ex.printStackTrace();
             JSONObject responseJson = new JSONObject();
             responseJson.put("message", "Belső hiba történt a jelszó visszaállítás kérése során.");
+            responseJson.put("statusCode", Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseJson.toString()).build();
         }
     }
