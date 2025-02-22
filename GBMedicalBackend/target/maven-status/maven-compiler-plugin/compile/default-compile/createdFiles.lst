@@ -1,4 +1,5 @@
 com\idopontfoglalo\gbmedicalbackend\service\AppointmentService.class
+com\idopontfoglalo\gbmedicalbackend\service\EmailService$EmailType.class
 com\idopontfoglalo\gbmedicalbackend\service\DoctorService.class
 com\idopontfoglalo\gbmedicalbackend\controller\ServicesController.class
 com\idopontfoglalo\gbmedicalbackend\model\Reviews.class
@@ -23,5 +24,6 @@ com\idopontfoglalo\gbmedicalbackend\model\Payments.class
 com\idopontfoglalo\gbmedicalbackend\controller\PatientController.class
 com\idopontfoglalo\gbmedicalbackend\model\Services.class
 com\idopontfoglalo\gbmedicalbackend\model\Patients.class
+com\idopontfoglalo\gbmedicalbackend\service\EmailService$2.class
 com\idopontfoglalo\gbmedicalbackend\service\PatientService.class
 com\idopontfoglalo\gbmedicalbackend\filters\CorsFilter.class

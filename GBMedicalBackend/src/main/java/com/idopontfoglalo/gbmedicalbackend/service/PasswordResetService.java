@@ -42,14 +42,14 @@ public class PasswordResetService {
     /**
      * Elkészíti a reset linket és elküldi az emailt.
      */
-    public boolean sendResetEmail(String email, String resetLink) {
-        String emailContent = "<p>Kedves Felhasználó!</p>"
-                + "<p>Kattints az alábbi linkre a jelszavad visszaállításához:</p>"
-                + "<p><a href=\"" + resetLink + "\">Jelszó visszaállítása</a></p>"
-                + "<p>A link 1 óráig érvényes.</p>";
-        return EmailService.sendEmail(email, false, emailContent);
+    public boolean sendEmail(String email, String link, EmailService.EmailType emailType) {
+        // Email küldése a megfelelő típusú email szolgáltatással
+        return EmailService.sendEmail(email, emailType, link);
     }
 
+    /**
+     * Az új jelszó beállítása
+     */
     public void updatePatientPassword(String email, String newPassword) {
         String hashedPassword = hashPasswordSHA1(newPassword);
 

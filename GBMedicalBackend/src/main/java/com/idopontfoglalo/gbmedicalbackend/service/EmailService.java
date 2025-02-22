@@ -11,12 +11,19 @@ import java.util.Properties;
 
 public class EmailService {
 
-    public static boolean sendEmail(String to, boolean ccMe, String content) {
-        try {
-            // Küldő email címe és jelszava (biztonsági okokból ezeket ne tárold nyílt szövegként!)
-            final String from = "szabo.gergely25@gmail.com";
-            final String password = "bequ fkqs xwto sprv";  // Példa jelszó
+    private static final String FROM_EMAIL = "szabo.gergely25@gmail.com";
+    private static final String PASSWORD = "bequ fkqs xwto sprv";  // Biztonsági okokból ne tárold nyílt szövegként
 
+    // Enum a különböző email típusokhoz
+    public enum EmailType {
+        REGISTRATION_CONFIRMATION,
+        APPOINTMENT_CONFIRMATION,
+        PASSWORD_RESET
+    }
+
+    // Küldés metódus, amely figyelembe veszi az email típusát
+    public static boolean sendEmail(String to, EmailType emailType, String additionalContent) {
+        try {
             // SMTP beállítások a Gmail esetében
             Properties properties = new Properties();
             properties.put("mail.smtp.host", "smtp.gmail.com");
@@ -27,20 +34,44 @@ public class EmailService {
             Session session = Session.getInstance(properties, new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(from, password);
+                    return new PasswordAuthentication(FROM_EMAIL, PASSWORD);
                 }
             });
+
             session.setDebug(true);
 
             MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(from));
+            message.setFrom(new InternetAddress(FROM_EMAIL));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-            if (ccMe) {
-                message.setRecipients(Message.RecipientType.CC, InternetAddress.parse(from));
+
+            // Téma és tartalom beállítása email típus alapján
+            String subject = "";
+            String content = "";
+
+            switch (emailType) {
+                case REGISTRATION_CONFIRMATION:
+                    subject = "Regisztráció megerősítése";
+                    content = "<p>Kérjük, kattintson az alábbi linkre, hogy megerősítse a regisztrációját: <br>"
+                            + "<a href=\"" + additionalContent + "\">Megerősítés</a></p>";
+                    break;
+                case APPOINTMENT_CONFIRMATION:
+                    subject = "Időpontfoglalás megerősítése";
+                    content = "<p>Köszönjük, hogy időpontot foglalt a GB Medical rendszerében. "
+                            + "A foglalás részletei: <br>" + additionalContent + "</p>";
+                    break;
+                case PASSWORD_RESET:
+                    subject = "Jelszó visszaállítás";
+                    content = "<p>Kattintson az alábbi linkre, hogy visszaállítsa a jelszavát: <br>"
+                            + "<a href=\"" + additionalContent + "\">Visszaállítás</a></p>";
+                    break;
+                default:
+                    throw new IllegalArgumentException("Nem támogatott email típus: " + emailType);
             }
-            message.setSubject("Jelszó visszaállítás");
+
+            message.setSubject(subject);
             message.setContent(content, "text/html;charset=utf-8");
 
+            // Email küldése
             Transport.send(message);
             return true;
         } catch (Exception e) {

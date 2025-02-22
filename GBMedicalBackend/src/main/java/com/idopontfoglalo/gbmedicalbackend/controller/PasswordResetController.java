@@ -1,11 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.idopontfoglalo.gbmedicalbackend.controller;
 
 import com.idopontfoglalo.gbmedicalbackend.model.PasswordResetTokens;
 import com.idopontfoglalo.gbmedicalbackend.model.Patients;
+import com.idopontfoglalo.gbmedicalbackend.service.EmailService;
 import com.idopontfoglalo.gbmedicalbackend.service.PasswordResetService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -36,7 +33,7 @@ public class PasswordResetController {
             JSONObject json = new JSONObject(body);
             String email = json.getString("email");
 
-            // Ellenőrizzük, hogy létezik-e a felhasználó az isPatientExists metódussal
+            // Ellenőrizzük, hogy létezik-e a felhasználó
             if (!Patients.isPatientExists(email)) {
                 JSONObject responseJson = new JSONObject();
                 responseJson.put("message", "Az email cím nem található. Biztos regisztráltál már?");
@@ -52,7 +49,7 @@ public class PasswordResetController {
                     + tokenEntity.getToken() + "&email=" + URLEncoder.encode(email, "UTF-8");
 
             // Email küldése a visszaállító linkkel
-            boolean emailSent = passwordResetService.sendResetEmail(email, resetLink);
+            boolean emailSent = passwordResetService.sendEmail(email, resetLink, EmailService.EmailType.PASSWORD_RESET);
 
             JSONObject responseJson = new JSONObject();
             responseJson.put("message", emailSent ? "A visszaállító email elküldve." : "Hiba történt az email küldése során.");
@@ -91,7 +88,7 @@ public class PasswordResetController {
                         .build();
             }
 
-            // Jelszó frissítése
+            // Jelszó hash-elése és frissítése
             passwordResetService.updatePatientPassword(email, newPassword);
 
             return Response.ok(new JSONObject().put("message", "A jelszavad sikeresen frissült!").toString()).build();
@@ -102,5 +99,4 @@ public class PasswordResetController {
                     .build();
         }
     }
-
 }
