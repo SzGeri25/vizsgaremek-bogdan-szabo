@@ -34,10 +34,16 @@ export class LoginComponent implements OnInit {
 
     try {
       const { email, password } = this.loginForm.value;
+      const response = await this.authService.login(email, password);
       
-      await this.authService.login(email, password);
       this.showModal = true; // Modális ablak megnyitása
-      setTimeout(() => this.router.navigate(['/home']), 2000); // 2 mp után főoldalra navigál
+      
+      // Ellenőrizzük, hogy a bejelentkezett user admin-e (isAdmin === 1)
+      if (response.result && response.result.isAdmin === true) {
+        setTimeout(() => this.router.navigate(['/admin']), 2000); // 2 mp után admin komponensre navigál
+      } else {
+        setTimeout(() => this.router.navigate(['/home']), 2000); // 2 mp után home oldalra navigál
+      }
       
     } catch (error) {
       console.error('Login sikertelen:', error);

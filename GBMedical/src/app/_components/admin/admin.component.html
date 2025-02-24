@@ -1,23 +1,35 @@
 <app-navbar></app-navbar>
-<table>
-    <thead>
-      <tr>
-        <th>Id</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Email</th>
-        <th>Phone Number</th>
-        <th>Password</th>
-        <th>isAdmin</th>
-        <th>isDeleted</th>
-        <th>createdAt</th>
-        <th>updatedAt</th>
-        <th>deletedAt</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Jelenleg nincsenek adatok -->
-    </tbody>
-  </table>
 
-  <app-footer></app-footer>
+<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+
+  <!-- ID Oszlop -->
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+    <td mat-cell *matCellDef="let element"> {{ element.id }} </td>
+  </ng-container>
+
+  <!-- First Name Oszlop -->
+  <ng-container matColumnDef="firstName">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> First Name </th>
+    <td mat-cell *matCellDef="let element"> {{ element.firstName }} </td>
+  </ng-container>
+
+  <!-- Email Oszlop -->
+  <ng-container matColumnDef="email">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
+    <td mat-cell *matCellDef="let element"> {{ element.email }} </td>
+  </ng-container>
+
+  <!-- Admin státusz -->
+  <ng-container matColumnDef="isAdmin">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Admin </th>
+    <td mat-cell *matCellDef="let element"> {{ element.isAdmin ? 'Yes' : 'No' }} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+<app-footer></app-footer>
