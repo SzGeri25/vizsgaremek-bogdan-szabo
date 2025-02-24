@@ -4,6 +4,7 @@
  */
 package com.idopontfoglalo.gbmedicalbackend.model;
 
+import static com.idopontfoglalo.gbmedicalbackend.model.Services.emf;
 import jakarta.jms.Connection;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
@@ -24,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -451,6 +453,44 @@ public class Patients implements Serializable {
         } catch (Exception e) {
             System.err.println("Hiba: " + e.getLocalizedMessage());
             return false;
+        } finally {
+            em.clear();
+            em.close();
+        }
+    }
+
+    public List<Patients> getAllPatients() {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("getAllPatients");
+            spq.execute();
+
+            List<Patients> toReturn = new ArrayList();
+            List<Object[]> resultList = spq.getResultList();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            for (Object[] record : resultList) {
+                Patients u = new Patients(
+                        Integer.valueOf(record[0].toString()),
+                        record[1].toString(),
+                        record[2].toString(),
+                        record[3].toString(),
+                        record[4].toString(),
+                        record[5].toString(),
+                        Boolean.parseBoolean(record[6].toString()),
+                        Boolean.parseBoolean(record[7].toString()),
+                        formatter.parse(record[8].toString()),
+                        record[9] == null ? null : formatter.parse(record[9].toString())
+                );
+
+                toReturn.add(u);
+            }
+
+            return toReturn;
+
+        } catch (Exception e) {
+            System.err.println("Hiba: " + e.getLocalizedMessage());
+            return null;
         } finally {
             em.clear();
             em.close();

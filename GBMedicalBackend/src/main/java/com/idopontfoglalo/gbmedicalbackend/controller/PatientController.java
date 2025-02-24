@@ -128,4 +128,21 @@ public class PatientController {
         }
     }
 
+    @GET
+    @Path("getAllPatients")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getAllPatients(@HeaderParam("token") String jwt) {
+        int isValid = JWT.validateJWT(jwt);
+
+        if (isValid == 1) {
+            JSONObject obj = layer.getAllPatients();
+            return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
+        } else if (isValid == 2) {
+            return Response.status(498).entity("InvalidToken").type(MediaType.APPLICATION_JSON).build();
+        } else {
+            return Response.status(401).entity("TokenExpired").type(MediaType.APPLICATION_JSON).build();
+        }
+
+    }
+
 }

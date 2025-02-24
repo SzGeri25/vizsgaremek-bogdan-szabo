@@ -6,8 +6,10 @@ package com.idopontfoglalo.gbmedicalbackend.service;
 
 import com.idopontfoglalo.gbmedicalbackend.config.JWT;
 import com.idopontfoglalo.gbmedicalbackend.model.Patients;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -219,6 +221,45 @@ public class PatientService {
 
             toReturn.put("result", patient);
         }
+        toReturn.put("status", status);
+        toReturn.put("statusCode", statusCode);
+        return toReturn;
+    }
+
+    public JSONObject getAllPatients() {
+        JSONObject toReturn = new JSONObject();
+        String status = "success";
+        int statusCode = 200;
+        List<Patients> modelResult = layer.getAllPatients();
+
+        if (modelResult == null) {
+            status = "ModelException";
+            statusCode = 500;
+        } else if (modelResult.isEmpty()) {
+            status = "NoUsersFound";
+            statusCode = 417;
+        } else {
+            JSONArray result = new JSONArray();
+
+            for (Patients actualUser : modelResult) {
+                JSONObject toAdd = new JSONObject();
+
+                toAdd.put("id", actualUser.getId());
+                toAdd.put("email", actualUser.getEmail());
+                toAdd.put("phoneNumber", actualUser.getPhoneNumber());
+                toAdd.put("firstName", actualUser.getFirstName());
+                toAdd.put("lastName", actualUser.getLastName());
+                toAdd.put("isAdmin", actualUser.getIsAdmin());
+                toAdd.put("isDeleted", actualUser.getIsDeleted());
+                toAdd.put("createdAt", actualUser.getCreatedAt());
+                toAdd.put("deletedAt", actualUser.getDeletedAt());
+
+                result.put(toAdd);
+            }
+
+            toReturn.put("result", result);
+        }
+
         toReturn.put("status", status);
         toReturn.put("statusCode", statusCode);
         return toReturn;
