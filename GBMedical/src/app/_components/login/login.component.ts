@@ -9,7 +9,7 @@ import { FooterComponent } from '../footer/footer.component';
 @Component({
   standalone: true,
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule, NavbarComponent, FooterComponent], 
+  imports: [CommonModule, ReactiveFormsModule, NavbarComponent, FooterComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -34,9 +34,19 @@ export class LoginComponent implements OnInit {
 
     try {
       const { email, password } = this.loginForm.value;
-      await this.authService.login(email, password);
-      this.showModal = true; // Modális ablak megnyitása
-      setTimeout(() => this.router.navigate(['/home']), 2000); // 2 mp után főoldalra navigál
+      const response = await this.authService.login(email, password);
+      
+      // Ellenőrizzük, hogy a user.isAdmin értéke 1-e
+      if (response.user && response.user.isAdmin === 1) {
+        this.router.navigate(['/admin']);
+      } else {
+        this.router.navigate(['/home']);
+      }
+      
+      // Ha szükséges, itt megjeleníthető a modális ablak:
+      // this.showModal = true;
+      // setTimeout(() => { /* navigáció már megtörtént */ }, 2000);
+      
     } catch (error) {
       console.error('Login sikertelen:', error);
     }
@@ -61,5 +71,4 @@ export class LoginComponent implements OnInit {
   toForgotPassword(): void {
     this.router.navigate(['/forgotPassword']);
   }
-  
 }

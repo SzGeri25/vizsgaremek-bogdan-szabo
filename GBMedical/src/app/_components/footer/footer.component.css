@@ -8,6 +8,8 @@ body {
   padding: 20px 0;
   font-size: 14px;
   margin-top: 50px;
+  position: relative;
+  top: 100%;
 }
 
 .footer .container {

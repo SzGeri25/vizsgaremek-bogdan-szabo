@@ -91,7 +91,7 @@ export class CalendarComponent implements OnInit {
 
   async loadAvailableAppointments(): Promise<void> {
     // Ezeket az értékeket a példában a következőképp adjuk meg:
-    const doctorId = 3;
+    const doctorId = 10;
     const startDate = '2025-02-19 09:00:00';
     const endDate = '2025-02-19 17:00:00';
 
