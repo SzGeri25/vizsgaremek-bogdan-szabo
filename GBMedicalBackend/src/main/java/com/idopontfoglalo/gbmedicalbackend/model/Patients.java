@@ -466,9 +466,9 @@ public class Patients implements Serializable {
             StoredProcedureQuery spq = em.createStoredProcedureQuery("getAllPatients");
             spq.execute();
 
-            List<Patients> toReturn = new ArrayList();
+            List<Patients> toReturn = new ArrayList<>();
             List<Object[]> resultList = spq.getResultList();
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
             for (Object[] record : resultList) {
                 Patients u = new Patients(
                         Integer.valueOf(record[0].toString()),
@@ -479,8 +479,8 @@ public class Patients implements Serializable {
                         record[5].toString(),
                         Boolean.parseBoolean(record[6].toString()),
                         Boolean.parseBoolean(record[7].toString()),
-                        formatter.parse(record[8].toString()),
-                        record[9] == null ? null : formatter.parse(record[9].toString())
+                        (Date) record[8],
+                        record[9] == null ? null : (Date) record[9]
                 );
 
                 toReturn.add(u);
