@@ -35,7 +35,7 @@ export class AuthService {
       console.log('Felhasználó adatai tokennel együtt:', data);
 
       // Token és felhasználói adatok mentése
-      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('authToken', data.result.jwt);
       localStorage.setItem('userData', JSON.stringify(data.user));
 
       // Frissítsd az autentikációs állapotot, hogy a feliratkozott komponensek (pl. Navbar) értesüljenek

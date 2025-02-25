@@ -1,63 +1,99 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { NavbarComponent } from "../navbar/navbar.component";
 import { FooterComponent } from "../footer/footer.component";
-import { AlertModule } from '@coreui/angular';
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table'; 
 import { CommonModule } from '@angular/common';
-import { MatPaginator } from '@angular/material/paginator'; 
-import { ViewChild } from '@angular/core';
-import { MatSort } from '@angular/material/sort';
 import { HttpClient } from '@angular/common/http';
-import { provideHttpClient } from '@angular/common/http';
+import * as jwt_decode from 'jwt-decode';
 
 
-
-
-export interface User {
+export interface Patient {
   id: number;
   firstName: string;
+  lastName: string;
   email: string;
+  phoneNumber: string;
   isAdmin: boolean;
+  isDeleted: boolean;
+  isActivated: boolean;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string;
 }
-
-const USERS_DATA: User[] = [
-  { id: 1, firstName: 'John', email: 'john@example.com', isAdmin: true },
-  { id: 2, firstName: 'Jane', email: 'jane@example.com', isAdmin: false },
-  { id: 3, firstName: 'David', email: 'david@example.com', isAdmin: true },
-];
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [NavbarComponent, FooterComponent, AlertModule, CommonModule, MatTableModule, MatPaginatorModule, MatSortModule],
+  imports: [
+    NavbarComponent,
+    FooterComponent,
+    CommonModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+  ],
   templateUrl: './admin.component.html',
-  styleUrl: './admin.component.css'
+  styleUrls: ['./admin.component.css']
 })
-export class AdminComponent implements OnInit{
-  displayedColumns: string[] = ['id', 'firstName', 'email', 'isAdmin'];
-  dataSource = new MatTableDataSource<User>(USERS_DATA);
+export class AdminComponent implements OnInit, AfterViewInit {
+  displayedColumns: string[] = [
+    'id', 'firstName', 'lastName', 'email', 'phoneNumber',
+    'isAdmin', 'isDeleted', 'isActivated', 'createdAt', 'updatedAt', 'deletedAt'
+  ];
+  dataSource = new MatTableDataSource<Patient>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  ngOnInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+  constructor(private http: HttpClient) {}
+
+  
+  ngOnInit(): void {
     this.fetchPatients();
   }
 
-  fetchPatients(): void {
-    this.http.get<any[]>('http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/patients/getAllPatients')
-      .subscribe({
-        next: (data) => {
-          this.dataSource.data = data;
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
-        },
-        error: (error) => console.error('Hiba az adatok lekérésekor:', error)
-      });
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
+
+  async fetchPatients(): Promise<void> {
+    try {
+      console.log('Fetching patients...');
+    
+      const token = localStorage.getItem('authToken'); // or sessionStorage
+      if (!token) {
+        console.error('No token found, cannot fetch data.');
+        return;
+      }
+    
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      };
+    
+      const response = await this.http.get<{ result: Patient[] }>(
+        'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/patients/getAllPatients',
+        { headers }
+      ).toPromise();
+    
+      if (response && response.result && response.result.length > 0) {
+        console.log('API Response:', response.result);
+        this.dataSource.data = response.result;
+        this.dataSource.paginator = this.paginator; // Set paginator after data fetch
+        this.dataSource.sort = this.sort; // Enable sorting
+      } else {
+        console.warn('The API returned an empty array.');
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+  
+
+  
+  
 }
