@@ -1,19 +1,18 @@
 <app-navbar></app-navbar>
 
 <div class="container mt-4">
-  <!-- Hibaüzenet, ha a fetch során probléma merül fel -->
+  <!-- Hibaüzenet -->
   <div *ngIf="errorMessage" class="alert alert-danger">
     {{ errorMessage }}
   </div>
 
-  <!-- Doktorkártyák megjelenítése -->
+  <!-- Doktorkártyák -->
   <div class="row">
-    <div class="col-md-4 mb-4" *ngFor="let doctor of doctors">
-      <div class="card h-100">
+    <div class="col-md-4 col-lg-3 col-sm-6 mb-4" *ngFor="let doctor of doctors">
+      <div class="card">
         <div class="card-body">
-          <img src="doctor.jpg" alt="doctor" class="card-img">
-          <h5 class="card-title">{{ doctor.name }}</h5>
-          <h6 class="card-subtitle mb-2 text-muted">ID: {{ doctor.id }}</h6>
+          <img src="doctor.jpg" alt="doctor" class="card-img-top mb-2">
+          <h5 class="card-title mb-3">{{ doctor.name }}</h5>
           <p class="card-text">
             <strong>Bio:</strong> {{ doctor.bio || 'Nincs elérhető leírás.' }}
           </p>
@@ -24,9 +23,62 @@
             <strong>Email:</strong> {{ doctor.email }}
           </p>
         </div>
+        <div class="card-footer">
+          <button class="btn btn-review" (click)="openReviewModal(doctor.id)">Értékelések megtekintése</button>
+          <button class="btn btn-add" (click)="openAddReviewModal(doctor.id)">Értékelés hozzáadása</button>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Értékelések megtekintése modál -->
+<div class="modal-backdrop" *ngIf="showReviewModal">
+  <div class="modal-container">
+    <!-- Piros X ikon a jobb felső sarokban -->
+    <button class="modal-close" (click)="closeReviewModal()">&times;</button>
+    <h3>Értékelések</h3>
+    <div *ngIf="reviews && reviews.length > 0; else noReviews">
+      <div *ngFor="let review of reviews" class="review-item">
+        <div class="review-rating">
+          <ng-container *ngFor="let star of [1,2,3,4,5]">
+            <span [ngClass]="{'text-warning': star <= review.rating, 'text-muted': star > review.rating}">
+              &#9733;
+            </span>
+          </ng-container>
+        </div>
+        <p>{{ review.reviewText}}</p>
+        <small class="text-muted">{{ review.patientName }} - {{ review.createdAt | date:'yyyy-MM-dd HH:mm:ss' }}</small>
+      </div>
+    </div>
+    <ng-template #noReviews>
+      <p>Nincs értékelés.</p>
+    </ng-template>
+  </div>
+</div>
+
+<!-- Értékelés hozzáadása modál -->
+<div class="modal-backdrop" *ngIf="showAddReviewModal">
+  <div class="modal-container">
+    <!-- Piros X ikon a jobb felső sarokban -->
+    <button class="modal-close" (click)="closeAddReviewModal()">&times;</button>
+    <h3>Értékelés hozzáadása</h3>
+    <div class="review-rating mb-2">
+      <label class="me-2">Értékelés:</label>
+      <ng-container *ngFor="let star of [1,2,3,4,5]">
+        <span (click)="setNewReviewRating(star)" style="cursor: pointer;"
+          [ngClass]="{'text-warning': star <= newReviewRating, 'text-muted': star > newReviewRating}">
+          &#9733;
+        </span>
+      </ng-container>
+    </div>
+    <div class="mb-2">
+      <textarea class="form-control" [(ngModel)]="newReviewComment"
+        placeholder="Írd ide a véleményed (opcionális)"></textarea>
+    </div>
+    <button class="btn btn-submit" (click)="submitReview()">Küldés</button>
+  </div>
+</div>
+
 
 <app-footer></app-footer>

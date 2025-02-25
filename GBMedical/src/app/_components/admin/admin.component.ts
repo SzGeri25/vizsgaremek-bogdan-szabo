@@ -7,7 +7,6 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table'; 
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import * as jwt_decode from 'jwt-decode';
 
 
 export interface Patient {
@@ -29,7 +28,6 @@ export interface Patient {
   standalone: true,
   imports: [
     NavbarComponent,
-    FooterComponent,
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
