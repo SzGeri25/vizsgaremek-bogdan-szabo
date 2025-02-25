@@ -10,6 +10,10 @@ import { CommonModule } from '@angular/common';
 import { MatPaginator } from '@angular/material/paginator'; 
 import { ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
+import { HttpClient } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
+
+
 
 
 export interface User {
@@ -42,5 +46,18 @@ export class AdminComponent implements OnInit{
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    this.fetchPatients();
+  }
+
+  fetchPatients(): void {
+    this.http.get<any[]>('http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/patients/getAllPatients')
+      .subscribe({
+        next: (data) => {
+          this.dataSource.data = data;
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+        },
+        error: (error) => console.error('Hiba az adatok lekérésekor:', error)
+      });
   }
 }
