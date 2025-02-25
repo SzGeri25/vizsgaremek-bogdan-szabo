@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +37,6 @@ export class AuthService {
 
       // Token és felhasználói adatok mentése
       localStorage.setItem('authToken', data.result.jwt);
-      localStorage.setItem('userData', JSON.stringify(data.user));
 
       // Frissítsd az autentikációs állapotot, hogy a feliratkozott komponensek (pl. Navbar) értesüljenek
       this.isAuthenticatedSubject.next(true);
@@ -47,7 +47,6 @@ export class AuthService {
       throw error;
     }
   }
-
 
   private baseUrlRegister = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/patients';
 
@@ -81,5 +80,22 @@ export class AuthService {
     localStorage.removeItem('authToken');
     localStorage.removeItem('userData');
     this.isAuthenticatedSubject.next(false);
+  }
+
+  private decodeToken(token: string): any {
+    try {
+      return jwtDecode(token);
+    } catch (error) {
+      console.error('Hiba a token dekódolásakor:', error);
+      return null;
+    }
+  }
+
+  getUserId(): number | null {
+    const token = localStorage.getItem('authToken');
+    if (!token) return null;
+
+    const decodedToken = this.decodeToken(token);
+    return decodedToken?.id ? parseInt(decodedToken.id, 10) : null;
   }
 }

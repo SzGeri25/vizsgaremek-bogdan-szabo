@@ -3,6 +3,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
 import { FooterComponent } from '../footer/footer.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../_services/auth.service';
 
 interface Doctor {
     id: number;
@@ -34,20 +35,21 @@ export class SpecialistsComponent implements OnInit {
     reviews: Review[] = [];
     errorMessage: string = '';
     private baseUrl = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources';
-
+    
     // A modálok vezérléséhez
     showReviewModal: boolean = false;
     showAddReviewModal: boolean = false;
     selectedDoctorId: number | null = null;
-
+    
     // Új értékeléshez tartozó változók
     newReviewRating: number = 0;
     newReviewComment: string = '';
-    currentPatientId: number = 18; // Példa: bejelentkezett páciens azonosítója
-
-    constructor() { }
+    currentPatientId: number | null = null; // Példa: bejelentkezett páciens azonosítója
+    
+    constructor(private authService: AuthService) { }
 
     async ngOnInit(): Promise<void> {
+        this.currentPatientId = this.authService.getUserId();
         try {
             const response = await fetch(`${this.baseUrl}/doctors/getAllDoctors`);
             if (!response.ok) {
