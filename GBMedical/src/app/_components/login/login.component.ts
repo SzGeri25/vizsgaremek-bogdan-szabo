@@ -15,6 +15,9 @@ import Swal from 'sweetalert2';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+toRegister() {
+  this.router.navigate(['/register']);
+}
   loginForm!: FormGroup;
   showModal: boolean = false; // Modális ablak állapota
   showPassword: boolean = false; // Jelszó láthatósága
@@ -74,4 +77,6 @@ export class LoginComponent implements OnInit {
   toForgotPassword(): void {
     this.router.navigate(['/forgotPassword']);
   }
+
+  
 }

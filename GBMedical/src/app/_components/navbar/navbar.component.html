@@ -31,10 +31,7 @@
           <a class="nav-link" href="javascript:void(0)" (click)="toCalendar()" routerLink="/calendar">Időpontfoglalás</a>
         </li>
         <li class="nav-item" *ngIf="!isAuthenticated">
-          <a class="nav-link" href="javascript:void(0)" (click)="toLogin()" routerLink="/login">Bejelentkezés</a>
-        </li>
-        <li class="nav-item" *ngIf="!isAuthenticated">
-          <a class="nav-link" href="javascript:void(0)" (click)="toRegister()" routerLink="/register">Regisztráció</a>
+          <a class="nav-link" href="javascript:void(0)" (click)="toLogin()" routerLink="/login"><i class="bi bi-person"></i></a>
         </li>
 
         <!-- Ha a felhasználó be van jelentkezve -->

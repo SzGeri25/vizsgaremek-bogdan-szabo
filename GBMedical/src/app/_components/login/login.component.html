@@ -27,6 +27,11 @@
             <p class="forgot-password">
                 <a (click)="toForgotPassword()">Elfelejtetted a jelszavad?</a>
             </p>
+            <p class="dont-have-an-account">
+                <a>Nincs még fiókod? <span class="register" (click)="toRegister()">Regisztrálj!</span></a>
+            </p>
+            
+            
 
             <button type="submit" class="loginButton" [disabled]="loginForm.invalid">
                 Bejelentkezés
