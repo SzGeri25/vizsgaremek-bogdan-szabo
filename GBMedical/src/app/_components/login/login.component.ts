@@ -38,7 +38,7 @@ toRegister() {
 
     try {
       const { email, password } = this.loginForm.value;
-      const response = await this.authService.login(email, password);
+      await this.authService.login(email, password);
       
       Swal.fire({
         title: "Sikeres bejelentkezés!",
@@ -46,12 +46,14 @@ toRegister() {
         icon: "success"
       });
 
-      // Ellenőrizzük, hogy a bejelentkezett user admin-e (isAdmin === 1)
-      if (response.result && response.result.isAdmin === true) {
-        setTimeout(() => this.router.navigate(['/admin']), 2000); // 3 mp után admin komponensre navigál
-      } else {
-        setTimeout(() => this.router.navigate(['/home']), 2000); // 3 mp után home oldalra navigál
-      }
+      // Hívjuk meg a szerver oldali getIsAdmin függvényt
+    const isAdmin = await this.authService.getIsAdmin();
+
+    if (isAdmin) {
+      setTimeout(() => this.router.navigate(['/admin']), 2000);
+    } else {
+      setTimeout(() => this.router.navigate(['/home']), 2000);
+    }
       
     } catch (error) {
       console.error('Login sikertelen:', error);

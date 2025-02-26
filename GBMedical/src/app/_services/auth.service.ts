@@ -78,7 +78,6 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('authToken');
-    localStorage.removeItem('userData');
     this.isAuthenticatedSubject.next(false);
   }
 
@@ -97,5 +96,13 @@ export class AuthService {
 
     const decodedToken = this.decodeToken(token);
     return decodedToken?.id ? parseInt(decodedToken.id, 10) : null;
+  }
+
+  getIsAdmin(): boolean {
+    const token = localStorage.getItem('authToken');
+    if (!token) return false;
+
+    const decodedToken = this.decodeToken(token);
+    return decodedToken?.isAdmin === true;
   }
 }

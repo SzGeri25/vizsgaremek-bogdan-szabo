@@ -4,10 +4,9 @@ import { FooterComponent } from "../footer/footer.component";
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table'; 
+import { MatTableDataSource } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-
 
 export interface Patient {
   id: number;
@@ -17,7 +16,6 @@ export interface Patient {
   phoneNumber: string;
   isAdmin: boolean;
   isDeleted: boolean;
-  isActivated: boolean;
   createdAt: string;
   updatedAt: string;
   deletedAt?: string;
@@ -39,16 +37,15 @@ export interface Patient {
 export class AdminComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = [
     'id', 'firstName', 'lastName', 'email', 'phoneNumber',
-    'isAdmin', 'isDeleted', 'isActivated', 'createdAt', 'updatedAt', 'deletedAt'
+    'isAdmin', 'isDeleted', 'createdAt', 'updatedAt', 'deletedAt'
   ];
   dataSource = new MatTableDataSource<Patient>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  
   ngOnInit(): void {
     this.fetchPatients();
   }
@@ -60,24 +57,10 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
   async fetchPatients(): Promise<void> {
     try {
-      console.log('Fetching patients...');
-    
-      const token = localStorage.getItem('authToken'); // or sessionStorage
-      if (!token) {
-        console.error('No token found, cannot fetch data.');
-        return;
-      }
-    
-      const headers = {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      };
-    
       const response = await this.http.get<{ result: Patient[] }>(
         'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/patients/getAllPatients',
-        { headers }
       ).toPromise();
-    
+
       if (response && response.result && response.result.length > 0) {
         console.log('API Response:', response.result);
         this.dataSource.data = response.result;
@@ -90,8 +73,4 @@ export class AdminComponent implements OnInit, AfterViewInit {
       console.error('Error fetching data:', error);
     }
   }
-  
-
-  
-  
 }
