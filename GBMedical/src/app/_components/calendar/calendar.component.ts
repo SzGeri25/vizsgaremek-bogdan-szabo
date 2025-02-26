@@ -75,8 +75,6 @@ export class CalendarComponent implements OnInit {
             backgroundColor: 'blue', // Foglalt: kék
             borderColor: 'blue',
             extendedProps: {
-              doctorId: appointment.doctorId,
-              patientId: appointment.patientId,
               status: appointment.status
             }
           };
@@ -91,9 +89,9 @@ export class CalendarComponent implements OnInit {
 
   async loadAvailableAppointments(): Promise<void> {
     // Ezeket az értékeket a példában a következőképp adjuk meg:
-    const doctorId = 10;
-    const startDate = '2025-02-19 09:00:00';
-    const endDate = '2025-02-19 17:00:00';
+    const doctorId = 2;
+    const startDate = '2025-02-18 09:00:00';
+    const endDate = '2025-02-18 17:00:00';
 
     try {
       const response = await lastValueFrom(this.appointmentService.getAvailableSlots(doctorId, startDate, endDate));

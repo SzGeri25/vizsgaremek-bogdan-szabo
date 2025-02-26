@@ -45,9 +45,9 @@ export class LoginComponent implements OnInit {
 
       // Ellenőrizzük, hogy a bejelentkezett user admin-e (isAdmin === 1)
       if (response.result && response.result.isAdmin === true) {
-        setTimeout(() => this.router.navigate(['/admin']), 3000); // 3 mp után admin komponensre navigál
+        setTimeout(() => this.router.navigate(['/admin']), 2000); // 3 mp után admin komponensre navigál
       } else {
-        setTimeout(() => this.router.navigate(['/home']), 3000); // 3 mp után home oldalra navigál
+        setTimeout(() => this.router.navigate(['/home']), 2000); // 3 mp után home oldalra navigál
       }
       
     } catch (error) {
