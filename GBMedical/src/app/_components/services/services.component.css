@@ -9,7 +9,7 @@
     /* a tartalom a konténer tetejéhez igazodik */
     padding-top: 20px;
     /* szükség esetén további távolság a navbar-tól */
-    background-color: #f4f7fa;
+    background-color: #f5f5f5;
     height: 60vh;
     /* világos háttér */
 }
@@ -23,9 +23,9 @@ select {
     /* balra 20px, jobbra 50px, így nem lóg bele a nyíl */
     font-size: 16px;
     font-weight: 500;
-    border: 2px solid #007bff;
+    border: 2px solid #008080;
     border-radius: 8px;
-    background-color: #fff;
+    background-color: #f5f5f5;
     color: #495057;
     transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
     -moz-appearance: none;
@@ -36,9 +36,9 @@ select {
 
 /* Fókuszáláskor szín és árnyék változás */
 select:focus {
-    border-color: #0056b3;
+    border-color: #008080;
     outline: none;
-    box-shadow: 0 0 8px rgba(0, 123, 255, 0.6);
+    box-shadow: 0 0 8px rgba(11, 205, 150, 0.6);
     transform: scale(1.05);
     /* Kicsit nagyobb lesz, amikor fókuszálva van */
 }
@@ -104,16 +104,16 @@ option:first-child {
 .service-details {
     margin-top: 30px;
     padding: 15px;
-    border: 2px solid #007bff;
+    border: 2px solid #008080;
     border-radius: 8px;
-    background: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: #f5f5f5;
+    box-shadow: 0 4px 8px rgba(3, 114, 81, 0.1);
     max-width: 500px;
     text-align: left;
 }
 
 .service-details h2 {
-    color: #007bff;
+    color: #008080;
     font-size: 20px;
 }
 
