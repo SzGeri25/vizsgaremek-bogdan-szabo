@@ -4,6 +4,7 @@ import { FooterComponent } from '../footer/footer.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../_services/auth.service';
+import Swal from 'sweetalert2';
 
 interface Doctor {
     id: number;
@@ -35,17 +36,17 @@ export class SpecialistsComponent implements OnInit {
     reviews: Review[] = [];
     errorMessage: string = '';
     private baseUrl = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources';
-    
+
     // A modálok vezérléséhez
     showReviewModal: boolean = false;
     showAddReviewModal: boolean = false;
     selectedDoctorId: number | null = null;
-    
+
     // Új értékeléshez tartozó változók
     newReviewRating: number = 0;
     newReviewComment: string = '';
     currentPatientId: number | null = null; // Példa: bejelentkezett páciens azonosítója
-    
+
     constructor(private authService: AuthService) { }
 
     async ngOnInit(): Promise<void> {
@@ -110,6 +111,17 @@ export class SpecialistsComponent implements OnInit {
         if (this.selectedDoctorId === null) {
             return;
         }
+
+        if (!this.currentPatientId) {
+            Swal.fire({
+                title: 'Hiba!',
+                text: 'Jelentkezz be az értékeléshez!',
+                icon: 'error',
+                timer: 3000
+            });
+            return;
+        }
+
         const reviewData = {
             doctorId: this.selectedDoctorId,
             patientId: this.currentPatientId,

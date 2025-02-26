@@ -5,6 +5,7 @@ import { AuthService } from '../../_services/auth.service';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { FooterComponent } from '../footer/footer.component';
+import Swal from 'sweetalert2';
 
 @Component({
   standalone: true,
@@ -36,13 +37,17 @@ export class LoginComponent implements OnInit {
       const { email, password } = this.loginForm.value;
       const response = await this.authService.login(email, password);
       
-      this.showModal = true; // Modális ablak megnyitása
-      
+      Swal.fire({
+        title: "Sikeres bejelentkezés!",
+        text: "Átirányítás folyamatban...",
+        icon: "success"
+      });
+
       // Ellenőrizzük, hogy a bejelentkezett user admin-e (isAdmin === 1)
       if (response.result && response.result.isAdmin === true) {
-        setTimeout(() => this.router.navigate(['/admin']), 2000); // 2 mp után admin komponensre navigál
+        setTimeout(() => this.router.navigate(['/admin']), 3000); // 3 mp után admin komponensre navigál
       } else {
-        setTimeout(() => this.router.navigate(['/home']), 2000); // 2 mp után home oldalra navigál
+        setTimeout(() => this.router.navigate(['/home']), 3000); // 3 mp után home oldalra navigál
       }
       
     } catch (error) {
