@@ -5,6 +5,10 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../_services/auth.service';
 import Swal from 'sweetalert2';
+import { HighlightPipe } from '../../highlight.pipe';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 
 interface Doctor {
     id: number;
@@ -29,13 +33,27 @@ interface Review {
     selector: 'app-specialists',
     templateUrl: './specialists.component.html',
     styleUrls: ['./specialists.component.css'],
-    imports: [NavbarComponent, FooterComponent, FormsModule, CommonModule]
+    imports: [NavbarComponent, FooterComponent, FormsModule, CommonModule, HighlightPipe, MatFormFieldModule, MatInputModule, MatIconModule]
 })
 export class SpecialistsComponent implements OnInit {
     doctors: Doctor[] = [];
     reviews: Review[] = [];
     errorMessage: string = '';
-    private baseUrl = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources';
+    searchTerm: string = '';
+
+    // Dinamikus szűrt lista getter-je
+    get filteredDoctors(): Doctor[] {
+        if (!this.searchTerm) {
+            return this.doctors;
+        }
+        const term = this.searchTerm.toLowerCase();
+        return this.doctors.filter(doctor =>
+            doctor.name.toLowerCase().includes(term) ||
+            (doctor.bio && doctor.bio.toLowerCase().includes(term)) ||
+            (doctor.email && doctor.email.toLowerCase().includes(term)) ||
+            (doctor.phoneNumber && doctor.phoneNumber.toLowerCase().includes(term))
+        );
+    }
 
     // A modálok vezérléséhez
     showReviewModal: boolean = false;
@@ -46,6 +64,9 @@ export class SpecialistsComponent implements OnInit {
     newReviewRating: number = 0;
     newReviewComment: string = '';
     currentPatientId: number | null = null; // Példa: bejelentkezett páciens azonosítója
+
+    private baseUrl = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources';
+
 
     constructor(private authService: AuthService) { }
 

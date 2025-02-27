@@ -26,8 +26,9 @@ body {
 .row {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    align-items: flex-start;
+    justify-content: flex-start;
+    /* Alapértelmezett balra igazítás */
+    gap: 30px;
 }
 
 /* Rugalmas oszlopok */
@@ -35,9 +36,50 @@ body {
 .col-lg-3,
 .col-sm-6 {
     flex: 1 1 300px;
+    /* Kártyák alapmérete */
     max-width: 300px;
-    margin: 10px;
+    /* Legnagyobb szélesség */
+    margin-bottom: 15px;
 }
+
+/* A kártya 100%-os szélességű legyen a legkisebb képernyőn */
+@media (max-width: 767px) {
+    .col-sm-6 {
+        flex: 1 1 100%;
+        /* Teljes szélesség mobilon */
+    }
+}
+
+/* Két kártya egy sorban közepes képernyőkön */
+@media (min-width: 768px) and (max-width: 991px) {
+    .col-md-4 {
+        flex: 1 1 48%;
+        /* Két kártya egy sorban */
+    }
+}
+
+/* A kártyák 25%-os szélességűek lesznek a nagyobb képernyőn */
+@media (min-width: 992px) {
+    .col-lg-3 {
+        flex: 1 1 23%;
+        /* Négy kártya egy sorban */
+    }
+}
+
+/* Ha az utolsó sorban kevesebb mint 4 kártya van, középre igazítjuk őket */
+.row {
+    justify-content: center;
+    /* Alapértelmezett igazítás középre */
+}
+
+.row>.col-md-4,
+.row>.col-lg-3 {
+    display: flex;
+    justify-content: center;
+    /* A kártyák középre igazítása */
+}
+
+
 
 /* Kártya stílusok */
 .card {
@@ -48,15 +90,17 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     width: 100%;
-    margin: 20px 0;
-    height: 500px;
+    margin: 10px 0;
+    height: 550px;
 }
 
 .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
 
 .card-body {
     padding: 10px;
@@ -65,7 +109,7 @@ body {
 
 .card-img-top {
     width: 100%;
-    max-width: 13rem;
+    max-width: 15rem;
     border-radius: 8px;
     object-fit: cover;
     margin-bottom: 15px;
@@ -159,7 +203,8 @@ body {
     right: 20px;
     background: transparent;
     border: none;
-    color: #dc3545;  /* Piros szín */
+    color: #dc3545;
+    /* Piros szín */
     font-size: 2.5rem;
     cursor: pointer;
 }
@@ -202,6 +247,11 @@ body {
         font-size: 0.9rem;
         padding: 8px 16px;
     }
+
+    .search-input {
+        font-size: 14px;
+        padding: 10px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -222,4 +272,31 @@ body {
         font-size: 0.85rem;
         padding: 6px 12px;
     }
+
+    .search-input {
+        font-size: 13px;
+        padding: 8px;
+        border-radius: 20px;
+    }
+}
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+    padding: 0 15px;
+}
+
+.search-field {
+    width: 100%;
+    max-width: 600px;
+}
+
+.mat-form-field {
+    width: 100%;
+    border-radius: 15px;
+}
+
+.mat-icon {
+    color: #007bff;
 }
