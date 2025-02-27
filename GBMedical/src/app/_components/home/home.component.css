@@ -1,45 +1,30 @@
-.jumbotron {
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    padding: 2rem;
-}
-
-i {
-    color: #007bff;
-}
-
-footer {
-    color: #6c757d;
-    font-size: 0.9rem;
-}
-
-.to-top{
-    background-color: #008080 !important;
-    position: fixed;
-    bottom: 0px;
-    right: 20px;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
+/* Hero szekció stílusok */
+.hero-section {
+    background: url('/clinic.jpg') no-repeat center center;
+    background-size: cover;
+    height: 70vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    font-size: 32px;
-    color: #fa8072;
-    text-decoration: none;
-    opacity: 0;
-    transition: all .4s;
-    cursor: pointer;
-   }
-
-.to-top.active {
-  bottom: 42px;
-  pointer-events: auto;
-  opacity: 1;
-  }
-
-  .fa-chevron-up{
+    color: #fff;
+    text-align: center;
     position: relative;
-    left: 15px;
+}
+
+.hero-content {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2rem;
+    border-radius: 8px;
+}
+
+/* Szolgáltatások szekció stílusai */
+.services-section {
+    margin-top: 2rem;
+}
+
+/* Gomb és egyéb stílusok */
+.btn-primary {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+    margin-top: 1rem;
 }

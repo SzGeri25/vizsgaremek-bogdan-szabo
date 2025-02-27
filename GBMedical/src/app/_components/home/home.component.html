@@ -1,43 +1,35 @@
-<!-- Navbar beillesztése -->
+<!-- Navbar (feltételezve, hogy van külön app-navbar komponens) -->
 <app-navbar></app-navbar>
 
-
-<!-- Fő tartalom -->
-<div class="container mt-5">
-    <!-- Üdvözlő szöveg -->
-    <div class="jumbotron text-center">
-        <h1 class="display-4">Üdvözöljük a GB Medical rendszerben!</h1>
-        <p class="lead">
-            Foglaljon időpontot könnyedén, kezelje konzultációit online, és maradjon kapcsolatban szakorvosaival.
-        </p>
-        <hr class="my-4">
-        <p>
-            Fedezze fel a rendszerünk előnyeit: gyors időpontfoglalás, könnyű kommunikáció és biztonságos adatkezelés.
-        </p>
+<!-- Hero szekció: háttérkép és üdvözlő szöveg -->
+<div class="hero-section" [@fadeIn]>
+    <div class="hero-content">
+        <h1>Üdvözöljük a GB Medical rendszerben!</h1>
+        <p>Foglaljon időpontot könnyedén, kezelje konzultációit online, és maradjon kapcsolatban szakorvosaival.</p>
+        <button class="btn btn-primary" (click)="goToBooking()">Időpontfoglalás</button>
     </div>
+</div>
 
-    <!-- Funkciók ismertetése -->
-    <div class="row text-center mt-5">
-        <div class="col-md-4">
-            <i class="fas fa-user-md fa-3x mb-3"></i>
-            <h3>Orvosi Konzultáció</h3>
+<!-- Szolgáltatások szekció -->
+<div class="container services-section" [@fadeIn]>
+    <div class="row text-center">
+        <div class="col-md-4 mb-4">
+            <i class="fas fa-user-md fa-4x text-primary"></i>
+            <h3 class="mt-3">Orvosi Konzultáció</h3>
             <p>Válasszon szakorvost és foglaljon időpontot egyszerűen.</p>
         </div>
-        <div class="col-md-4">
-            <i class="fas fa-calendar-check fa-3x mb-3"></i>
-            <h3>Időpontfoglalás</h3>
-            <p>Online és személyes konzultációk gyors lefoglalása.</p>
+        <div class="col-md-4 mb-4">
+            <i class="fas fa-calendar-check fa-4x text-success"></i>
+            <h3 class="mt-3">Időpontfoglalás</h3>
+            <p>Gyors és egyszerű online időpontfoglalás.</p>
         </div>
-        <div class="col-md-4">
-            <i class="fas fa-envelope fa-3x mb-3"></i>
-            <h3>Értesítések</h3>
-            <p>Kérjen automatikus értesítéseket időpontjáról e-mailben vagy SMS-ben.</p>
+        <div class="col-md-4 mb-4">
+            <i class="fas fa-envelope fa-4x text-danger"></i>
+            <h3 class="mt-3">Értesítések</h3>
+            <p>Automatikus értesítések az időpontjáról e-mailben vagy SMS-ben.</p>
         </div>
     </div>
 </div>
 
-<a href="" class="to-top">
-    <i class="fa-solid fa-chevron-up"></i>
-</a>
-
+<!-- Lábléc -->
 <app-footer></app-footer>
