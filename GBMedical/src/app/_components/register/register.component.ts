@@ -3,6 +3,8 @@ import { NavbarComponent } from "../navbar/navbar.component";
 import { FooterComponent } from '../footer/footer.component';
 import { AuthService } from '../../_services/auth.service';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-register',
@@ -18,7 +20,7 @@ export class RegisterComponent {
   password: string = '';
   phoneNumber: string = '';
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   // Űrlap beküldésekor meghívandó metódus
   async onSubmit(event: Event): Promise<void> {
@@ -36,10 +38,17 @@ export class RegisterComponent {
     try {
       // Meghívjuk az AuthService register metódusát
       const response = await this.authService.register(patientData);
-      console.log('Regisztráció sikeres:', response);
-      // Itt például átirányíthatod a felhasználót a bejelentkezési oldalra vagy más logikát is futtathatsz
+      Swal.fire({
+        title: "Sikeres regisztráció!",
+        icon: "success"
+      }).then(() => {
+        this.router.navigate(['/login']); // Átirányítás a /login oldalra
+      });
     } catch (error) {
-      console.error('Regisztráció sikertelen:', error);
+      Swal.fire({
+        title: "Sikertelen regisztráció!",
+        icon: "error"
+      });
       // Itt kezelheted a hibákat (pl. hibajelzés a felhasználónak)
     }
   }
