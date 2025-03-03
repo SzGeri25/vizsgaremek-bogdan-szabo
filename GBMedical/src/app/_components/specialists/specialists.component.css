@@ -285,6 +285,7 @@ body {
     justify-content: center;
     margin-bottom: 10px;
     padding: 0 15px;
+    border: #008080;
 }
 
 .search-field {
@@ -295,8 +296,18 @@ body {
 .mat-form-field {
     width: 100%;
     border-radius: 15px;
+    color: #008080;
+    border: #008080;
 }
 
 .mat-icon {
-    color: #007bff;
+    color: #008080;
+}
+
+.mat-label{
+    color: #008080;
+}
+
+.mdc-text-field{
+    color: #008080;
 }

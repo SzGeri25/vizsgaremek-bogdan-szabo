@@ -159,7 +159,10 @@ export class SpecialistsComponent implements OnInit {
             if (!response.ok) {
                 throw new Error(`Hálózati hiba: ${response.statusText}`);
             }
-            console.log('Értékelés sikeresen elküldve:', reviewData);
+              Swal.fire({
+                    title: "Köszönjük az értékelést!",
+                    icon: "success"
+                  });
             this.closeAddReviewModal();
         } catch (error) {
             console.error('Hiba az értékelés elküldésekor:', error);

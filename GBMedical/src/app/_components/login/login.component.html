@@ -16,7 +16,7 @@
                 <input [type]="showPassword ? 'text' : 'password'" formControlName="password" id="password"
                     class="input-field" [ngClass]="{ 'error-border': password?.invalid && password?.touched }">
                 <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
-                    <i [class] = "showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                    <i [class] = "showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'" style="color: #333333;"></i>
                 </button>
             </div>
             <div class="error" *ngIf="password?.invalid && password?.touched">

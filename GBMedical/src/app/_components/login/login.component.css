@@ -54,7 +54,7 @@ h1 {
 }
 
 .loginButton {
-    background-color: black;
+    background-color: #333333;
     color: #f5f5f5;
     border-radius: 20px !important;
     height: 35px;

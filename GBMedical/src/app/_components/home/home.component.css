@@ -12,7 +12,7 @@
 }
 
 .hero-content {
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.7);
     padding: 2rem;
     border-radius: 8px;
 }
@@ -27,4 +27,12 @@
     padding: 0.75rem 1.5rem;
     font-size: 1.1rem;
     margin-top: 1rem;
+    background-color: #E66050;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    border: #E66050;
+}
+
+.btn-primary:hover {
+    background-color: #C94F42; /* Sötétebb vöröses-narancs */
+    transform: scale(1.05);
 }
