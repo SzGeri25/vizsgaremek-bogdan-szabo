@@ -26,6 +26,6 @@ export class HomeComponent {
 constructor(private router: Router){}
 
     goToBooking(): void {
-        this.router.navigate(['/calendar']);
+        this.router.navigate(['/booking']);
     }
 }

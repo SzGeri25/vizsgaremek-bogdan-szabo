@@ -9,6 +9,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { EventDetailsModalComponent, EventDetailsData } from '../event-details-modal/event-details-modal.component';
 import { AppointmentService } from '../../_services/appointments.service';
 import { ServicesComponent } from '../services/services.component';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 interface Service {
   id: number;
@@ -22,7 +24,7 @@ interface Service {
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [FullCalendarModule, NavbarComponent, MatDialogModule, ServicesComponent],
+  imports: [FullCalendarModule, NavbarComponent, MatDialogModule, ServicesComponent, FormsModule, CommonModule],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css']
 })
