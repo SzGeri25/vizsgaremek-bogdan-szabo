@@ -84,6 +84,8 @@ public class AppointmentService {
                     appointmentObject.put("doctorName", appointment.getDoctorId().getName());
                     appointmentObject.put("patientName", appointment.getPatientId().getFirstName() + " " + appointment.getPatientId().getLastName());
 
+                    appointmentObject.put("serviceName", appointment.getServiceName());
+
                     appointmentsArray.put(appointmentObject);
                 }
 
