@@ -50,6 +50,10 @@ export class NavbarComponent implements OnInit {
         this.router.navigate(['/specialists']);
     }
 
+    toBooking(): void {
+        this.router.navigate(['/booking']);
+    }
+
     toServices(): void {
         this.router.navigate(['/services']);
     }
