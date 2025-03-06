@@ -358,21 +358,17 @@ public class Appointments implements Serializable {
         }
     }
 
-    public List<TimeSlotDTO> getAvailableSlots(int doctorId, String startDate, String endDate) {
+    public List<TimeSlotDTO> getAvailableSlotsByDoctor(int doctorId) {
         EntityManager em = emf.createEntityManager();
         List<TimeSlotDTO> slots = new ArrayList<>();
 
         try {
-            StoredProcedureQuery spq = em.createStoredProcedureQuery("GetAvailableSlots");
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("getAvailableSlotsByDoctor");
 
             spq.registerStoredProcedureParameter("doctorIdIN", Integer.class, ParameterMode.IN);
-            spq.registerStoredProcedureParameter("startDateIN", String.class, ParameterMode.IN);
-            spq.registerStoredProcedureParameter("endDateIN", String.class, ParameterMode.IN);
 
             // Beállítjuk a paramétereket a stored procedure-hoz
             spq.setParameter("doctorIdIN", doctorId);
-            spq.setParameter("startDateIN", startDate);
-            spq.setParameter("endDateIN", endDate);
 
             spq.execute();
 
