@@ -103,13 +103,13 @@ public class AppointmentService {
         return toReturn;
     }
 
-    public JSONObject getAvailableSlots(int doctorId, String startDate, String endDate) {
+    public JSONObject getAvailableSlotsByDoctor(int doctorId) {
         JSONObject toReturn = new JSONObject();
         String responseStatus = "success";
         int statusCode = 200;
 
         try {
-            List<TimeSlotDTO> availableSlots = layer.getAvailableSlots(doctorId, startDate, endDate);
+            List<TimeSlotDTO> availableSlots = layer.getAvailableSlotsByDoctor(doctorId);
 
             if (availableSlots == null || availableSlots.isEmpty()) {
                 responseStatus = "noRecordsFound";
@@ -124,6 +124,39 @@ public class AppointmentService {
                     slotsArray.put(slotObject);
                 }
 
+                toReturn.put("slots", slotsArray);
+            }
+        } catch (JSONException e) {
+            responseStatus = "error";
+            statusCode = 500;
+            toReturn.put("errorMessage", e.getLocalizedMessage());
+        }
+
+        toReturn.put("status", responseStatus);
+        toReturn.put("statusCode", statusCode);
+        return toReturn;
+    }
+
+    public JSONObject getAvailableSlotsByService(int serviceId) {
+        JSONObject toReturn = new JSONObject();
+        String responseStatus = "success";
+        int statusCode = 200;
+
+        try {
+            List<TimeSlotDTO> availableSlots = layer.getAvailableSlotsByService(serviceId);
+
+            if (availableSlots == null || availableSlots.isEmpty()) {
+                responseStatus = "noRecordsFound";
+                statusCode = 404;
+            } else {
+                JSONArray slotsArray = new JSONArray();
+                for (TimeSlotDTO slot : availableSlots) {
+                    JSONObject slotObject = new JSONObject();
+                    slotObject.put("slotStart", slot.getSlotStart());
+                    slotObject.put("slotEnd", slot.getSlotEnd());
+                    slotObject.put("doctorId", slot.getDoctorId());
+                    slotsArray.put(slotObject);
+                }
                 toReturn.put("slots", slotsArray);
             }
         } catch (JSONException e) {
