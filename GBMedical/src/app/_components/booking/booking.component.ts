@@ -32,6 +32,7 @@ export class BookingComponent implements OnInit{
 
   doctors: Doctor[] = [];
   selectedDoctor: Doctor | null = null;
+  selectedDoctorId: number | null = null
   private apiUrl2 = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/doctors/getAllDoctors';
 
 
@@ -76,7 +77,8 @@ export class BookingComponent implements OnInit{
     const selectElement = event.target as HTMLSelectElement;
     const doctorId = Number(selectElement.value);
     this.selectedDoctor = this.doctors.find(doctor => doctor.id === doctorId) || null;
-  
+    
+    this.selectedDoctorId = doctorId;
     this.router.navigate(['/calendar', doctorId]);
   }
 
