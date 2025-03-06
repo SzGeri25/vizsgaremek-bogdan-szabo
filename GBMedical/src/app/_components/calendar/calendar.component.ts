@@ -66,7 +66,6 @@ export class CalendarComponent implements OnInit {
     await this.fetchBookedAppointments();
     await this.loadAvailableAppointments();
     this.updateCalendarEvents();
-    this.fetchServices();
   }
 
   async fetchBookedAppointments(): Promise<void> {
@@ -164,36 +163,7 @@ export class CalendarComponent implements OnInit {
   }
 
 
-  services: Service[] = [];
-  selectedService: Service | null = null;
-  errorMessage: string = '';
-  private apiUrl = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/services/getAllServices';
-
-  fetchServices(): void {
-    fetch(this.apiUrl)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Hálózati hiba: ${response.statusText}`);
-        }
-        return response.json();
-      })
-      .then((data: { services: Service[] }) => {
-        this.services = data.services;
-        console.log(data);
-
-      })
-      .catch((error) => {
-        console.error('Hiba történt az adatok lekérésekor:', error);
-        this.errorMessage = 'Nem sikerült betölteni az adatokat.';
-      });
-  }
-
-  onSelectService(event: Event): void {
-    const selectElement = event.target as HTMLSelectElement;
-    const serviceName = selectElement.value;
   
-    this.selectedService = this.services.find(service => service.name === serviceName) || null;
-  }
 
 
 

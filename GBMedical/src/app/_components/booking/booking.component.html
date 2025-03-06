@@ -1,5 +1,28 @@
 <app-navbar></app-navbar>
 
+<img src="happy-woman-talking-receptionist-while-arriving-spa.jpg" alt="" class="receptionPicture">
+<h1>Időpontfoglalás</h1>
 
+<div class="container">
+    <!-- Szolgáltatások választása -->
+    <div class="select-wrapper">
+        <select (change)="onSelectService($event)">
+            <option disabled selected>Válassz szolgáltatásaink közül</option>
+            <option *ngFor="let service of services" [value]="service.name">
+                {{ service.name }}
+            </option>
+        </select>
+    </div>
+
+    <!-- Orvos választása -->
+    <div class="select-wrapper">
+        <select (change)="onSelectDoctor($event)">
+            <option disabled selected>Válassz orvost</option>
+            <option *ngFor="let doctor of doctors" [value]="doctor.id">
+                {{ doctor.name }}
+            </option>
+        </select>
+    </div>    
+</div>
 
 <app-footer></app-footer>

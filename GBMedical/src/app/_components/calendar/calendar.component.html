@@ -1,17 +1,5 @@
 <app-navbar></app-navbar>
 
-<div class="container">
-    <div class="select-wrapper">
-        <select (change)="onSelectService($event)">
-            <option disabled selected>Válassz szolgáltatásaink közül</option>
-            <option *ngFor="let service of services" [value]="service.name">
-                {{ service.name }}
-            </option>
-        </select>
-    </div>
-
-    
-
 <div class="calendar-container">
     <full-calendar [options]="calendarOptions"></full-calendar>
 </div>

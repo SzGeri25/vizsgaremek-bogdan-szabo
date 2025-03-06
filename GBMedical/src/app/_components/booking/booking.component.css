@@ -1,0 +1,77 @@
+
+.receptionPicture{
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    margin-bottom: 50px;
+}
+
+h1{
+    position: absolute;
+    top: 310px;
+    left: 30px;
+    color: #f5f5f5;
+    font-weight: bolder;
+}
+
+select {
+    width: 100%;
+    max-width: 330px;
+    /* szélesebb select */
+    padding: 12px 50px 12px 20px;
+    /* balra 20px, jobbra 50px, így nem lóg bele a nyíl */
+    font-size: 16px;
+    font-weight: 500;
+    border: 2px solid #008080;
+    border-radius: 8px;
+    background-color: #f5f5f5;
+    color: #495057;
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    position: relative;
+    margin: 40px;
+}
+
+/* Fókuszáláskor szín és árnyék változás */
+select:focus {
+    border-color: #008080;
+    outline: none;
+    box-shadow: 0 0 8px rgba(11, 205, 150, 0.6);
+    transform: scale(1.05);
+    /* Kicsit nagyobb lesz, amikor fókuszálva van */
+}
+
+/* Az opciók stílusa */
+option {
+    padding: 10px;
+    font-size: 16px;
+}
+
+/* Disable opciók stílusa */
+option:disabled {
+    color: #6c757d;
+}
+
+/* Egyedi nyíl elem a select mögött */
+select::-ms-expand {
+    display: none;
+}
+
+.select-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.select-wrapper::after {
+    content: '\25BC';
+    /* lefelé mutató nyíl */
+    font-size: 16px;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    transition: transform 0.3s ease, font-size 0.3s ease;
+}
