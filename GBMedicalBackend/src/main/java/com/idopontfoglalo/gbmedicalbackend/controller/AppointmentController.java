@@ -58,14 +58,12 @@ public class AppointmentController {
     }
 
     @GET
-    @Path("getAvailableSlots")
+    @Path("getAvailableSlotsByDoctor")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAvailableSlots(
-            @QueryParam("doctorId") int doctorId,
-            @QueryParam("startDate") String startDate,
-            @QueryParam("endDate") String endDate) {
+    public Response getAvailableSlotsByDoctor(
+            @QueryParam("doctorId") int doctorId) {
 
-        JSONObject obj = layer.getAvailableSlots(doctorId, startDate, endDate);
+        JSONObject obj = layer.getAvailableSlotsByDoctor(doctorId);
         return Response.status(obj.getInt("statusCode"))
                 .entity(obj.toString())
                 .type(MediaType.APPLICATION_JSON)

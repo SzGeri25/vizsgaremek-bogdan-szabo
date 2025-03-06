@@ -30,6 +30,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.ParameterMode;
 import javax.persistence.StoredProcedureQuery;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -104,6 +105,9 @@ public class Appointments implements Serializable {
     private Patients patientId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "appointmentId")
     private Collection<Payments> paymentsCollection;
+    // Új, de nem perzisztált mező: a szolgáltatás neve
+    @Transient
+    private String serviceName;
 
     public Appointments() {
     }
@@ -123,7 +127,7 @@ public class Appointments implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public Appointments(Integer id, Integer doctorId, Integer patientId, Date startTime, Date endTime, String status, String doctorName, String patientName) {
+    public Appointments(Integer id, Integer doctorId, Integer patientId, Date startTime, Date endTime, String status, String doctorName, String patientName, String serviceName) {
         this.id = id;
         this.doctorId = new Doctors();
         this.doctorId.setId(doctorId);
@@ -141,6 +145,7 @@ public class Appointments implements Serializable {
             this.patientId.setFirstName(patientName); // Ha csak egy név van
             this.patientId.setLastName(""); // Második részt üresen hagyjuk
         }
+        this.serviceName = serviceName;
     }
 
     public Integer getId() {
@@ -239,6 +244,14 @@ public class Appointments implements Serializable {
         this.patientId = patientId;
     }
 
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
     public Collection<Payments> getPaymentsCollection() {
         return paymentsCollection;
     }
@@ -329,7 +342,9 @@ public class Appointments implements Serializable {
                         sdf.parse(record[4].toString()), // end_time
                         record[5].toString(), //status
                         record[6].toString(), // doctor_name
-                        record[7].toString()); // patient_name
+                        record[7].toString(), // patient_name
+                        record[8].toString()); // service_name
+
                 toReturn.add(u);
             }
             return toReturn;
@@ -343,21 +358,17 @@ public class Appointments implements Serializable {
         }
     }
 
-    public List<TimeSlotDTO> getAvailableSlots(int doctorId, String startDate, String endDate) {
+    public List<TimeSlotDTO> getAvailableSlotsByDoctor(int doctorId) {
         EntityManager em = emf.createEntityManager();
         List<TimeSlotDTO> slots = new ArrayList<>();
 
         try {
-            StoredProcedureQuery spq = em.createStoredProcedureQuery("GetAvailableSlots");
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("getAvailableSlotsByDoctor");
 
             spq.registerStoredProcedureParameter("doctorIdIN", Integer.class, ParameterMode.IN);
-            spq.registerStoredProcedureParameter("startDateIN", String.class, ParameterMode.IN);
-            spq.registerStoredProcedureParameter("endDateIN", String.class, ParameterMode.IN);
 
             // Beállítjuk a paramétereket a stored procedure-hoz
             spq.setParameter("doctorIdIN", doctorId);
-            spq.setParameter("startDateIN", startDate);
-            spq.setParameter("endDateIN", endDate);
 
             spq.execute();
 

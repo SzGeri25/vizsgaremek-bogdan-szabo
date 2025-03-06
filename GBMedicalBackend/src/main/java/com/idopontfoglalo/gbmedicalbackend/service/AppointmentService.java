@@ -84,6 +84,8 @@ public class AppointmentService {
                     appointmentObject.put("doctorName", appointment.getDoctorId().getName());
                     appointmentObject.put("patientName", appointment.getPatientId().getFirstName() + " " + appointment.getPatientId().getLastName());
 
+                    appointmentObject.put("serviceName", appointment.getServiceName());
+
                     appointmentsArray.put(appointmentObject);
                 }
 
@@ -101,13 +103,13 @@ public class AppointmentService {
         return toReturn;
     }
 
-    public JSONObject getAvailableSlots(int doctorId, String startDate, String endDate) {
+    public JSONObject getAvailableSlotsByDoctor(int doctorId) {
         JSONObject toReturn = new JSONObject();
         String responseStatus = "success";
         int statusCode = 200;
 
         try {
-            List<TimeSlotDTO> availableSlots = layer.getAvailableSlots(doctorId, startDate, endDate);
+            List<TimeSlotDTO> availableSlots = layer.getAvailableSlotsByDoctor(doctorId);
 
             if (availableSlots == null || availableSlots.isEmpty()) {
                 responseStatus = "noRecordsFound";
