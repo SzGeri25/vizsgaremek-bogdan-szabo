@@ -70,6 +70,17 @@ public class AppointmentController {
                 .build();
     }
 
+    @GET
+    @Path("getAvailableSlotsByService")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAvailableSlotsByService(@QueryParam("serviceId") int serviceId) {
+        JSONObject obj = layer.getAvailableSlotsByService(serviceId);
+        return Response.status(obj.getInt("statusCode"))
+                .entity(obj.toString())
+                .type(MediaType.APPLICATION_JSON)
+                .build();
+    }
+
     @DELETE
     @Path("cancelAppointment")
     @Produces(MediaType.APPLICATION_JSON)
