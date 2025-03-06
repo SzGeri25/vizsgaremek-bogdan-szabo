@@ -58,12 +58,10 @@ public class AppointmentController {
     }
 
     @GET
-    @Path("getAvailableSlotsByDoctor")
+    @Path("getAvailableSlotsByService")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAvailableSlotsByDoctor(
-            @QueryParam("doctorId") int doctorId) {
-
-        JSONObject obj = layer.getAvailableSlotsByDoctor(doctorId);
+    public Response getAvailableSlotsByService(@QueryParam("serviceId") int serviceId) {
+        JSONObject obj = layer.getAvailableSlotsByService(serviceId);
         return Response.status(obj.getInt("statusCode"))
                 .entity(obj.toString())
                 .type(MediaType.APPLICATION_JSON)
@@ -95,6 +93,18 @@ public class AppointmentController {
 
         JSONObject obj = layer.updateAppointment(appointmentId, doctorId, patientId, startTime, endTime, status, duration);
         return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
+    }
+
+    @GET
+    @Path("getAvailableSlotsByDoctor")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAvailableSlotsByDoctor(
+            @QueryParam("doctorId") int doctorId) {
+        JSONObject obj = layer.getAvailableSlotsByDoctor(doctorId);
+        return Response.status(obj.getInt("statusCode"))
+                .entity(obj.toString())
+                .type(MediaType.APPLICATION_JSON)
+                .build();
     }
 
 }

@@ -391,6 +391,33 @@ public class Appointments implements Serializable {
         return slots;
     }
 
+    public List<TimeSlotDTO> getAvailableSlotsByService(int serviceId) {
+        EntityManager em = emf.createEntityManager();
+        List<TimeSlotDTO> slots = new ArrayList<>();
+
+        try {
+            StoredProcedureQuery spq = em.createStoredProcedureQuery("getAvailableSlotsByService");
+            spq.registerStoredProcedureParameter("serviceIdIN", Integer.class, ParameterMode.IN);
+            spq.setParameter("serviceIdIN", serviceId);
+            spq.execute();
+
+            List<Object[]> resultList = spq.getResultList();
+            for (Object[] record : resultList) {
+                TimeSlotDTO slot = new TimeSlotDTO();
+                slot.setSlotStart(record[0].toString());
+                slot.setSlotEnd(record[1].toString());
+                slot.setDoctorId((int) record[2]);
+                slots.add(slot);
+            }
+        } catch (Exception e) {
+            System.err.println("Hiba: " + e.getLocalizedMessage());
+        } finally {
+            em.clear();
+            em.close();
+        }
+        return slots;
+    }
+
     public boolean cancelAppointment(int id) {
         EntityManager em = emf.createEntityManager();
 
