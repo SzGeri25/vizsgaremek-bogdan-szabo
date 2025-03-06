@@ -4,6 +4,7 @@ import { from } from 'rxjs';
 import { FooterComponent } from '../footer/footer.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 interface Service {
   id: number;
@@ -42,7 +43,7 @@ export class BookingComponent implements OnInit{
   errorMessage: string = '';
   private apiUrl = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/services/getAllServices';
 
-  constructor() { }
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     this.fetchServices();
@@ -75,6 +76,8 @@ export class BookingComponent implements OnInit{
     const selectElement = event.target as HTMLSelectElement;
     const doctorId = Number(selectElement.value);
     this.selectedDoctor = this.doctors.find(doctor => doctor.id === doctorId) || null;
+  
+    this.router.navigate(['/calendar', doctorId]);
   }
 
   fetchServices(): void {
