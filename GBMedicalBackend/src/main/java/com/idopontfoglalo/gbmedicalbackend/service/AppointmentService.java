@@ -20,16 +20,16 @@ public class AppointmentService {
 
     private final Appointments layer = new Appointments(); // vagy a megfelelő osztály, amely a model réteget képviseli
 
-    public JSONObject addAppointmentWithNotification(int doctorId, int patientId, String startTime, String endTime, int duration, String status) {
+    public JSONObject addAppointmentWithNotification(int doctorId, int patientId, String startTime, String endTime) {
         JSONObject toReturn = new JSONObject();
         String responseStatus = "success";
         int statusCode = 200;
 
-        if (doctorId <= 0 || patientId <= 0 || startTime == null || endTime == null || duration <= 0 || status == null) {
+        if (doctorId <= 0 || patientId <= 0 || startTime == null || endTime == null) {
             responseStatus = "invalidInput";
             statusCode = 400;
         } else {
-            boolean modelResult = layer.addAppointmentWithNotification(doctorId, patientId, startTime, endTime, duration, status);
+            boolean modelResult = layer.addAppointmentWithNotification(doctorId, patientId, startTime, endTime);
 
             if (!modelResult) {
                 responseStatus = "modelException";
@@ -41,8 +41,6 @@ public class AppointmentService {
                 result.put("patientId", patientId);
                 result.put("startTime", startTime);
                 result.put("endTime", endTime);
-                result.put("duration", duration);
-                result.put("status", status);
 
                 toReturn.put("result", result);
             }
