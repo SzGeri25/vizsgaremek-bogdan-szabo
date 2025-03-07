@@ -42,10 +42,8 @@ public class AppointmentController {
         int patientId = body.getInt("patientId");
         String startTime = body.getString("startTime");
         String endTime = body.getString("endTime");
-        int duration = body.getInt("duration");
-        String status = body.getString("status");
 
-        JSONObject obj = layer.addAppointmentWithNotification(doctorId, patientId, startTime, endTime, duration, status);
+        JSONObject obj = layer.addAppointmentWithNotification(doctorId, patientId, startTime, endTime);
         return Response.status(obj.getInt("statusCode")).entity(obj.toString()).type(MediaType.APPLICATION_JSON).build();
     }
 
