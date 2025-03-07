@@ -285,7 +285,7 @@ public class Appointments implements Serializable {
         return "com.idopontfoglalo.gbmedicalbackend.model.Appointments[ id=" + id + " ]";
     }
 
-    public boolean addAppointmentWithNotification(int doctorId, int patientId, String startTime, String endTime, int duration, String status) {
+    public boolean addAppointmentWithNotification(int doctorId, int patientId, String startTime, String endTime) {
         EntityManager em = emf.createEntityManager();
 
         try {
@@ -297,16 +297,12 @@ public class Appointments implements Serializable {
             spq.registerStoredProcedureParameter("patient_idIN", Integer.class, ParameterMode.IN);
             spq.registerStoredProcedureParameter("start_timeIN", String.class, ParameterMode.IN);
             spq.registerStoredProcedureParameter("end_timeIN", String.class, ParameterMode.IN);
-            spq.registerStoredProcedureParameter("durationIN", Integer.class, ParameterMode.IN);
-            spq.registerStoredProcedureParameter("statusIN", String.class, ParameterMode.IN);
 
             // Paraméterek beállítása
             spq.setParameter("doctor_idIN", doctorId);
             spq.setParameter("patient_idIN", patientId);
             spq.setParameter("start_timeIN", startTime);
             spq.setParameter("end_timeIN", endTime);
-            spq.setParameter("durationIN", duration);
-            spq.setParameter("statusIN", status);
 
             // Tárolt eljárás futtatása
             spq.execute();
