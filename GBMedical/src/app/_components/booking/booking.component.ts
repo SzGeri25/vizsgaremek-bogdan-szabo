@@ -78,6 +78,7 @@ export class BookingComponent implements OnInit{
     const doctorId = Number(selectElement.value);
     this.selectedDoctor = this.doctors.find(doctor => doctor.id === doctorId) || null;
     
+
     this.selectedDoctorId = doctorId;
     this.router.navigate(['/calendar', doctorId]);
   }

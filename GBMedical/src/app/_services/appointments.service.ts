@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class AppointmentService {
 
-  private apiUrl = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/appointments/getAvailableSlots';
+  private apiUrl = `http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/appointments/getAvailableSlotsByDoctor`;
 
   constructor(private http: HttpClient) { }
 

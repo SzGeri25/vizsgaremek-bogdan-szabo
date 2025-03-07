@@ -11,6 +11,7 @@ import { AppointmentService } from '../../_services/appointments.service';
 import { ServicesComponent } from '../services/services.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 
 interface Service {
   id: number;
@@ -24,7 +25,7 @@ interface Service {
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [FullCalendarModule, NavbarComponent, MatDialogModule, ServicesComponent, FormsModule, CommonModule],
+  imports: [FullCalendarModule, NavbarComponent, MatDialogModule, ServicesComponent, FormsModule, CommonModule,],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css']
 })
@@ -33,6 +34,7 @@ export class CalendarComponent implements OnInit {
   // Külön eseménytömbök a foglalt és szabad időpontokhoz
   bookedEvents: any[] = [];
   availableEvents: any[] = [];
+  doctorId: number | null = null;
 
   // A naptár beállításai
   calendarOptions: CalendarOptions = {
@@ -59,13 +61,22 @@ export class CalendarComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private dialog: MatDialog,
-    private appointmentService: AppointmentService
+    private appointmentService: AppointmentService,
+    private route: ActivatedRoute 
   ) { }
 
   async ngOnInit(): Promise<void> {
+
+    this.route.paramMap.subscribe(params => {
+      this.doctorId = Number(params.get('id'));
+      console.log('Lekért orvos ID:', this.doctorId);
+    });
+
     await this.fetchBookedAppointments();
     await this.loadAvailableAppointments();
     this.updateCalendarEvents();
+
+    
   }
 
   async fetchBookedAppointments(): Promise<void> {
@@ -100,29 +111,34 @@ export class CalendarComponent implements OnInit {
   }
 
   async loadAvailableAppointments(): Promise<void> {
-    // Ezeket az értékeket a példában a következőképp adjuk meg:
-    const doctorId = 2;
-    const startDate = '2025-02-18 09:00:00';
-    const endDate = '2025-02-18 17:00:00';
+    
+    if (!this.doctorId) {
+      console.error('Nincs orvos ID az URL-ben!');
+      return;
+    }
 
-    try {
-      const response = await lastValueFrom(this.appointmentService.getAvailableSlots(doctorId, startDate, endDate));
+    const startDate = new Date('2025-02-18 09:00:00').toISOString();
+    const endDate = new Date('2025-02-18 17:00:00').toISOString();
+
+   try {
+      const response = await lastValueFrom(this.appointmentService.getAvailableSlots(this.doctorId, startDate, endDate));
       if (response.status === 'success') {
-        this.availableEvents = response.slots.map((slot: any) => {
-          return {
-            title: 'Orvos ' + slot.doctorId + ' (szabad)',
-            start: this.convertToISO(slot.slotStart),
-            end: this.convertToISO(slot.slotEnd),
-            backgroundColor: 'lightgreen', // Szabad: zöld
-            borderColor: 'lightgreen'
-          };
-        });
+        console.log('Lekért szabad időpontok:', response.slots);
+        this.availableEvents = response.slots.map((slot: any) => ({
+          title: 'Orvos ' + slot.doctorId + ' (szabad)',
+          start: this.convertToISO(slot.slotStart),
+          end: this.convertToISO(slot.slotEnd),
+          backgroundColor: 'lightgreen',
+          borderColor: 'lightgreen'
+        }));
       } else {
         console.error('Nincs találat vagy hiba történt (szabad időpontok):', response);
       }
     } catch (error) {
       console.error('Hiba a szabad időpontok lekérése során:', error);
     }
+    
+
   }
 
   /**
@@ -134,6 +150,11 @@ export class CalendarComponent implements OnInit {
       ...this.calendarOptions,
       events: combinedEvents
     };
+
+    setTimeout(() => {
+      this.calendarOptions = { ...this.calendarOptions };
+    }, 100);
+
   }
 
   /**

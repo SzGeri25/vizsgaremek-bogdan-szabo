@@ -11,6 +11,7 @@ import { NewPasswordComponent } from './_components/new-password/new-password.co
 import { AdminComponent } from './_components/admin/admin.component';
 import { BookingComponent } from './_components/booking/booking.component';
 
+
 export const routes: Routes = [
     { path: '', pathMatch: 'full', redirectTo: '/home' },
     { path: 'home', component: HomeComponent },
@@ -19,7 +20,7 @@ export const routes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
     { path: 'services', component: ServicesComponent },
-    { path: 'calendar', component: CalendarComponent },
+    { path: 'calendar/:id', component: CalendarComponent },
     { path: 'booking', component: BookingComponent },
     { path: 'forgotPassword', component: ForgotPasswordComponent},
     { path: 'newPassword', component: NewPasswordComponent},
