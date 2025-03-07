@@ -33,6 +33,8 @@ import javax.persistence.StoredProcedureQuery;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
@@ -289,6 +291,11 @@ public class Appointments implements Serializable {
         EntityManager em = emf.createEntityManager();
 
         try {
+            // Dátumok formázása
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime startDateTime = LocalDateTime.parse(startTime, formatter);
+            LocalDateTime endDateTime = LocalDateTime.parse(endTime, formatter);
+
             // Tárolt eljárás meghívása
             StoredProcedureQuery spq = em.createStoredProcedureQuery("addAppointmentWithNotification");
 
@@ -301,8 +308,8 @@ public class Appointments implements Serializable {
             // Paraméterek beállítása
             spq.setParameter("doctor_idIN", doctorId);
             spq.setParameter("patient_idIN", patientId);
-            spq.setParameter("start_timeIN", startTime);
-            spq.setParameter("end_timeIN", endTime);
+            spq.setParameter("start_timeIN", startDateTime.format(formatter));
+            spq.setParameter("end_timeIN", endDateTime.format(formatter));
 
             // Tárolt eljárás futtatása
             spq.execute();

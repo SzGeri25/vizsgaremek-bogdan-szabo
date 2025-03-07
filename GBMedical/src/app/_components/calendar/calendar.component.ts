@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FullCalendarModule } from '@fullcalendar/angular'; // FullCalendar modul importálása
-import { CalendarOptions } from '@fullcalendar/core';       // Típusellenőrzéshez
-import dayGridPlugin from '@fullcalendar/daygrid';         // DayGrid plugin
+import { FullCalendarModule } from '@fullcalendar/angular';
+import { CalendarOptions } from '@fullcalendar/core';
+import dayGridPlugin from '@fullcalendar/daygrid';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { lastValueFrom } from 'rxjs';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -13,6 +13,8 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { FooterComponent } from "../footer/footer.component";
+import { AuthService } from '../../_services/auth.service';
+import Swal from 'sweetalert2';
 
 interface Service {
   id: number;
@@ -26,18 +28,16 @@ interface Service {
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [FullCalendarModule, NavbarComponent, MatDialogModule, ServicesComponent, FormsModule, CommonModule, FooterComponent],
+  imports: [FullCalendarModule, NavbarComponent, MatDialogModule, FormsModule, CommonModule, FooterComponent],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css']
 })
 export class CalendarComponent implements OnInit {
 
-  // Külön eseménytömbök a foglalt és szabad időpontokhoz
   bookedEvents: any[] = [];
   availableEvents: any[] = [];
   doctorId: number | null = null;
 
-  // A naptár beállításai
   calendarOptions: CalendarOptions = {
     initialView: 'dayGridMonth',
     locale: 'hu',
@@ -54,7 +54,7 @@ export class CalendarComponent implements OnInit {
     },
     plugins: [dayGridPlugin],
     events: [],
-    eventClick: this.handleEventClick.bind(this) // Eseményre kattintás kezelés
+    eventClick: this.handleEventClick.bind(this)
   };
 
   private bookedApiUrl = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/appointments/getBookedAppointments';
@@ -63,11 +63,11 @@ export class CalendarComponent implements OnInit {
     private http: HttpClient,
     private dialog: MatDialog,
     private appointmentService: AppointmentService,
-    private route: ActivatedRoute 
+    private route: ActivatedRoute,
+    private authService: AuthService
   ) { }
 
   async ngOnInit(): Promise<void> {
-
     this.route.paramMap.subscribe(params => {
       this.doctorId = Number(params.get('id'));
       console.log('Lekért orvos ID:', this.doctorId);
@@ -76,8 +76,6 @@ export class CalendarComponent implements OnInit {
     await this.fetchBookedAppointments();
     await this.loadAvailableAppointments();
     this.updateCalendarEvents();
-
-    
   }
 
   async fetchBookedAppointments(): Promise<void> {
@@ -89,20 +87,19 @@ export class CalendarComponent implements OnInit {
       const responseData = await response.json();
 
       if (responseData && responseData.status === 'success' && responseData.appointments) {
-        this.bookedEvents = responseData.appointments.map((appointment: any) => {
-          // A backend ISO formátumú dátumokat ad vissza
-          return {
-            id: appointment.id,
-            title: `${appointment.patientName} (${appointment.doctorName})`,
-            start: appointment.startTime,
-            end: appointment.endTime,
-            backgroundColor: 'blue', // Foglalt: kék
-            borderColor: 'blue',
-            extendedProps: {
-              status: appointment.status
-            }
-          };
-        });
+        this.bookedEvents = responseData.appointments.map((appointment: any) => ({
+          id: appointment.id,
+          title: `${appointment.patientName} (${appointment.doctorName})`,
+          start: appointment.startTime,
+          end: appointment.endTime,
+          backgroundColor: 'blue',
+          borderColor: 'blue',
+          extendedProps: {
+            status: appointment.status,
+            doctorId: appointment.doctorId,
+            patientId: appointment.patientId
+          }
+        }));
       } else {
         console.error('Nem megfelelő API válasz (foglalások):', responseData);
       }
@@ -112,17 +109,13 @@ export class CalendarComponent implements OnInit {
   }
 
   async loadAvailableAppointments(): Promise<void> {
-    
     if (!this.doctorId) {
       console.error('Nincs orvos ID az URL-ben!');
       return;
     }
 
-    const startDate = new Date('2025-02-18 09:00:00').toISOString();
-    const endDate = new Date('2025-02-18 17:00:00').toISOString();
-
-   try {
-      const response = await lastValueFrom(this.appointmentService.getAvailableSlots(this.doctorId, startDate, endDate));
+    try {
+      const response = await lastValueFrom(this.appointmentService.getAvailableSlots(this.doctorId));
       if (response.status === 'success') {
         console.log('Lekért szabad időpontok:', response.slots);
         this.availableEvents = response.slots.map((slot: any) => ({
@@ -130,7 +123,10 @@ export class CalendarComponent implements OnInit {
           start: this.convertToISO(slot.slotStart),
           end: this.convertToISO(slot.slotEnd),
           backgroundColor: 'lightgreen',
-          borderColor: 'lightgreen'
+          borderColor: 'lightgreen',
+          extendedProps: {
+            doctorId: slot.doctorId
+          }
         }));
       } else {
         console.error('Nincs találat vagy hiba történt (szabad időpontok):', response);
@@ -138,13 +134,8 @@ export class CalendarComponent implements OnInit {
     } catch (error) {
       console.error('Hiba a szabad időpontok lekérése során:', error);
     }
-    
-
   }
 
-  /**
-   * Összevonja a foglalt és szabad időpontokat, majd frissíti a naptárat.
-   */
   updateCalendarEvents() {
     const combinedEvents = [...this.bookedEvents, ...this.availableEvents];
     this.calendarOptions = {
@@ -155,45 +146,92 @@ export class CalendarComponent implements OnInit {
     setTimeout(() => {
       this.calendarOptions = { ...this.calendarOptions };
     }, 100);
-
   }
 
-  /**
-   * Konvertálja a backend által adott dátum formátumot ISO formátumra.
-   * Példa: "2025-02-18 09:00:00.0"  -> "2025-02-18T09:00:00"
-   */
   convertToISO(dateStr: string): string {
-    const trimmed = dateStr.split('.')[0];
-    return trimmed.replace(' ', 'T');
+    const parsedDate = new Date(dateStr);
+  
+    if (isNaN(parsedDate.getTime())) {
+      console.error("Hibás dátumformátum:", dateStr);
+      return "";
+    }
+  
+    return parsedDate.toISOString().slice(0, 19); // Levágja a `Z` végződést
   }
+  
+  
 
-  // Eseményre kattintás esetén megjelenítjük a részleteket
   handleEventClick(info: any): void {
+    if (this.doctorId === null) {
+      console.error('Nincs orvos ID elérhető!');
+      return;
+    }
+
+    const startTime: string = info.event.start ? this.convertToISO(info.event.start.toISOString()) : '';
+    const endTime: string = info.event.end ? this.convertToISO(info.event.end.toISOString()) : '';
+
+    const doctorId: number = this.doctorId;
+    const patientId: number | null = this.authService.getUserId();
+
+    if (!patientId) {
+      Swal.fire({
+        title: 'Hiba!',
+        text: 'Jelentkezz be a foglaláshoz!',
+        icon: 'error',
+        timer: 3000
+      });
+      return;
+    }
+
     const data: EventDetailsData = {
       title: info.event.title,
-      start: info.event.start ? info.event.start.toLocaleString() : '',
-      end: info.event.end ? info.event.end.toLocaleString() : '',
+      start: info.event.start ? info.event.start.toISOString().replace('T', ' ').slice(0, 19) : '',
+      end: info.event.end ? info.event.end.toISOString().replace('T', ' ').slice(0, 19) : '',
       status: info.event.extendedProps?.status,
-      doctorId: info.event.extendedProps?.doctorId,
-      patientId: info.event.extendedProps?.patientId
+      doctorId: doctorId,
+      patientId: patientId
     };
+    
 
-     // Ha szabad időpontra kattintanak, akkor adjunk hozzá egy "Időpontfoglalás" gombot
-  const dialogRef = this.dialog.open(EventDetailsModalComponent, {
-    data,
-    width: '400px'
-  });
+    const dialogRef = this.dialog.open(EventDetailsModalComponent, {
+      data,
+      width: '400px'
+    });
 
-  // Ha bármit csinálunk, itt érhetjük el az adatokat (de most nem fogunk semmit csinálni)
-  dialogRef.afterClosed().subscribe(result => {
-    // Ha szükséges bármit csinálni a bezárás után, itt tehetjük meg
-  });
-  
+    dialogRef.afterClosed().subscribe((result: { bookAppointment: boolean }) => {
+      if (result && result.bookAppointment) {
+        const appointment = {
+          doctorId: doctorId,
+          patientId: patientId,
+          startTime: startTime,
+          endTime: endTime
+        };
+
+        this.appointmentService.addAppointmentWithNotification(appointment).subscribe({
+          next: response => {
+            console.log('Foglalás sikeres:', response);
+
+            Swal.fire({
+              title: 'Sikeres foglalás!',
+              text: 'Az időpontot sikeresen lefoglaltad.',
+              icon: 'success',
+              timer: 3000
+            });
+
+            this.fetchBookedAppointments().then(() => this.updateCalendarEvents());
+          },
+          error: error => {
+            console.error('Foglalás hiba:', error);
+
+            Swal.fire({
+              title: 'Hiba!',
+              text: 'Nem sikerült a foglalás. Próbáld újra később!',
+              icon: 'error',
+              timer: 3000
+            });
+          }
+        });
+      }
+    });
   }
-
-
-  
-
-
-
 }
