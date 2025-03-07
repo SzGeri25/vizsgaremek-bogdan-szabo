@@ -21,11 +21,17 @@ export interface EventDetailsData {
 
 export class EventDetailsModalComponent {
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: EventDetailsData,
-    private dialogRef: MatDialogRef<EventDetailsModalComponent>
+    public dialogRef: MatDialogRef<EventDetailsModalComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: EventDetailsData
   ) {}
 
   onClose(): void {
     this.dialogRef.close();
+  }
+
+  // Az időpontfoglalás gomb kattintásának kezelése
+  onBookingClick(): void {
+    console.log('Időpontfoglalás gomb megnyomva');
+    // Itt egyelőre nem csinálunk semmit
   }
 }

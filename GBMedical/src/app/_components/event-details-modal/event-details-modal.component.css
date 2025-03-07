@@ -4,6 +4,7 @@
     animation: fadeIn 0.5s ease-in-out;
     background: #fff;
     border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .modal-header {
@@ -48,4 +49,14 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+.bookingButton{
+    width: 100%;
+    padding: 5px 10px;
+    border-radius: 8px;
+    background-color: #C94F42;
+    color: #f5f5f5;
+    border: none;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }

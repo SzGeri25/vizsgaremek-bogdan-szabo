@@ -15,7 +15,7 @@
     </div>
 
     <!-- Orvos választása -->
-    <div class="select-wrapper">
+    <div class="select-wrapper2">
         <select (change)="onSelectDoctor($event)">
             <option disabled selected>Válassz orvost</option>
             <option *ngFor="let doctor of doctors" [value]="doctor.id">

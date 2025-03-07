@@ -3,7 +3,6 @@
     width: 100%;
     max-height: 300px;
     object-fit: cover;
-    margin-bottom: 50px;
 }
 
 h1{
@@ -12,6 +11,13 @@ h1{
     left: 30px;
     color: #f5f5f5;
     font-weight: bolder;
+}
+
+.container{
+    margin: 0 auto;
+    align-items: center;
+    text-align: center;
+    justify-content: cen;
 }
 
 select {
@@ -31,7 +37,7 @@ select {
     -webkit-appearance: none;
     appearance: none;
     position: relative;
-    margin: 40px;
+    margin: 60px;
 }
 
 /* Fókuszáláskor szín és árnyék változás */
@@ -69,9 +75,39 @@ select::-ms-expand {
     /* lefelé mutató nyíl */
     font-size: 16px;
     position: absolute;
-    right: 20px;
+    right: 50px;
     top: 50%;
     transform: translateY(-50%);
     pointer-events: none;
     transition: transform 0.3s ease, font-size 0.3s ease;
+    
+}
+
+.select-wrapper2 {
+    position: relative;
+    display: inline-block;
+}
+
+.select-wrapper2::after {
+    content: '\25BC';
+    /* lefelé mutató nyíl */
+    font-size: 16px;
+    position: absolute;
+    left: 344px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    transition: transform 0.3s ease, font-size 0.3s ease;
+    
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column; /* Biztosítja, hogy a select elemek egymás alá kerüljenek */
+    }
+
+    .select-wrapper,
+    .select-wrapper2 {
+        width: 90%; /* Csökkentett szélesség kisebb képernyőn */
+    }
 }

@@ -12,6 +12,7 @@ import { ServicesComponent } from '../services/services.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { FooterComponent } from "../footer/footer.component";
 
 interface Service {
   id: number;
@@ -25,7 +26,7 @@ interface Service {
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [FullCalendarModule, NavbarComponent, MatDialogModule, ServicesComponent, FormsModule, CommonModule,],
+  imports: [FullCalendarModule, NavbarComponent, MatDialogModule, ServicesComponent, FormsModule, CommonModule, FooterComponent],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css']
 })
@@ -177,10 +178,17 @@ export class CalendarComponent implements OnInit {
       patientId: info.event.extendedProps?.patientId
     };
 
-    this.dialog.open(EventDetailsModalComponent, {
-      data,
-      width: '400px'
-    });
+     // Ha szabad időpontra kattintanak, akkor adjunk hozzá egy "Időpontfoglalás" gombot
+  const dialogRef = this.dialog.open(EventDetailsModalComponent, {
+    data,
+    width: '400px'
+  });
+
+  // Ha bármit csinálunk, itt érhetjük el az adatokat (de most nem fogunk semmit csinálni)
+  dialogRef.afterClosed().subscribe(result => {
+    // Ha szükséges bármit csinálni a bezárás után, itt tehetjük meg
+  });
+  
   }
 
 
