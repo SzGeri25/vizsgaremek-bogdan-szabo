@@ -1,56 +1,90 @@
-import { Component } from '@angular/core';
-import { NavbarComponent } from "../navbar/navbar.component";
-import { FooterComponent } from '../footer/footer.component';
-import { AuthService } from '../../_services/auth.service';
-import { FormsModule } from '@angular/forms';
-import Swal from 'sweetalert2';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../_services/auth.service';
+import Swal from 'sweetalert2';
+import { FooterComponent } from "../footer/footer.component";
+import { NavbarComponent } from "../navbar/navbar.component";
+import { CommonModule } from '@angular/common';
 
 @Component({
-    selector: 'app-register',
-    imports: [NavbarComponent, FooterComponent, FormsModule],
-    templateUrl: './register.component.html',
-    styleUrl: './register.component.css'
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.css'],
+  imports: [FooterComponent, NavbarComponent, CommonModule, ReactiveFormsModule]
 })
-export class RegisterComponent {
-    // Űrlap mezők deklarálása
-  firstName: string = '';
-  lastName: string = '';
-  email: string = '';
-  password: string = '';
-  phoneNumber: string = '';
+export class RegisterComponent implements OnInit {
+  registerForm!: FormGroup;
+  showPassword: any = {
+    password: false,
+    passwordConfirmed: false
+  };
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {}
 
-  // Űrlap beküldésekor meghívandó metódus
-  async onSubmit(event: Event): Promise<void> {
-    event.preventDefault(); // Megakadályozza az alapértelmezett űrlapbeküldést
+  ngOnInit(): void {
+    this.registerForm = this.fb.group({
+      firstName: ['', [Validators.required]],
+      lastName: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      phoneNumber: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      passwordConfirmed: ['', [Validators.required, Validators.minLength(8)]]
+    });
+  }
 
-    // Összeállítjuk az adatobjektumot a backend által elvárt formában
-    const patientData = {
-      firstName: this.firstName,
-      lastName: this.lastName,
-      email: this.email,
-      password: this.password,
-      phoneNumber: this.phoneNumber
-    };
+  get firstName() {
+    return this.registerForm.get('firstName');
+  }
 
+  get lastName() {
+    return this.registerForm.get('lastName');
+  }
+
+  get email() {
+    return this.registerForm.get('email');
+  }
+
+  get phoneNumber() {
+    return this.registerForm.get('phoneNumber');
+  }
+
+  get password() {
+    return this.registerForm.get('password');
+  }
+
+  get passwordConfirmed() {
+    return this.registerForm.get('passwordConfirmed');
+  }
+
+  // Összehasonlítja a jelszót a megerősítéssel
+  get passwordsMatch() {
+    return this.password?.value === this.passwordConfirmed?.value;
+  }
+
+  togglePasswordVisibility(field: string) {
+    this.showPassword[field] = !this.showPassword[field];
+  }
+
+  async onSubmit(): Promise<void> {
+    if (this.registerForm.invalid || !this.passwordsMatch) {
+      return;
+    }
+
+    const registerData = this.registerForm.value;
     try {
-      // Meghívjuk az AuthService register metódusát
-      const response = await this.authService.register(patientData);
+      await this.authService.register(registerData);
       Swal.fire({
-        title: "Sikeres regisztráció!",
-        icon: "success"
+        title: 'Sikeres regisztráció!',
+        icon: 'success'
       }).then(() => {
-        this.router.navigate(['/login']); // Átirányítás a /login oldalra
+        this.router.navigate(['/login']);
       });
     } catch (error) {
       Swal.fire({
-        title: "Sikertelen regisztráció!",
-        icon: "error"
+        title: 'Sikertelen regisztráció!',
+        icon: 'error'
       });
-      // Itt kezelheted a hibákat (pl. hibajelzés a felhasználónak)
     }
   }
-
 }

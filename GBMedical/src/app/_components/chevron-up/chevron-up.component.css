@@ -1,0 +1,25 @@
+.to-top{
+    background-color: white;
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 32px;
+    color: #1f1f1f;
+    text-decoration: none;
+    opacity: 0;
+    transition: all .4s;
+    cursor: pointer;
+   }
+
+.to-top.active {
+  bottom: 100px;
+  pointer-events: auto;
+  opacity: 1;
+  }
