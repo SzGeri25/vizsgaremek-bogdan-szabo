@@ -35,6 +35,19 @@ h1{
     width: 340px;
 }
 
+.error {
+    color: #ff4d4d;
+    font-size: 14px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+/* Piros szegély, ha az input mező hibás */
+.error-border {
+    border: 1px solid #ff4d4d !important;
+    box-shadow: 0px 0px 5px rgba(255, 77, 77, 0.5);
+}
+
 #name{
     position: relative;
     right: 10px;
@@ -49,14 +62,13 @@ h1{
 .registerButton{
     background-color: #333333;
     color: #f5f5f5;
-    border-radius: 20px;
+    border-radius: 20px !important;
     height: 35px;
     border: none;
     padding: 0 20px;
     position: relative;
-    right: 11px;
     margin-top: 5px; 
-    width: 340px;
+    width: 100%;
 }
 
 .loginButton{
@@ -177,4 +189,39 @@ h1{
 .modal-inner img{
     width:380px;
 }
+
+.password-container {
+    position: relative;
+  }
+  
+  .password-container i {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+
+  .fa {
+    color: #333333; /* Ez az a szín, amit a gombhoz használsz */
+    cursor: pointer;
+    position: relative;
+    bottom: 2px;
+  }
+  
+  .registerButton {
+    background-color: #333333;
+    color: #f5f5f5; /* Ezt a színt használtad a gombhoz */
+    border-radius: 20px !important;
+    height: 35px;
+    border: none;
+    padding: 0 20px;
+    position: relative;
+    margin-top: 5px; 
+    width: 100%;
+  }
+  
+  
+
+
 

@@ -1,44 +1,56 @@
 <app-navbar></app-navbar>
 
 <div class="container">
-    <form action="" id="form" (submit)="onSubmit($event)">
-        <h1>Regisztráció</h1>
-        <div class="input-group">
-            <div class="container">
-                <div class="row">
-                        <label for="firstName">Keresztnév:</label>
-                        <input [(ngModel)]="firstName" name="firstName" required>
-                        <div class="error"></div>
-                        <label for="lastName">Vezetéknév:</label>
-                        <input type="text" [(ngModel)]="lastName" name="lastName" required>
-                        <div class="error"></div>
-                        <label for="Email">E-mail cím:</label>
-                        <input type="email" [(ngModel)]="email" name="email" required>
-                        <div class="error"></div>
-                        <label for="phoneNumber">Telefonszám:</label>
-                        <input type="text" [(ngModel)]="phoneNumber" name="phoneNumber" required>
-                        <label for="password">Jelszó:</label>
-                        <input type="password" [(ngModel)]="password" name="password" required>
-                        <div class="error"></div>
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col xxl-6">
-                                    <button type="submit" class="registerButton">Regisztráció</button>
-                                </div>
-                            </div>
-                        </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="modal" id="modal">
-            <div class="modal-inner">
-                <h2>Sikeresen regisztráltál!</h2>
-                <button id="closeModal"></button>
-            </div>
-        </div>
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" id="form" novalidate>
+    <h1>Regisztráció</h1>
 
-    </form>
+    <div class="input-group">
+      <label for="firstName">Keresztnév:</label>
+      <input type="text" formControlName="firstName" id="firstName" class="input-field" 
+             [ngClass]="{ 'error-border': firstName?.invalid && firstName?.touched }">
+      <div class="error" *ngIf="firstName?.invalid && firstName?.touched">* Keresztnév szükséges</div>
+
+      <label for="lastName">Vezetéknév:</label>
+      <input type="text" formControlName="lastName" id="lastName" class="input-field" 
+             [ngClass]="{ 'error-border': lastName?.invalid && lastName?.touched }">
+      <div class="error" *ngIf="lastName?.invalid && lastName?.touched">* Vezetéknév szükséges</div>
+
+      <label for="email">E-mail cím:</label>
+      <input type="email" formControlName="email" id="email" class="input-field" 
+             [ngClass]="{ 'error-border': email?.invalid && email?.touched }">
+      <div class="error" *ngIf="email?.invalid && email?.touched">* Érvénytelen e-mail cím</div>
+
+      <label for="phoneNumber">Telefonszám:</label>
+      <input type="text" formControlName="phoneNumber" id="phoneNumber" class="input-field" 
+             [ngClass]="{ 'error-border': phoneNumber?.invalid && phoneNumber?.touched }">
+      <div class="error" *ngIf="phoneNumber?.invalid && phoneNumber?.touched">* Telefonszám szükséges</div>
+
+      <label for="password">Jelszó:</label>
+      <div class="password-container">
+        <input type="password" formControlName="password" id="password" class="input-field"
+               [ngClass]="{ 'error-border': password?.invalid && password?.touched }"
+               [type]="showPassword.password ? 'text' : 'password'">
+        <i class="fa" [class.fa-eye]="!showPassword.password" [class.fa-eye-slash]="showPassword.password"
+           (click)="togglePasswordVisibility('password')"></i>
+      </div>
+      <div class="error" *ngIf="password?.invalid && password?.touched">* A jelszónak legalább 8 karakter hosszúnak kell lennie</div>
+
+      <label for="passwordConfirmed">Jelszó megerősítése:</label>
+      <div class="password-container">
+        <input type="password" formControlName="passwordConfirmed" id="passwordConfirmed" class="input-field"
+               [ngClass]="{ 'error-border': passwordConfirmed?.invalid && passwordConfirmed?.touched || !passwordsMatch }"
+               [type]="showPassword.passwordConfirmed ? 'text' : 'password'">
+        <i class="fa" [class.fa-eye]="!showPassword.passwordConfirmed" [class.fa-eye-slash]="showPassword.passwordConfirmed"
+           (click)="togglePasswordVisibility('passwordConfirmed')"></i>
+      </div>
+      <div class="error" *ngIf="passwordConfirmed?.invalid && passwordConfirmed?.touched">* A jelszó megerősítése szükséges</div>
+      <div class="error" *ngIf="!passwordsMatch && passwordConfirmed?.touched">* A jelszavak nem egyeznek</div>
+      
+      <button type="submit" class="registerButton" [disabled]="registerForm.invalid || !passwordsMatch">
+        Regisztráció
+      </button>
+    </div>
+  </form>
 </div>
 
 <app-footer></app-footer>
