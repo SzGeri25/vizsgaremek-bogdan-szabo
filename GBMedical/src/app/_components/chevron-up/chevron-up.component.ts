@@ -12,6 +12,12 @@ export class ChevronUpComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.toTop = this.elRef.nativeElement.querySelector('.to-top');
+
+    // Kattintási esemény hozzáadása
+    this.toTop.addEventListener('click', (event: Event) => {
+      event.preventDefault(); // Megakadályozza az alapértelmezett viselkedést (pl. újratöltés)
+      window.scrollTo({ top: 0, behavior: 'smooth' }); // Simán felgörget az oldal tetejére
+    });
   }
 
   @HostListener('window:scroll', [])

@@ -9,6 +9,7 @@ import { HighlightPipe } from '../../highlight.pipe';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { ChevronUpComponent } from "../chevron-up/chevron-up.component";
 
 interface Doctor {
     id: number;
@@ -33,7 +34,7 @@ interface Review {
     selector: 'app-specialists',
     templateUrl: './specialists.component.html',
     styleUrls: ['./specialists.component.css'],
-    imports: [NavbarComponent, FooterComponent, FormsModule, CommonModule, HighlightPipe, MatFormFieldModule, MatInputModule, MatIconModule]
+    imports: [NavbarComponent, FooterComponent, FormsModule, CommonModule, HighlightPipe, MatFormFieldModule, MatInputModule, MatIconModule, ChevronUpComponent]
 })
 export class SpecialistsComponent implements OnInit {
     doctors: Doctor[] = [];

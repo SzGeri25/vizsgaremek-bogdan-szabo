@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { FooterComponent } from '../footer/footer.component';
 import { trigger, style, animate, transition } from '@angular/animations';
 import { Router } from '@angular/router';
+import { ChevronUpComponent } from "../chevron-up/chevron-up.component";
 
 
 @Component({
     selector: 'app-home',
-    imports: [NavbarComponent, FormsModule, FooterComponent],
+    imports: [NavbarComponent, FormsModule, FooterComponent, ChevronUpComponent],
     templateUrl: './home.component.html',
     styleUrl: './home.component.css',
     animations: [

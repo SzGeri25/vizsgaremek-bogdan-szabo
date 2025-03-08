@@ -15,6 +15,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FooterComponent } from "../footer/footer.component";
 import { AuthService } from '../../_services/auth.service';
 import Swal from 'sweetalert2';
+import { ChevronUpComponent } from "../chevron-up/chevron-up.component";
 
 interface Service {
   id: number;
@@ -28,7 +29,7 @@ interface Service {
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [FullCalendarModule, NavbarComponent, MatDialogModule, FormsModule, CommonModule, FooterComponent],
+  imports: [FullCalendarModule, NavbarComponent, MatDialogModule, FormsModule, CommonModule, FooterComponent, ChevronUpComponent],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css']
 })
