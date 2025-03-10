@@ -252,6 +252,22 @@ public class Appointments implements Serializable {
         this.serviceName = serviceName;
     }
 
+    public String getDoctorName() {
+        if (doctorId != null) {
+            return doctorId.getName();
+        }
+        return null;
+    }
+
+    public String getPatientFullName() {
+        if (patientId != null) {
+            String firstName = patientId.getFirstName();
+            String lastName = patientId.getLastName();
+            return (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
+        }
+        return null;
+    }
+
     public Collection<Payments> getPaymentsCollection() {
         return paymentsCollection;
     }
@@ -314,6 +330,63 @@ public class Appointments implements Serializable {
             return false; // Hiba esetén visszatérés
         } finally {
             em.clear();
+            em.close();
+        }
+    }
+
+    // Az adott patientId alapján visszaadja a páciens teljes nevét
+    public String getPatientFullName(int patientId) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            Patients patient = em.find(Patients.class, patientId);
+            if (patient != null) {
+                return patient.getFirstName() + " " + patient.getLastName();
+            }
+            return "";
+        } finally {
+            em.close();
+        }
+    }
+
+// Az adott patientId alapján visszaadja a páciens email címét
+    public String getPatientEmail(int patientId) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            Patients patient = em.find(Patients.class, patientId);
+            if (patient != null) {
+                return patient.getEmail();  // Győződj meg róla, hogy a Patients entitásban létezik egy getEmail() metódus!
+            }
+            return "";
+        } finally {
+            em.close();
+        }
+    }
+
+// Az adott doctorId alapján visszaadja az orvos nevét
+    public String getDoctorName(int doctorId) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            Doctors doctor = em.find(Doctors.class, doctorId);
+            if (doctor != null) {
+                return doctor.getName();
+            }
+            return "";
+        } finally {
+            em.close();
+        }
+    }
+
+// Az adott doctorId alapján visszaadja a szolgáltatás nevét (ha például az orvos entitásban van tárolva)
+    public String getServiceName(int doctorId) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            Doctors doctor = em.find(Doctors.class, doctorId);
+            if (doctor != null) {
+                // Tegyük fel, hogy az orvos entitásban van egy serviceName mező
+                return doctor.getServiceName();
+            }
+            return "";
+        } finally {
             em.close();
         }
     }

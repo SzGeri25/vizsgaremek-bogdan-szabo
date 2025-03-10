@@ -56,8 +56,7 @@ public class EmailService {
                     break;
                 case APPOINTMENT_CONFIRMATION:
                     subject = "Időpontfoglalás megerősítése";
-                    content = "<p>Köszönjük, hogy időpontot foglalt a GB Medical rendszerében. "
-                            + "A foglalás részletei: <br>" + additionalContent + "</p>";
+                    content = additionalContent;
                     break;
                 case PASSWORD_RESET:
                     subject = "Jelszó visszaállítás";
