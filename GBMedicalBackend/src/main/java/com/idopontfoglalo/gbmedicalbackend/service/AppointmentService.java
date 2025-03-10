@@ -35,6 +35,25 @@ public class AppointmentService {
                 responseStatus = "modelException";
                 statusCode = 500;
             } else {
+
+                // Sikeres foglalás esetén lekérjük a szükséges adatokat
+                String patientName = layer.getPatientFullName(patientId);
+                String patientEmail = layer.getPatientEmail(patientId); // Itt kapjuk meg a páciens email címét
+                String doctorName = layer.getDoctorName(doctorId);
+                String serviceType = layer.getServiceName(doctorId);
+
+                // Email HTML tartalom összeállítása
+                String emailContent = "<p>Kedves " + patientName + ",</p>"
+                        + "<p>Az időpontfoglalás sikeresen rögzítésre került. A foglalás részletei:</p>"
+                        + "<p>"
+                        + "Időtartam: " + startTime + " - " + endTime + "<br>"
+                        + "Szolgáltatás: " + serviceType + "<br>"
+                        + "Orvos: " + doctorName
+                        + "</p>";
+
+                // Email elküldése a meglévő EmailService segítségével
+                EmailService.sendEmail(patientEmail, EmailService.EmailType.APPOINTMENT_CONFIRMATION, emailContent);
+
                 JSONObject result = new JSONObject();
                 result.put("message", "Appointment successfully created with notification");
                 result.put("doctorId", doctorId);

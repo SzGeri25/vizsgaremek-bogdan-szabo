@@ -9,6 +9,7 @@ import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -122,6 +123,12 @@ public class Doctors implements Serializable {
     private Collection<Reviews> reviewsCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "doctorId")
     private Collection<Schedules> schedulesCollection;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "doctors_x_services",
+            joinColumns = @JoinColumn(name = "doctor_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id"))
+    private List<Services> services;
 
     static EntityManagerFactory emf = Persistence.createEntityManagerFactory("com.idopontfoglalo_GBMedicalBackend_war_1.0-SNAPSHOTPU");
 
@@ -300,6 +307,14 @@ public class Doctors implements Serializable {
 
     public void setSchedulesCollection(Collection<Schedules> schedulesCollection) {
         this.schedulesCollection = schedulesCollection;
+    }
+
+    public String getServiceName() {
+        if (services != null && !services.isEmpty()) {
+            // Ha több szolgáltatás is van, például az elsőt adjuk vissza
+            return services.get(0).getName();
+        }
+        return "";
     }
 
     @Override
