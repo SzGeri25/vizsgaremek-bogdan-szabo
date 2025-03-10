@@ -107,6 +107,10 @@ export class BookingComponent implements OnInit{
     const serviceName = selectElement.value;
   
     this.selectedService = this.services.find(service => service.name === serviceName) || null;
+
+    if(this.selectedService){
+      this.router.navigate(['/calendar']);
+    }
   }
   
 

@@ -22,6 +22,7 @@ export const routes: Routes = [
     { path: 'register', component: RegisterComponent },
     { path: 'services', component: ServicesComponent },
     { path: 'calendar/:id', component: CalendarComponent },
+    { path: 'calendar', component: CalendarComponent },
     { path: 'booking', component: BookingComponent },
     { path: 'forgotPassword', component: ForgotPasswordComponent},
     { path: 'newPassword', component: NewPasswordComponent},
