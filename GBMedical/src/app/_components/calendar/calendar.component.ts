@@ -92,7 +92,7 @@ export class CalendarComponent implements OnInit {
       if (responseData && responseData.status === 'success' && responseData.appointments) {
         this.bookedEvents = responseData.appointments.map((appointment: any) => ({
           id: appointment.id,
-          title: `${appointment.patientName} (${appointment.doctorName})`,
+          title: `${appointment.doctorName} (${appointment.patientName})`,
           start: appointment.startTime, // Az API által visszaadott időpontokat később átalakítjuk
           end: appointment.endTime,
           backgroundColor: 'blue',

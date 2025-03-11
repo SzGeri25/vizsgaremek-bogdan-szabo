@@ -32,5 +32,5 @@ export const routes: Routes = [
 
 
 
-    { path: '**', redirectTo: '' } // 404 esetén visszairányítás a Home-ra, ez legyen legalul!!!
+    { path: '**', redirectTo: '/home' } // 404 esetén visszairányítás a Home-ra, ez legyen legalul!!!
 ];
