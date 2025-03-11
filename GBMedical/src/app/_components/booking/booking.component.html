@@ -8,7 +8,7 @@
     <div class="select-wrapper">
         <select (change)="onSelectService($event)">
             <option disabled selected>Válassz szolgáltatásaink közül</option>
-            <option *ngFor="let service of services" [value]="service.name">
+            <option *ngFor="let service of services" [value]="service.id">
                 {{ service.name }}
             </option>
         </select>

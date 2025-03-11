@@ -7,20 +7,24 @@ import { Observable } from 'rxjs';
 })
 export class AppointmentService {
 
-  private apiUrl = `http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/appointments/getAvailableSlotsByDoctor`;
-  private addAppointmentUrl = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/appointments/addAppointmentWithNotification';
+  private baseUrl = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/appointments';
 
   constructor(private http: HttpClient) { }
 
-  getAvailableSlots(doctorId: number): Observable<any> {
-    // A HttpParams automatikusan elvégzi a szükséges URL-kódolást
-    let params = new HttpParams()
-      .set('doctorId', doctorId.toString())
+  getAvailableSlotsByDoctor(doctorId: number): Observable<any> {
+    const url = `${this.baseUrl}/getAvailableSlotsByDoctor`;
+    const params = new HttpParams().set('doctorId', doctorId.toString());
+    return this.http.get<any>(url, { params });
+  }
 
-    return this.http.get<any>(this.apiUrl, { params: params });
+  getAvailableSlotsByService(serviceId: number): Observable<any> {
+    const url = `${this.baseUrl}/getAvailableSlotsByService`;
+    const params = new HttpParams().set('serviceId', serviceId.toString());
+    return this.http.get<any>(url, { params });
   }
 
   addAppointmentWithNotification(appointment: any): Observable<any> {
-    return this.http.post<any>(this.addAppointmentUrl, appointment);
+    const url = `${this.baseUrl}/addAppointmentWithNotification`;
+    return this.http.post<any>(url, appointment);
   }
 }

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
-import { from } from 'rxjs';
 import { FooterComponent } from '../footer/footer.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -26,26 +25,23 @@ interface Doctor {
   imports: [NavbarComponent, FooterComponent, CommonModule, FormsModule],
   templateUrl: './booking.component.html',
   standalone: true,
-  styleUrl: './booking.component.css'
+  styleUrls: ['./booking.component.css']
 })
-export class BookingComponent implements OnInit{
+export class BookingComponent implements OnInit {
 
   doctors: Doctor[] = [];
   selectedDoctor: Doctor | null = null;
-  selectedDoctorId: number | null = null
-  selectedServiceId: string = '';
-  private apiUrl2 = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/doctors/getAllDoctors';
-
-
-
-
+  selectedDoctorId: number | null = null;
 
   services: Service[] = [];
   selectedService: Service | null = null;
+  selectedServiceId: number | null = null;
   errorMessage: string = '';
-  private apiUrl = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/services/getAllServices';
 
-  constructor(private router: Router) {}
+  private apiUrl = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/services/getAllServices';
+  private apiUrl2 = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/doctors/getAllDoctors';
+
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
     this.fetchServices();
@@ -62,7 +58,7 @@ export class BookingComponent implements OnInit{
       })
       .then((data) => {
         if (data && data.result) {
-          this.doctors = data.result; // A doctors tömböt a result kulcs tartalmazza
+          this.doctors = data.result; // A doctors tömb a result kulcs alatt érkezik
         } else {
           console.error('Hibás API válasz formátum:', data);
         }
@@ -72,16 +68,13 @@ export class BookingComponent implements OnInit{
         console.error('Hiba történt az orvosok lekérésekor:', error);
       });
   }
-  
 
   onSelectDoctor(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
     const doctorId = Number(selectElement.value);
     this.selectedDoctor = this.doctors.find(doctor => doctor.id === doctorId) || null;
-    
-
     this.selectedDoctorId = doctorId;
-    this.router.navigate(['/calendar', doctorId]);
+    this.router.navigate(['/calendar'], { queryParams: { doctorId: doctorId } });
   }
 
   fetchServices(): void {
@@ -94,8 +87,7 @@ export class BookingComponent implements OnInit{
       })
       .then((data: { services: Service[] }) => {
         this.services = data.services;
-        console.log(data);
-
+        console.log("Szolgáltatások:", data);
       })
       .catch((error) => {
         console.error('Hiba történt az adatok lekérésekor:', error);
@@ -105,16 +97,14 @@ export class BookingComponent implements OnInit{
 
   onSelectService(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
-    const serviceId = selectElement.value;
-    console.log(serviceId);
-    
-    this.selectedService = this.services.find(service => service.name === serviceId) || null;
+    const serviceId = Number(selectElement.value);
+    console.log("Kiválasztott szolgáltatás id:", serviceId);
 
+    this.selectedService = this.services.find(service => service.id === serviceId) || null;
     this.selectedServiceId = serviceId;
-    if(this.selectedService){
-      this.router.navigate(['/calendar', serviceId]);
+
+    if (this.selectedService) {
+      this.router.navigate(['/calendar'], { queryParams: { serviceId: serviceId } });
     }
   }
-  
-
 }

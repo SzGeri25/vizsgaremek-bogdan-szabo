@@ -38,6 +38,7 @@ export class CalendarComponent implements OnInit {
   bookedEvents: any[] = [];
   availableEvents: any[] = [];
   doctorId: number | null = null;
+  serviceId: number | null = null; // Új property a service ID tárolására
 
   calendarOptions: CalendarOptions = {
     initialView: 'dayGridMonth',
@@ -69,9 +70,16 @@ export class CalendarComponent implements OnInit {
   ) { }
 
   async ngOnInit(): Promise<void> {
-    this.route.paramMap.subscribe(params => {
-      this.doctorId = Number(params.get('id'));
-      console.log('Lekért orvos ID:', this.doctorId);
+    // Query paraméterek lekérése: várhatóan ?doctorId=14 vagy ?serviceId=14
+    this.route.queryParamMap.subscribe(params => {
+      if (params.has('doctorId')) {
+        this.doctorId = Number(params.get('doctorId'));
+        console.log('Lekért orvos ID:', this.doctorId);
+      }
+      if (params.has('serviceId')) {
+        this.serviceId = Number(params.get('serviceId'));
+        console.log('Lekért szolgáltatás ID:', this.serviceId);
+      }
     });
 
     await this.fetchBookedAppointments();
@@ -87,13 +95,13 @@ export class CalendarComponent implements OnInit {
       }
       const responseData = await response.json();
 
-      console.log(responseData);
-      
+      console.log("Foglalt időpontok: " , responseData);
+
       if (responseData && responseData.status === 'success' && responseData.appointments) {
         this.bookedEvents = responseData.appointments.map((appointment: any) => ({
           id: appointment.id,
           title: `${appointment.doctorName} (${appointment.patientName})`,
-          start: appointment.startTime, // Az API által visszaadott időpontokat később átalakítjuk
+          start: appointment.startTime,
           end: appointment.endTime,
           backgroundColor: 'blue',
           borderColor: 'blue',
@@ -113,13 +121,19 @@ export class CalendarComponent implements OnInit {
   }
 
   async loadAvailableAppointments(): Promise<void> {
-    if (!this.doctorId) {
-      console.error('Nincs orvos ID az URL-ben!');
+    if (!this.doctorId && !this.serviceId) {
+      console.error('Nincs orvos vagy szolgáltatás ID az URL-ben!');
       return;
     }
 
     try {
-      const response = await lastValueFrom(this.appointmentService.getAvailableSlots(this.doctorId));
+      let response: any;
+      // Ha van serviceId, akkor a getAvailableSlotsByService endpointot hívjuk
+      if (this.serviceId) {
+        response = await lastValueFrom(this.appointmentService.getAvailableSlotsByService(this.serviceId));
+      } else if (this.doctorId) {
+        response = await lastValueFrom(this.appointmentService.getAvailableSlotsByDoctor(this.doctorId));
+      }
       if (response.status === 'success') {
         console.log('Lekért szabad időpontok:', response.slots);
         this.availableEvents = response.slots.map((slot: any) => ({
@@ -154,32 +168,30 @@ export class CalendarComponent implements OnInit {
 
   /**
    * Átalakítja a bejövő időpontot úgy, hogy a helyi időt tükrözze.
-   * Levonja az aktuális időzóna offsetet, majd visszaadja az ISO formátumú (HH:MM:SS) értéket.
    */
   convertToLocalISOString(dateInput: string | Date): string {
     const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
-  
+
     if (isNaN(date.getTime())) {
       console.error("Hibás dátumformátum:", dateInput);
       return "";
     }
-  
-    const tzoffset = date.getTimezoneOffset() * 60000; // offset milliszekundumban
+
+    const tzoffset = date.getTimezoneOffset() * 60000;
     const localDate = new Date(date.getTime() - tzoffset);
     return localDate.toISOString().slice(0, 19).replace('T', ' ');
   }
-  
+
   handleEventClick(info: any): void {
-    if (this.doctorId === null) {
-      console.error('Nincs orvos ID elérhető!');
+    if (this.doctorId === null && this.serviceId === null) {
+      console.error('Nincs orvos vagy szolgáltatás ID elérhető!');
       return;
     }
 
-    // A helyi idő átalakításával biztosítjuk, hogy a modalban is a megfelelő idő jelenjen meg
     const startTime: string = info.event.start ? this.convertToLocalISOString(info.event.start) : '';
     const endTime: string = info.event.end ? this.convertToLocalISOString(info.event.end) : '';
 
-    const doctorId: number = this.doctorId;
+    const doctorId: number | null = this.doctorId;
     const patientId: number | null = this.authService.getUserId();
 
     if (!patientId) {
@@ -194,14 +206,14 @@ export class CalendarComponent implements OnInit {
 
     const data: EventDetailsData = {
       title: info.event.title,
-      start: info.event.start ? this.convertToLocalISOString(info.event.start) : '',
-      end: info.event.end ? this.convertToLocalISOString(info.event.end) : '',
+      start: startTime,
+      end: endTime,
       status: info.event.extendedProps?.status,
-      doctorId: doctorId,
+      doctorId: doctorId!,
       patientId: patientId,
       serviceName: info.event.extendedProps?.serviceName
     };
-    
+
     const dialogRef = this.dialog.open(EventDetailsModalComponent, {
       data,
       width: '400px'
