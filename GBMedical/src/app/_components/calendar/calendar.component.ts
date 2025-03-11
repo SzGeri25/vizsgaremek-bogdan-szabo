@@ -87,18 +87,21 @@ export class CalendarComponent implements OnInit {
       }
       const responseData = await response.json();
 
+      console.log(responseData);
+      
       if (responseData && responseData.status === 'success' && responseData.appointments) {
         this.bookedEvents = responseData.appointments.map((appointment: any) => ({
           id: appointment.id,
           title: `${appointment.patientName} (${appointment.doctorName})`,
-          start: appointment.startTime,
+          start: appointment.startTime, // Az API által visszaadott időpontokat később átalakítjuk
           end: appointment.endTime,
           backgroundColor: 'blue',
           borderColor: 'blue',
           extendedProps: {
             status: appointment.status,
             doctorId: appointment.doctorId,
-            patientId: appointment.patientId
+            patientId: appointment.patientId,
+            serviceName: appointment.serviceName,
           }
         }));
       } else {
@@ -121,8 +124,8 @@ export class CalendarComponent implements OnInit {
         console.log('Lekért szabad időpontok:', response.slots);
         this.availableEvents = response.slots.map((slot: any) => ({
           title: 'Orvos ' + slot.doctorId + ' (szabad)',
-          start: this.convertToISO(slot.slotStart),
-          end: this.convertToISO(slot.slotEnd),
+          start: this.convertToLocalISOString(slot.slotStart),
+          end: this.convertToLocalISOString(slot.slotEnd),
           backgroundColor: 'lightgreen',
           borderColor: 'lightgreen',
           extendedProps: {
@@ -149,27 +152,32 @@ export class CalendarComponent implements OnInit {
     }, 100);
   }
 
-  convertToISO(dateStr: string): string {
-    const parsedDate = new Date(dateStr);
+  /**
+   * Átalakítja a bejövő időpontot úgy, hogy a helyi időt tükrözze.
+   * Levonja az aktuális időzóna offsetet, majd visszaadja az ISO formátumú (HH:MM:SS) értéket.
+   */
+  convertToLocalISOString(dateInput: string | Date): string {
+    const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
   
-    if (isNaN(parsedDate.getTime())) {
-      console.error("Hibás dátumformátum:", dateStr);
+    if (isNaN(date.getTime())) {
+      console.error("Hibás dátumformátum:", dateInput);
       return "";
     }
   
-    return parsedDate.toISOString().slice(0, 19); // Levágja a `Z` végződést
+    const tzoffset = date.getTimezoneOffset() * 60000; // offset milliszekundumban
+    const localDate = new Date(date.getTime() - tzoffset);
+    return localDate.toISOString().slice(0, 19).replace('T', ' ');
   }
   
-  
-
   handleEventClick(info: any): void {
     if (this.doctorId === null) {
       console.error('Nincs orvos ID elérhető!');
       return;
     }
 
-    const startTime: string = info.event.start ? this.convertToISO(info.event.start.toISOString()) : '';
-    const endTime: string = info.event.end ? this.convertToISO(info.event.end.toISOString()) : '';
+    // A helyi idő átalakításával biztosítjuk, hogy a modalban is a megfelelő idő jelenjen meg
+    const startTime: string = info.event.start ? this.convertToLocalISOString(info.event.start) : '';
+    const endTime: string = info.event.end ? this.convertToLocalISOString(info.event.end) : '';
 
     const doctorId: number = this.doctorId;
     const patientId: number | null = this.authService.getUserId();
@@ -186,14 +194,14 @@ export class CalendarComponent implements OnInit {
 
     const data: EventDetailsData = {
       title: info.event.title,
-      start: info.event.start ? info.event.start.toISOString().replace('T', ' ').slice(0, 19) : '',
-      end: info.event.end ? info.event.end.toISOString().replace('T', ' ').slice(0, 19) : '',
+      start: info.event.start ? this.convertToLocalISOString(info.event.start) : '',
+      end: info.event.end ? this.convertToLocalISOString(info.event.end) : '',
       status: info.event.extendedProps?.status,
       doctorId: doctorId,
-      patientId: patientId
+      patientId: patientId,
+      serviceName: info.event.extendedProps?.serviceName
     };
     
-
     const dialogRef = this.dialog.open(EventDetailsModalComponent, {
       data,
       width: '400px'

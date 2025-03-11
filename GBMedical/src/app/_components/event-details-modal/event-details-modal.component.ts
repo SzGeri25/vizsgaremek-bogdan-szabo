@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { AppointmentService } from '../../_services/appointments.service';
 import Swal from 'sweetalert2';
+import { CommonModule } from '@angular/common';
 
 export interface EventDetailsData {
   title: string;
@@ -11,11 +12,12 @@ export interface EventDetailsData {
   status: string;
   doctorId: number;
   patientId: number;
+  serviceName: string;
 }
 
 @Component({
   selector: 'app-event-details-modal',
-  imports: [MatIconModule],
+  imports: [MatIconModule, CommonModule],
   templateUrl: './event-details-modal.component.html',
   styleUrl: './event-details-modal.component.css'
 })
