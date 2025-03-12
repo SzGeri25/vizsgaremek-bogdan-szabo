@@ -443,7 +443,7 @@ public class Appointments implements Serializable {
 
             spq.registerStoredProcedureParameter("doctorIdIN", Integer.class, ParameterMode.IN);
 
-            // Beállítjuk a paramétereket a stored procedure-hoz
+            // Paraméter beállítása
             spq.setParameter("doctorIdIN", doctorId);
 
             spq.execute();
@@ -454,6 +454,9 @@ public class Appointments implements Serializable {
                 slot.setSlotStart(record[0].toString());
                 slot.setSlotEnd(record[1].toString());
                 slot.setDoctorId((int) record[2]);
+                slot.setDoctorName(record[3].toString());
+                slot.setServiceId((int) record[4]);
+                slot.setServiceName(record[5].toString());
                 slots.add(slot);
             }
 
