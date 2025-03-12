@@ -95,7 +95,7 @@ export class CalendarComponent implements OnInit {
       }
       const responseData = await response.json();
 
-      console.log("Foglalt időpontok: " , responseData);
+      console.log("Foglalt időpontok: ", responseData);
 
       if (responseData && responseData.status === 'success' && responseData.appointments) {
         this.bookedEvents = responseData.appointments.map((appointment: any) => ({
@@ -137,15 +137,19 @@ export class CalendarComponent implements OnInit {
       if (response.status === 'success') {
         console.log('Lekért szabad időpontok:', response.slots);
         this.availableEvents = response.slots.map((slot: any) => ({
-          title: 'Orvos ' + slot.doctorId + ' (szabad)',
+          title: this.serviceId 
+            ? `${slot.doctorName} - ${slot.serviceName}` 
+            : `${slot.serviceName} - ${slot.doctorName}`, 
           start: this.convertToLocalISOString(slot.slotStart),
           end: this.convertToLocalISOString(slot.slotEnd),
           backgroundColor: 'lightgreen',
           borderColor: 'lightgreen',
           extendedProps: {
-            doctorId: slot.doctorId
+            doctorId: slot.doctorId,
+            serviceName: slot.serviceName,
+            doctorName: slot.doctorName
           }
-        }));
+        }));        
       } else {
         console.error('Nincs találat vagy hiba történt (szabad időpontok):', response);
       }
@@ -211,8 +215,9 @@ export class CalendarComponent implements OnInit {
       status: info.event.extendedProps?.status,
       doctorId: doctorId!,
       patientId: patientId,
-      serviceName: info.event.extendedProps?.serviceName
-    };
+      serviceName: info.event.extendedProps?.serviceName || 'Nincs megadva', // Ha nincs, írja ki, hogy nincs megadva
+      doctorName: info.event.extendedProps?.doctorName || 'Nincs megadva' // Ha nincs, írja ki, hogy nincs megadva
+    };    
 
     const dialogRef = this.dialog.open(EventDetailsModalComponent, {
       data,

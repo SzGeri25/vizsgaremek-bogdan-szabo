@@ -8,12 +8,10 @@
     <div class="modal-content">
         <p><strong>Kezdés:</strong> {{ data.start }}</p>
         <p><strong>Befejezés:</strong> {{ data.end }}</p>
-        <p><strong>Státusz:</strong> {{ data.status === 'booked' ? 'Foglalt' : data.status }}</p>
-        <p *ngIf="data.serviceName"><strong>Szolgáltatás:</strong> {{ data.serviceName }}</p>
+        <p><strong>Státusz:</strong> {{ data.status === 'booked' ? 'Foglalt' : 'Szabad' }}</p>
         <button *ngIf="data.status !== 'booked'" mat-button color="primary" (click)="onBookingClick()"
             class="bookingButton">
             Időpontfoglalás
         </button>
-
     </div>
 </div>

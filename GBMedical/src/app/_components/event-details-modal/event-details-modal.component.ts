@@ -13,6 +13,7 @@ export interface EventDetailsData {
   doctorId: number;
   patientId: number;
   serviceName: string;
+  doctorName: string;
 }
 
 @Component({
