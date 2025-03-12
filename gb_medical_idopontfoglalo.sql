@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: localhost:3306
--- Létrehozás ideje: 2025. Már 07. 15:04
+-- Létrehozás ideje: 2025. Már 12. 09:17
 -- Kiszolgáló verziója: 5.7.24
 -- PHP verzió: 8.1.0
 
@@ -408,36 +408,6 @@ END$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getAppointmentById` (IN `idIN` INT)   SELECT * FROM `appointments`
 WHERE `id` = idIN AND `is_deleted` = 0$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `getAvailableSlots` (IN `doctorIdIN` INT, IN `startDateIN` DATETIME, IN `endDateIN` DATETIME)   BEGIN
-    CREATE TEMPORARY TABLE TimeSlots AS
-    SELECT 
-        schedules.doctor_id,
-        schedules.start_time + INTERVAL x * 30 MINUTE AS slot_start,
-        schedules.start_time + INTERVAL (x + 1) * 30 MINUTE AS slot_end
-    FROM schedules
-    JOIN (
-        SELECT 0 AS x UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3
-        UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7
-        UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10 UNION ALL SELECT 11
-        UNION ALL SELECT 12 UNION ALL SELECT 13 UNION ALL SELECT 14 UNION ALL SELECT 15
-        UNION ALL SELECT 16 UNION ALL SELECT 17 UNION ALL SELECT 18 UNION ALL SELECT 19
-        UNION ALL SELECT 20 UNION ALL SELECT 21 UNION ALL SELECT 22 UNION ALL SELECT 23
-    ) AS Numbers ON x * 30 < TIMESTAMPDIFF(MINUTE, schedules.start_time, schedules.end_time)
-    WHERE schedules.doctor_id = doctorIdIN
-      AND schedules.start_time >= startDateIN
-      AND schedules.end_time <= endDateIN;
-
-    SELECT ts.slot_start, ts.slot_end, ts.doctor_id
-    FROM TimeSlots ts
-    LEFT JOIN Appointments a
-    ON ts.doctor_id = a.doctor_id
-       AND ts.slot_start < a.end_time
-       AND ts.slot_end > a.start_time
-    WHERE a.id IS NULL;
-
-    DROP TEMPORARY TABLE TimeSlots;
-END$$
-
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getAvailableSlotsByDoctor` (IN `doctorIdIN` INT)   BEGIN
     -- Ideiglenes tábla létrehozása a doktor schedule-jából generált slotokkal
     CREATE TEMPORARY TABLE TimeSlots AS
@@ -456,13 +426,25 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `getAvailableSlotsByDoctor` (IN `doc
     ) AS n ON n.x * 30 < TIMESTAMPDIFF(MINUTE, s.start_time, s.end_time)
     WHERE s.doctor_id = doctorIdIN;
     
-    -- Szabad slotok lekérdezése és rendezése a slot kezdete szerint
-    SELECT ts.slot_start, ts.slot_end, ts.doctor_id
+    -- Szabad slotok lekérdezése orvos névvel, service id-vel és a szolgáltatás nevével
+    SELECT 
+        ts.slot_start, 
+        ts.slot_end, 
+        ts.doctor_id, 
+        d.name AS doctor_name,
+        dxs.service_id,
+        ser.name AS service_name
     FROM TimeSlots ts
     LEFT JOIN Appointments a
       ON ts.doctor_id = a.doctor_id
       AND ts.slot_start < a.end_time
       AND ts.slot_end > a.start_time
+    LEFT JOIN doctors_x_services dxs
+      ON ts.doctor_id = dxs.doctor_id
+    LEFT JOIN services ser
+      ON dxs.service_id = ser.id
+    LEFT JOIN doctors d
+      ON ts.doctor_id = d.id
     WHERE a.id IS NULL
     ORDER BY ts.slot_start;
     
@@ -496,17 +478,59 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `getAvailableSlotsByService` (IN `se
     ORDER BY slot_start;
     
     -- Szabad slotok lekérdezése: kizárjuk az ütköző (foglalttal lefoglalt) slotokat
-    SELECT ts.slot_start, ts.slot_end, ts.doctor_id
+    SELECT 
+        ts.slot_start, 
+        ts.slot_end, 
+        ts.doctor_id,
+        d.name AS doctor_name,
+        dxs.service_id,
+        ser.name AS service_name
     FROM TimeSlots ts
     LEFT JOIN Appointments a
       ON ts.doctor_id = a.doctor_id
       AND ts.slot_start < a.end_time
       AND ts.slot_end > a.start_time
+    LEFT JOIN doctors d
+      ON ts.doctor_id = d.id
+    LEFT JOIN doctors_x_services dxs
+      ON ts.doctor_id = dxs.doctor_id AND dxs.service_id = serviceIdIN
+    LEFT JOIN services ser
+      ON dxs.service_id = ser.id
     WHERE a.id IS NULL
     ORDER BY ts.slot_start;
     
     DROP TEMPORARY TABLE TimeSlots;
     DROP TEMPORARY TABLE ServiceDoctors;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getAvailableSlots_Wrong` (IN `doctorIdIN` INT, IN `startDateIN` DATETIME, IN `endDateIN` DATETIME)   BEGIN
+    CREATE TEMPORARY TABLE TimeSlots AS
+    SELECT 
+        schedules.doctor_id,
+        schedules.start_time + INTERVAL x * 30 MINUTE AS slot_start,
+        schedules.start_time + INTERVAL (x + 1) * 30 MINUTE AS slot_end
+    FROM schedules
+    JOIN (
+        SELECT 0 AS x UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3
+        UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7
+        UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10 UNION ALL SELECT 11
+        UNION ALL SELECT 12 UNION ALL SELECT 13 UNION ALL SELECT 14 UNION ALL SELECT 15
+        UNION ALL SELECT 16 UNION ALL SELECT 17 UNION ALL SELECT 18 UNION ALL SELECT 19
+        UNION ALL SELECT 20 UNION ALL SELECT 21 UNION ALL SELECT 22 UNION ALL SELECT 23
+    ) AS Numbers ON x * 30 < TIMESTAMPDIFF(MINUTE, schedules.start_time, schedules.end_time)
+    WHERE schedules.doctor_id = doctorIdIN
+      AND schedules.start_time >= startDateIN
+      AND schedules.end_time <= endDateIN;
+
+    SELECT ts.slot_start, ts.slot_end, ts.doctor_id
+    FROM TimeSlots ts
+    LEFT JOIN Appointments a
+    ON ts.doctor_id = a.doctor_id
+       AND ts.slot_start < a.end_time
+       AND ts.slot_end > a.start_time
+    WHERE a.id IS NULL;
+
+    DROP TEMPORARY TABLE TimeSlots;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getBookedAppointments` ()   BEGIN
@@ -815,7 +839,12 @@ INSERT INTO `appointments` (`id`, `doctor_id`, `patient_id`, `start_time`, `end_
 (26, 12, 9, '2025-02-28 09:30:00', '2025-02-28 10:00:00', 30, 'booked', 0, '2025-03-07 12:59:56', '2025-03-07 12:59:56', NULL, NULL, NULL),
 (27, 12, 9, '2025-02-28 10:30:00', '2025-02-28 11:00:00', 30, 'booked', 0, '2025-03-07 13:03:52', '2025-03-07 13:03:52', NULL, NULL, NULL),
 (28, 12, 47, '2025-02-28 11:00:00', '2025-02-28 11:30:00', 30, 'booked', 0, '2025-03-07 15:39:00', '2025-03-07 15:39:00', NULL, NULL, NULL),
-(29, 12, 47, '2025-02-28 13:00:00', '2025-02-28 13:30:00', 30, 'booked', 0, '2025-03-07 15:56:02', '2025-03-07 15:56:02', NULL, NULL, NULL);
+(29, 12, 47, '2025-02-28 13:00:00', '2025-02-28 13:30:00', 30, 'booked', 0, '2025-03-07 15:56:02', '2025-03-07 15:56:02', NULL, NULL, NULL),
+(30, 12, 47, '2025-02-28 15:00:00', '2025-02-28 15:30:00', 30, 'booked', 0, '2025-03-10 14:03:15', '2025-03-10 14:03:15', NULL, NULL, NULL),
+(31, 12, 47, '2025-02-28 15:30:00', '2025-02-28 16:00:00', 30, 'booked', 0, '2025-03-10 14:19:32', '2025-03-10 14:19:32', NULL, NULL, NULL),
+(32, 14, 47, '2025-02-14 09:00:00', '2025-02-14 09:30:00', 30, 'booked', 0, '2025-03-10 14:21:07', '2025-03-10 14:21:07', NULL, NULL, NULL),
+(33, 12, 47, '2025-02-12 07:00:00', '2025-02-12 07:30:00', 30, 'cancelled', 1, '2025-03-10 14:46:22', '2025-03-10 14:46:22', '2025-03-11 12:52:15', NULL, NULL),
+(34, 12, 47, '2025-02-12 12:00:00', '2025-02-12 12:30:00', 30, 'booked', 0, '2025-03-11 12:53:15', '2025-03-11 12:53:15', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -926,7 +955,12 @@ INSERT INTO `notifications` (`id`, `user_id`, `message`, `sent_at`, `is_sent`, `
 (10, 9, 'Időpont foglalva: 2025-02-28 09:30:00 - 2025-02-28 10:00:00', NULL, 0, '2025-03-07 12:59:56'),
 (11, 9, 'Időpont foglalva: 2025-02-28 10:30:00 - 2025-02-28 11:00:00', NULL, 0, '2025-03-07 13:03:52'),
 (12, 47, 'Időpont foglalva: 2025-02-28 11:00:00 - 2025-02-28 11:30:00', NULL, 0, '2025-03-07 15:39:00'),
-(13, 47, 'Időpont foglalva: 2025-02-28 13:00:00 - 2025-02-28 13:30:00', NULL, 0, '2025-03-07 15:56:02');
+(13, 47, 'Időpont foglalva: 2025-02-28 13:00:00 - 2025-02-28 13:30:00', NULL, 0, '2025-03-07 15:56:02'),
+(14, 47, 'Időpont foglalva: 2025-02-28 15:00:00 - 2025-02-28 15:30:00', NULL, 0, '2025-03-10 14:03:15'),
+(15, 47, 'Időpont foglalva: 2025-02-28 15:30:00 - 2025-02-28 16:00:00', NULL, 0, '2025-03-10 14:19:32'),
+(16, 47, 'Időpont foglalva: 2025-02-14 09:00:00 - 2025-02-14 09:30:00', NULL, 0, '2025-03-10 14:21:07'),
+(17, 47, 'Időpont foglalva: 2025-02-12 07:00:00 - 2025-02-12 07:30:00', NULL, 0, '2025-03-10 14:46:22'),
+(18, 47, 'Időpont foglalva: 2025-02-12 12:00:00 - 2025-02-12 12:30:00', NULL, 0, '2025-03-11 12:53:15');
 
 -- --------------------------------------------------------
 
@@ -1320,7 +1354,12 @@ INSERT INTO `user_notifications` (`id`, `notification_id`, `user_id`) VALUES
 (10, 10, 9),
 (11, 11, 9),
 (12, 12, 47),
-(13, 13, 47);
+(13, 13, 47),
+(14, 14, 47),
+(15, 15, 47),
+(16, 16, 47),
+(17, 17, 47),
+(18, 18, 47);
 
 --
 -- Indexek a kiírt táblákhoz
@@ -1437,7 +1476,7 @@ ALTER TABLE `accountactivationtokens`
 -- AUTO_INCREMENT a táblához `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT a táblához `doctors`
@@ -1449,7 +1488,7 @@ ALTER TABLE `doctors`
 -- AUTO_INCREMENT a táblához `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT a táblához `password_reset_tokens`
@@ -1497,7 +1536,7 @@ ALTER TABLE `services`
 -- AUTO_INCREMENT a táblához `user_notifications`
 --
 ALTER TABLE `user_notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- Megkötések a kiírt táblákhoz
