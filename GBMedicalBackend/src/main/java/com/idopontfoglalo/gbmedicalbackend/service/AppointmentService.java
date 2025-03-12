@@ -175,6 +175,9 @@ public class AppointmentService {
                     slotObject.put("slotStart", slot.getSlotStart());
                     slotObject.put("slotEnd", slot.getSlotEnd());
                     slotObject.put("doctorId", slot.getDoctorId());
+                    slotObject.put("doctorName", slot.getDoctorName());
+                    slotObject.put("serviceId", slot.getServiceId());
+                    slotObject.put("serviceName", slot.getServiceName());
                     slotsArray.put(slotObject);
                 }
                 toReturn.put("slots", slotsArray);
