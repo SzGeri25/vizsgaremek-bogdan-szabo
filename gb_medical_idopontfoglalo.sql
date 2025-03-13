@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: localhost:3306
--- Létrehozás ideje: 2025. Már 12. 09:17
+-- Létrehozás ideje: 2025. Már 13. 11:14
 -- Kiszolgáló verziója: 5.7.24
 -- PHP verzió: 8.1.0
 
@@ -772,21 +772,6 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `accountactivationtokens`
---
-
-CREATE TABLE `accountactivationtokens` (
-  `id` int(11) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `token` varchar(255) NOT NULL,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  `expires_at` datetime NOT NULL,
-  `used` tinyint(1) DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
 -- Tábla szerkezet ehhez a táblához `appointments`
 --
 
@@ -844,7 +829,8 @@ INSERT INTO `appointments` (`id`, `doctor_id`, `patient_id`, `start_time`, `end_
 (31, 12, 47, '2025-02-28 15:30:00', '2025-02-28 16:00:00', 30, 'booked', 0, '2025-03-10 14:19:32', '2025-03-10 14:19:32', NULL, NULL, NULL),
 (32, 14, 47, '2025-02-14 09:00:00', '2025-02-14 09:30:00', 30, 'booked', 0, '2025-03-10 14:21:07', '2025-03-10 14:21:07', NULL, NULL, NULL),
 (33, 12, 47, '2025-02-12 07:00:00', '2025-02-12 07:30:00', 30, 'cancelled', 1, '2025-03-10 14:46:22', '2025-03-10 14:46:22', '2025-03-11 12:52:15', NULL, NULL),
-(34, 12, 47, '2025-02-12 12:00:00', '2025-02-12 12:30:00', 30, 'booked', 0, '2025-03-11 12:53:15', '2025-03-11 12:53:15', NULL, NULL, NULL);
+(34, 12, 47, '2025-02-12 12:00:00', '2025-02-12 12:30:00', 30, 'booked', 0, '2025-03-11 12:53:15', '2025-03-11 12:53:15', NULL, NULL, NULL),
+(36, 7, 47, '2025-02-23 16:00:00', '2025-02-23 16:30:00', 30, 'booked', 0, '2025-03-12 11:44:41', '2025-03-12 11:44:41', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -960,7 +946,8 @@ INSERT INTO `notifications` (`id`, `user_id`, `message`, `sent_at`, `is_sent`, `
 (15, 47, 'Időpont foglalva: 2025-02-28 15:30:00 - 2025-02-28 16:00:00', NULL, 0, '2025-03-10 14:19:32'),
 (16, 47, 'Időpont foglalva: 2025-02-14 09:00:00 - 2025-02-14 09:30:00', NULL, 0, '2025-03-10 14:21:07'),
 (17, 47, 'Időpont foglalva: 2025-02-12 07:00:00 - 2025-02-12 07:30:00', NULL, 0, '2025-03-10 14:46:22'),
-(18, 47, 'Időpont foglalva: 2025-02-12 12:00:00 - 2025-02-12 12:30:00', NULL, 0, '2025-03-11 12:53:15');
+(18, 47, 'Időpont foglalva: 2025-02-12 12:00:00 - 2025-02-12 12:30:00', NULL, 0, '2025-03-11 12:53:15'),
+(19, 47, 'Időpont foglalva: 2025-02-23 16:00:00 - 2025-02-23 16:30:00', NULL, 0, '2025-03-12 11:44:41');
 
 -- --------------------------------------------------------
 
@@ -1074,7 +1061,36 @@ INSERT INTO `patients` (`id`, `first_name`, `last_name`, `email`, `phone_number`
 (50, 're', 'gi', 'registerPatientTest12@gmail.com', '063088888', '28082a42235120245ed4c983e2caed729cca1275', 0, 0, '2025-03-03 17:20:03', '2025-03-03 17:20:03', NULL),
 (51, 'Máté', 'Hermann', 'mate.hermann@gmail.com', '0645451674', '067b33986262d5090ca8780db7395a792964bfff', 0, 0, '2025-03-04 14:10:19', '2025-03-04 14:10:19', NULL),
 (52, 'Próba', 'Vizsga', 'proba.vizsga@gmail.com', '06111111111', 'b0541812754eba498b8c2cf2ba3eb2a778d5f750', 0, 0, '2025-03-04 14:48:52', '2025-03-04 14:48:52', NULL),
-(55, 'Próba', 'Vizsga', 'probavizsga@gmail.com', '0611111112', 'b0541812754eba498b8c2cf2ba3eb2a778d5f750', 0, 0, '2025-03-05 13:57:19', '2025-03-05 13:57:19', NULL);
+(55, 'Próba', 'Vizsga', 'probavizsga@gmail.com', '0611111112', 'b0541812754eba498b8c2cf2ba3eb2a778d5f750', 0, 0, '2025-03-05 13:57:19', '2025-03-05 13:57:19', NULL),
+(56, 'Test', 'register2', 'testreg2@gmail.com', '5555898941', '40e869a48a074b408e76df9a735e53e71f0ba16b', 0, 0, '2025-03-12 13:04:40', '2025-03-12 13:04:40', NULL),
+(59, 'Test', 'register2', 'testreg3@gmail.com', '0678954623', '40e869a48a074b408e76df9a735e53e71f0ba16b', 0, 0, '2025-03-12 13:07:21', '2025-03-12 13:07:21', NULL),
+(60, 'Test', 'register4', 'testreg4@gmail.com', '0678954628', '40e869a48a074b408e76df9a735e53e71f0ba16b', 0, 0, '2025-03-12 13:08:38', '2025-03-12 13:08:38', NULL),
+(61, 'Teszt', 'Felhasználó', 'teszt@pelda.hu', '06201234567', '9bde3453d74ad925bcc1a07d782709fbb94e60d8', 0, 0, '2025-03-13 10:01:35', '2025-03-13 10:01:35', NULL),
+(62, 'Teszt', 'Felhasználó', 'teszt1@pelda.hu', '06301234567', '9bde3453d74ad925bcc1a07d782709fbb94e60d8', 0, 0, '2025-03-13 12:00:38', '2025-03-13 12:00:38', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `patient_verifications`
+--
+
+CREATE TABLE `patient_verifications` (
+  `id` int(11) NOT NULL,
+  `patient_id` int(11) NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `verified` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `expires_at` datetime NOT NULL,
+  `verified_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- A tábla adatainak kiíratása `patient_verifications`
+--
+
+INSERT INTO `patient_verifications` (`id`, `patient_id`, `token`, `verified`, `created_at`, `expires_at`, `verified_at`) VALUES
+(1, 61, 'c36dbad3-a17e-40d9-87f8-f4c0359f89bb', 1, '2025-03-13 09:01:35', '2025-03-14 10:01:36', '2025-03-13 11:45:30'),
+(2, 62, 'abb5a943-92e4-44bf-9b76-ae95ccc04425', 1, '2025-03-13 11:00:38', '2025-03-14 12:00:38', '2025-03-13 12:06:29');
 
 -- --------------------------------------------------------
 
@@ -1359,19 +1375,12 @@ INSERT INTO `user_notifications` (`id`, `notification_id`, `user_id`) VALUES
 (15, 15, 47),
 (16, 16, 47),
 (17, 17, 47),
-(18, 18, 47);
+(18, 18, 47),
+(19, 19, 47);
 
 --
 -- Indexek a kiírt táblákhoz
 --
-
---
--- A tábla indexei `accountactivationtokens`
---
-ALTER TABLE `accountactivationtokens`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `token` (`token`),
-  ADD KEY `email` (`email`);
 
 --
 -- A tábla indexei `appointments`
@@ -1418,6 +1427,14 @@ ALTER TABLE `patients`
   ADD UNIQUE KEY `id` (`phone_number`),
   ADD UNIQUE KEY `email` (`email`),
   ADD UNIQUE KEY `phone_number` (`phone_number`);
+
+--
+-- A tábla indexei `patient_verifications`
+--
+ALTER TABLE `patient_verifications`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `token` (`token`),
+  ADD KEY `fk_patient_id` (`patient_id`);
 
 --
 -- A tábla indexei `payments`
@@ -1467,16 +1484,10 @@ ALTER TABLE `user_notifications`
 --
 
 --
--- AUTO_INCREMENT a táblához `accountactivationtokens`
---
-ALTER TABLE `accountactivationtokens`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT a táblához `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT a táblához `doctors`
@@ -1488,7 +1499,7 @@ ALTER TABLE `doctors`
 -- AUTO_INCREMENT a táblához `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT a táblához `password_reset_tokens`
@@ -1500,7 +1511,13 @@ ALTER TABLE `password_reset_tokens`
 -- AUTO_INCREMENT a táblához `patients`
 --
 ALTER TABLE `patients`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+
+--
+-- AUTO_INCREMENT a táblához `patient_verifications`
+--
+ALTER TABLE `patient_verifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT a táblához `payments`
@@ -1536,7 +1553,7 @@ ALTER TABLE `services`
 -- AUTO_INCREMENT a táblához `user_notifications`
 --
 ALTER TABLE `user_notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- Megkötések a kiírt táblákhoz
@@ -1555,6 +1572,12 @@ ALTER TABLE `appointments`
 ALTER TABLE `doctors_x_services`
   ADD CONSTRAINT `doctors_x_services_ibfk_1` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`id`),
   ADD CONSTRAINT `doctors_x_services_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`);
+
+--
+-- Megkötések a táblához `patient_verifications`
+--
+ALTER TABLE `patient_verifications`
+  ADD CONSTRAINT `fk_patient_id` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`id`) ON DELETE CASCADE;
 
 --
 -- Megkötések a táblához `payments`
