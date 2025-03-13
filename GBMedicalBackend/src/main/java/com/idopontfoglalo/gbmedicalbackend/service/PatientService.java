@@ -5,8 +5,13 @@
 package com.idopontfoglalo.gbmedicalbackend.service;
 
 import com.idopontfoglalo.gbmedicalbackend.config.JWT;
+import com.idopontfoglalo.gbmedicalbackend.model.PatientVerifications;
 import com.idopontfoglalo.gbmedicalbackend.model.Patients;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.json.JSONArray;
@@ -19,6 +24,8 @@ import org.json.JSONObject;
 public class PatientService {
 
     private Patients layer = new Patients();
+    PatientVerifications verification = new PatientVerifications();
+
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
 
     public static boolean isValidEmail(String email) {
@@ -57,23 +64,50 @@ public class PatientService {
         String status = "success";
         int statusCode = 200;
 
-        //Az email cím benne van-e a db-ben
-        //valid-e az email cím
-        //valid-e a jelszó
         if (isValidEmail(p.getEmail())) {
             if (isValidPassword(p.getPassword())) {
-                boolean isPatientExists = Patients.isPatientExists(p.getEmail());
-                if (Patients.isPatientExists(p.getEmail()) == null) {
+                Boolean isPatientExists = Patients.isPatientExists(p.getEmail());
+                if (isPatientExists == null) {
                     status = "ModelException";
                     statusCode = 500;
                 } else if (isPatientExists == true) {
                     status = "PatientAlreadyExists";
                     statusCode = 417;
                 } else {
-                    boolean registerPatient = layer.registerPatient(p);
-                    if (registerPatient == false) {
+                    // Regisztráció a stored procedure segítségével
+                    boolean registerPatientResult = layer.registerPatient(p);
+                    if (!registerPatientResult) {
                         status = "fail";
                         statusCode = 417;
+                    } else {
+                        // Lekérjük az új páciens azonosítóját
+                        Integer patientId = Patients.getPatientIdByEmail(p.getEmail());
+                        if (patientId == null) {
+                            status = "PatientIdNotFound";
+                            statusCode = 500;
+                        } else {
+                            // Token generálása
+                            String token = UUID.randomUUID().toString();
+                            // Lejárati idő: például 24 óra a jelenlegi időhöz képest
+                            Timestamp expiresAt = Timestamp.from(Instant.now().plus(24, ChronoUnit.HOURS));
+
+                            // Beszúrjuk a token adatokat a patient_verifications táblába
+                            boolean verificationInserted = verification.insertVerificationToken(patientId, token, expiresAt);
+                            if (!verificationInserted) {
+                                status = "VerificationTokenInsertFailed";
+                                statusCode = 500;
+                            } else {
+                                // Verifikációs link összeállítása
+                                String verificationLink = "https://localhost:4200/verify?token=" + token;
+
+                                // Email elküldése
+                                boolean emailSent = EmailService.sendEmail(p.getEmail(), EmailService.EmailType.REGISTRATION_CONFIRMATION, verificationLink);
+                                if (!emailSent) {
+                                    status = "EmailSendFailed";
+                                    statusCode = 500;
+                                }
+                            }
+                        }
                     }
                 }
             } else {

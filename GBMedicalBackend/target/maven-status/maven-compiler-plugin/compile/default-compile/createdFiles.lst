@@ -1,5 +1,6 @@
 com\idopontfoglalo\gbmedicalbackend\service\AppointmentService.class
 com\idopontfoglalo\gbmedicalbackend\service\EmailService$EmailType.class
+com\idopontfoglalo\gbmedicalbackend\model\PatientVerifications.class
 com\idopontfoglalo\gbmedicalbackend\service\DoctorService.class
 com\idopontfoglalo\gbmedicalbackend\controller\ServicesController.class
 com\idopontfoglalo\gbmedicalbackend\model\Reviews.class
@@ -13,7 +14,9 @@ com\idopontfoglalo\gbmedicalbackend\model\TimeSlotDTO.class
 com\idopontfoglalo\gbmedicalbackend\service\EmailService$1.class
 com\idopontfoglalo\gbmedicalbackend\config\JWT.class
 com\idopontfoglalo\gbmedicalbackend\controller\ApplicationConfig.class
+com\idopontfoglalo\gbmedicalbackend\service\VerificationService.class
 com\idopontfoglalo\gbmedicalbackend\model\Appointments.class
+com\idopontfoglalo\gbmedicalbackend\controller\VerificationController.class
 com\idopontfoglalo\gbmedicalbackend\service\PasswordResetService.class
 com\idopontfoglalo\gbmedicalbackend\controller\AppointmentController.class
 com\idopontfoglalo\gbmedicalbackend\model\Schedules.class

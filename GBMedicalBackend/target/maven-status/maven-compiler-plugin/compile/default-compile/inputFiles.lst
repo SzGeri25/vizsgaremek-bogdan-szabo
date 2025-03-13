@@ -13,6 +13,7 @@ C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\ma
 C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\controller\PasswordResetController.java
 C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\service\ServicesService.java
 C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\model\Appointments.java
+C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\controller\VerificationController.java
 C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\model\Patients.java
 C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\config\JWT.java
 C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\controller\DoctorController.java
@@ -23,4 +24,6 @@ C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\ma
 C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\controller\ReviewController.java
 C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\controller\ApplicationConfig.java
 C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\model\TimeSlotDTO.java
+C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\service\VerificationService.java
+C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\model\PatientVerifications.java
 C:\Users\szabo\Documents\GitHub\vizsgaremek-bogdan-szabo\GBMedicalBackend\src\main\java\com\idopontfoglalo\gbmedicalbackend\service\DoctorService.java

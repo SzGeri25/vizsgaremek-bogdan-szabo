@@ -33,6 +33,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.ParameterMode;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.persistence.StoredProcedureQuery;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -497,4 +498,18 @@ public class Patients implements Serializable {
         }
     }
 
+    public static Integer getPatientIdByEmail(String email) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            // Feltételezzük, hogy az email mező egyedi a patients táblában
+            Query query = em.createQuery("SELECT p.id FROM Patients p WHERE p.email = :email");
+            query.setParameter("email", email);
+            return (Integer) query.getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            em.close();
+        }
+    }
 }

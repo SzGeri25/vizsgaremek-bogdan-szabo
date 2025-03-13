@@ -51,7 +51,7 @@ public class EmailService {
             switch (emailType) {
                 case REGISTRATION_CONFIRMATION:
                     subject = "Regisztráció megerősítése";
-                    content = "<p>Kérjük, kattintson az alábbi linkre, hogy megerősítse a regisztrációját: <br>"
+                    content = "<p>Kattintson az alábbi linkre, hogy megerősítse a regisztrációját: <br>"
                             + "<a href=\"" + additionalContent + "\">Megerősítés</a></p>";
                     break;
                 case APPOINTMENT_CONFIRMATION:
