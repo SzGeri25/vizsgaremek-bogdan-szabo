@@ -11,6 +11,7 @@ import { NewPasswordComponent } from './_components/new-password/new-password.co
 import { AdminComponent } from './_components/admin/admin.component';
 import { BookingComponent } from './_components/booking/booking.component';
 import { ChevronUpComponent } from './_components/chevron-up/chevron-up.component';
+import { AuthGuard } from './auth.guard';
 
 
 export const routes: Routes = [
@@ -26,7 +27,7 @@ export const routes: Routes = [
     { path: 'booking', component: BookingComponent },
     { path: 'forgotPassword', component: ForgotPasswordComponent},
     { path: 'newPassword', component: NewPasswordComponent},
-    {path: 'admin', component: AdminComponent},
+    { path: 'admin', component: AdminComponent, canActivate: [AuthGuard] },
     {path: 'chevron-up', component: ChevronUpComponent},
 
 
