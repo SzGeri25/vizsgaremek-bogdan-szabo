@@ -7,6 +7,8 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { MatIconModule } from '@angular/material/icon';
+
 
 export interface Patient {
   id: number;
@@ -30,15 +32,27 @@ export interface Patient {
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
+    MatIconModule
   ],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit, AfterViewInit {
+  patients: any[] = [];
   displayedColumns: string[] = [
-    'id', 'firstName', 'lastName', 'email', 'phoneNumber',
-    'isAdmin', 'isDeleted', 'createdAt', 'updatedAt', 'deletedAt'
+    'id', 
+    'firstName', 
+    'lastName', 
+    'email', 
+    'phoneNumber', 
+    'isAdmin', 
+    'isDeleted', 
+    'createdAt', 
+    'updatedAt', 
+    'deletedAt', 
+    'actions'
   ];
+  
   dataSource = new MatTableDataSource<Patient>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -48,6 +62,7 @@ export class AdminComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.fetchPatients();
+    this.getPatients();
   }
 
   ngAfterViewInit(): void {
@@ -73,4 +88,25 @@ export class AdminComponent implements OnInit, AfterViewInit {
       console.error('Error fetching data:', error);
     }
   }
+
+  getPatients() {
+    this.http.get<any[]>('http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/patients/getAllPatients')
+      .subscribe(data => {
+        this.patients = data;
+      });
+  }
+
+  deletePatient(patientId: number) {
+    if (confirm('Biztosan törölni szeretnéd ezt a pácienst?')) {
+      this.http.delete(`http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/patients/deletePatient?patientId=${patientId}`)
+        .subscribe(() => {
+          alert('Páciens sikeresen törölve!');
+          this.getPatients(); // Frissíti a listát
+        }, error => {
+          alert('Hiba történt a törlés során.');
+          console.error(error);
+        });
+    }
+  }
+
 }

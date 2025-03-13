@@ -51,6 +51,16 @@
     <td mat-cell *matCellDef="let patient">{{ patient.deletedAt || 'N/A' }}</td>
   </ng-container>
 
+  <!-- Kuka ikon a törléshez -->
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>Actions</th>
+    <td mat-cell *matCellDef="let patient">
+      <button class="delete-button" mat-icon-button (click)="deletePatient(patient.id)">
+        <mat-icon class="delete-button" style="color: red;">delete</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
