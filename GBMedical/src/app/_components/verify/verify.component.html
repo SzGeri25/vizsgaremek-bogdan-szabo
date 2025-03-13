@@ -1,0 +1,19 @@
+<div class="container">
+    <div class="verification-box">
+        <div class="icon">
+            <ng-container *ngIf="isSuccess(); else failIcon">
+                <span class="check-icon">&#10004;</span>
+            </ng-container>
+            <ng-template #failIcon>
+                <span class="fail-icon">&#10006;</span>
+            </ng-template>
+        </div>
+        <div class="message">
+            <p>{{ verificationStatus }}</p>
+            <ng-container *ngIf="isSuccess()">
+                <p class="login-message">Most már bejelentkezhetsz!</p>
+                <button class="login-button" (click)="goToLogin()">Bejelentkezés</button>
+            </ng-container>
+        </div>
+    </div>
+</div>

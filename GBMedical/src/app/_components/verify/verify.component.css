@@ -1,0 +1,75 @@
+/* Teljes képernyő középre igazítás */
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+/* Verifikációs doboz stílusa */
+.verification-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Ikon stílus */
+.icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+/* Zöld pipa siker esetén */
+.check-icon {
+    color: green;
+}
+
+/* Piros X hiba esetén */
+.fail-icon {
+    color: red;
+}
+
+/* Üzenet stílusa */
+.message {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+/* Kiegészítő üzenet, ha sikeres a verifikáció */
+.login-message {
+    font-size: 1rem;
+    margin: 10px 0;
+    color: #333;
+}
+
+/* Gomb stílusa */
+.login-button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+    background-color: #45a049;
+}
+
+/* Reszponzív stílus kisebb képernyőkön */
+@media (max-width: 600px) {
+    .verification-box {
+        width: 90%;
+        padding: 15px;
+    }
+}

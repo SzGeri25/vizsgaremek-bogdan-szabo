@@ -98,7 +98,7 @@ public class PatientService {
                                 statusCode = 500;
                             } else {
                                 // Verifikációs link összeállítása
-                                String verificationLink = "https://localhost:4200/verify?token=" + token;
+                                String verificationLink = "http://localhost:4200/verify?token=" + token;
 
                                 // Email elküldése
                                 boolean emailSent = EmailService.sendEmail(p.getEmail(), EmailService.EmailType.REGISTRATION_CONFIRMATION, verificationLink);
