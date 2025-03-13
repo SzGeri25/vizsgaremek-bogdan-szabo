@@ -11,6 +11,7 @@ import { NewPasswordComponent } from './_components/new-password/new-password.co
 import { AdminComponent } from './_components/admin/admin.component';
 import { BookingComponent } from './_components/booking/booking.component';
 import { ChevronUpComponent } from './_components/chevron-up/chevron-up.component';
+import { VerifyComponent } from './_components/verify/verify.component';
 
 
 export const routes: Routes = [
@@ -24,11 +25,11 @@ export const routes: Routes = [
     { path: 'calendar/:id', component: CalendarComponent },
     { path: 'calendar', component: CalendarComponent },
     { path: 'booking', component: BookingComponent },
-    { path: 'forgotPassword', component: ForgotPasswordComponent},
-    { path: 'newPassword', component: NewPasswordComponent},
-    {path: 'admin', component: AdminComponent},
-    {path: 'chevron-up', component: ChevronUpComponent},
-
+    { path: 'forgotPassword', component: ForgotPasswordComponent },
+    { path: 'newPassword', component: NewPasswordComponent },
+    { path: 'admin', component: AdminComponent },
+    { path: 'chevron-up', component: ChevronUpComponent },
+    { path: 'verify', component: VerifyComponent },
 
 
 
