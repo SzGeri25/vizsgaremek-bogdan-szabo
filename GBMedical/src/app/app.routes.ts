@@ -13,6 +13,8 @@ import { BookingComponent } from './_components/booking/booking.component';
 import { ChevronUpComponent } from './_components/chevron-up/chevron-up.component';
 import { VerifyComponent } from './_components/verify/verify.component';
 
+import { AuthGuard } from './auth.guard';
+
 
 export const routes: Routes = [
     { path: '', pathMatch: 'full', redirectTo: '/home' },
@@ -25,12 +27,11 @@ export const routes: Routes = [
     { path: 'calendar/:id', component: CalendarComponent },
     { path: 'calendar', component: CalendarComponent },
     { path: 'booking', component: BookingComponent },
-    { path: 'forgotPassword', component: ForgotPasswordComponent },
-    { path: 'newPassword', component: NewPasswordComponent },
-    { path: 'admin', component: AdminComponent },
-    { path: 'chevron-up', component: ChevronUpComponent },
     { path: 'verify', component: VerifyComponent },
-
+    { path: 'forgotPassword', component: ForgotPasswordComponent},
+    { path: 'newPassword', component: NewPasswordComponent},
+    { path: 'admin', component: AdminComponent, canActivate: [AuthGuard] },
+    {path: 'chevron-up', component: ChevronUpComponent},
 
 
     { path: '**', redirectTo: '/home' } // 404 esetén visszairányítás a Home-ra, ez legyen legalul!!!
