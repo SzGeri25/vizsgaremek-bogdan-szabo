@@ -1,3 +1,4 @@
+/* A meglévő navbar stílusok maradnak */
 .navbar {
     background-color: #008080;
     padding: 5px 20px;
@@ -8,7 +9,6 @@
     height: 80px;
 }
 
-/*Navbar ul beállítások*/
 .navbar-nav {
     display: flex;
     justify-content: space-around;
@@ -19,7 +19,6 @@
     color: #f5f5f5 !important;
 }
 
-/*Navbar li beállítások*/
 .nav-item {
     padding: 10px 15px;
     font-size: 16px;
@@ -27,8 +26,6 @@
     transition: background-color 0.3s ease, transform 0.2s ease;
     color: #f5f5f5 !important;
 }
-
-
 
 .nav-item:hover {
     transform: scale(1.05);
@@ -44,37 +41,27 @@
     color: #f5f5f5 !important;
 }
 
+/* Responsive navbar mobil nézethez */
 @media (max-width: 991.98px) {
     .navbar-collapse {
         position: fixed;
         top: 80px;
-        /* A navbar magassága alatt kezdődik */
         right: 0;
-        /* A jobb oldalra igazítjuk */
         width: 250px;
-        /* A menü szélessége */
         height: 100%;
         background-color: #333;
-        /* Menü háttérszíne */
         overflow-y: auto;
-        /* Görgethető, ha túl hosszú */
-
-        /* Alaphelyzetben off-screen jobbra */
         transform: translateX(100%);
-
-        /* Animáció: csúszás 0.2s alatt */
         transition: transform 0.2s ease-in-out;
-
         z-index: 1050;
     }
 
-    /* Ha a menü látható (a .show osztályt adja hozzá a Bootstrap) */
     .navbar-collapse.show {
         transform: translateX(0);
     }
 }
 
-
+/* Navbar toggler gomb stílusai */
 .navbar-toggler {
     border-color: #fff;
 }
@@ -98,7 +85,6 @@
     position: relative;
     top: -7px;
     transition: all 0.15s ease-out;
-    /*taken down to hide quicker*/
     transform-origin: center;
 }
 
@@ -137,10 +123,22 @@
     border-radius: 5px;
 }
 
-/* Ha a gomb visszakapja a .collapsed osztályt, eltűnik a shadow */
 .navbar-toggler.collapsed {
     box-shadow: none !important;
 }
 
+/* Logout gomb stílusai */
+.logout-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: inherit;
+    color: #E66050;
+    font-size: 1.2rem;
+}
 
-
+.logout-button:hover {
+    
+}

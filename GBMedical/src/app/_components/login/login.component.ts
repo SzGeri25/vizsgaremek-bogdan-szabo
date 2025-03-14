@@ -15,14 +15,14 @@ import Swal from 'sweetalert2';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-toRegister() {
-  this.router.navigate(['/register']);
-}
+  toRegister() {
+    this.router.navigate(['/register']);
+  }
   loginForm!: FormGroup;
   showModal: boolean = false; // Modális ablak állapota
   showPassword: boolean = false; // Jelszó láthatósága
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {}
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -39,27 +39,30 @@ toRegister() {
     try {
       const { email, password } = this.loginForm.value;
       await this.authService.login(email, password);
-      
+
       Swal.fire({
         title: "Sikeres bejelentkezés!",
         text: "Átirányítás folyamatban...",
-        icon: "success"
+        icon: "success",
+        timer: 1500, // 1500 ms után bezáródik
+        showConfirmButton: false, // OK gomb eltávolítása
+        timerProgressBar: true, // opcionális, ha szeretnél látni egy progress bar-t
       });
 
       // Hívjuk meg a szerver oldali getIsAdmin függvényt
-    const isAdmin = await this.authService.getIsAdmin();
+      const isAdmin = await this.authService.getIsAdmin();
 
-    if (isAdmin) {
-      setTimeout(() => this.router.navigate(['/admin']), 2000);
-    } else {
-      setTimeout(() => this.router.navigate(['/home']), 2000);
-    }
-      
+      if (isAdmin) {
+        setTimeout(() => this.router.navigate(['/admin']), 2000);
+      } else {
+        setTimeout(() => this.router.navigate(['/home']), 2000);
+      }
+
     } catch (error) {
       console.error('Login sikertelen:', error);
     }
   }
-  
+
   get email() {
     return this.loginForm.get('email');
   }
@@ -80,5 +83,5 @@ toRegister() {
     this.router.navigate(['/forgotPassword']);
   }
 
-  
+
 }

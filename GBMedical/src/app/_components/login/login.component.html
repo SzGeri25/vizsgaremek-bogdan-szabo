@@ -8,7 +8,7 @@
             <input type="email" formControlName="email" id="email" class="input-field"
                 [ngClass]="{ 'error-border': email?.invalid && email?.touched }">
             <div class="error" *ngIf="email?.invalid && email?.touched">
-                * Érvénytelen email cím
+                <strong>* Érvénytelen email cím</strong>
             </div>
 
             <label for="password">Jelszó:</label>
@@ -20,7 +20,13 @@
                 </button>
             </div>
             <div class="error" *ngIf="password?.invalid && password?.touched">
-                * A jelszó legalább 8 karakter hosszú kell legyen
+                <strong>* A jelszó legalább 8 karakter hosszú kell legyen! Tartalmaznia kell:</strong>
+                <ul>
+                    <li><strong>Nagybetűt</strong></li>
+                    <li><strong>Kisbetűt</strong></li>
+                    <li><strong>Speciális karaktert</strong></li>
+                    <li><strong>Számot</strong></li>
+                </ul>
             </div>
 
             <!-- "Elfelejtetted a jelszavad?" link -->

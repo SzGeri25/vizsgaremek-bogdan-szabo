@@ -200,8 +200,7 @@ export class CalendarComponent implements OnInit {
 
     if (!patientId) {
       Swal.fire({
-        title: 'Hiba!',
-        text: 'Jelentkezz be a foglaláshoz!',
+        title: 'Jelentkezz be a foglaláshoz!',
         icon: 'error',
         timer: 3000
       });

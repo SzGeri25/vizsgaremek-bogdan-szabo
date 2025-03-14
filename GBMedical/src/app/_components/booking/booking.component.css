@@ -1,31 +1,73 @@
-
-.receptionPicture{
+/* Hero szekció – teljes háttérkép, tartalom feljebb */
+.hero {
+    position: relative;
     width: 100%;
-    max-height: 300px;
-    object-fit: cover;
+    height: 100vh;
+    background: url('/happy-woman-talking-receptionist-while-arriving-spa.jpg') no-repeat center center/cover;
+    display: flex;
+    align-items: flex-start;
+    /* Tartalom felül igazítása */
+    justify-content: center;
+    padding-top: 80px;
+    /* A tartalmat kicsit lejjebb tolja, így a kép felső része látszik */
 }
 
-h1{
+.overlay {
     position: absolute;
-    top: 310px;
-    left: 30px;
-    color: #f5f5f5;
-    font-weight: bolder;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
 }
 
-.container{
-    margin: 0 auto;
-    align-items: center;
+.hero-content {
+    position: relative;
+    z-index: 2;
     text-align: center;
-    justify-content: cen;
+    color: #fff;
+    padding: 20px;
 }
 
-select {
+.hero-content h1 {
+    font-size: 48px;
+    margin-bottom: 30px;
+}
+
+/* Form konténer, amely a select-eket tartalmazza */
+.form-container {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px 40px;
+    border-radius: 8px;
+}
+
+/* Egyenletes elrendezés a select-ek és a "Vagy" szöveg között */
+.select-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    /* Egyenletes távolság az elemek között */
+}
+
+.select-wrapper {
+    position: relative;
     width: 100%;
     max-width: 330px;
-    /* szélesebb select */
+}
+
+.separator {
+    font-size: 18px;
+    color: #333;
+}
+
+/* Egyedi select stílus */
+.select-wrapper select {
+    width: 100%;
     padding: 12px 50px 12px 20px;
-    /* balra 20px, jobbra 50px, így nem lóg bele a nyíl */
+    /* Hely biztosítása a custom nyílnak */
     font-size: 16px;
     font-weight: 500;
     border: 2px solid #008080;
@@ -33,81 +75,37 @@ select {
     background-color: #f5f5f5;
     color: #495057;
     transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
-    -moz-appearance: none;
-    -webkit-appearance: none;
     appearance: none;
-    position: relative;
-    margin: 60px;
+    /* Az alapértelmezett nyíl elrejtése */
 }
 
-/* Fókuszáláskor szín és árnyék változás */
-select:focus {
+/* Fókusz állapot */
+.select-wrapper select:focus {
     border-color: #008080;
     outline: none;
     box-shadow: 0 0 8px rgba(11, 205, 150, 0.6);
-    transform: scale(1.05);
-    /* Kicsit nagyobb lesz, amikor fókuszálva van */
+    transform: scale(1.02);
 }
 
-/* Az opciók stílusa */
-option {
-    padding: 10px;
-    font-size: 16px;
-}
-
-/* Disable opciók stílusa */
-option:disabled {
-    color: #6c757d;
-}
-
-/* Egyedi nyíl elem a select mögött */
-select::-ms-expand {
-    display: none;
-}
-
-.select-wrapper {
-    position: relative;
-    display: inline-block;
-}
-
+/* Egyedi nyíl ikon visszaállítása */
 .select-wrapper::after {
     content: '\25BC';
-    /* lefelé mutató nyíl */
     font-size: 16px;
+    color: #495057;
     position: absolute;
-    right: 50px;
+    right: 20px;
     top: 50%;
     transform: translateY(-50%);
     pointer-events: none;
-    transition: transform 0.3s ease, font-size 0.3s ease;
-    
 }
 
-.select-wrapper2 {
-    position: relative;
-    display: inline-block;
-}
-
-.select-wrapper2::after {
-    content: '\25BC';
-    /* lefelé mutató nyíl */
-    font-size: 16px;
-    position: absolute;
-    left: 344px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    transition: transform 0.3s ease, font-size 0.3s ease;
-    
-}
-
+/* Mobilbarát stílus */
 @media (max-width: 768px) {
-    .container {
-        flex-direction: column; /* Biztosítja, hogy a select elemek egymás alá kerüljenek */
+    .hero-content h1 {
+        font-size: 36px;
     }
 
-    .select-wrapper,
-    .select-wrapper2 {
-        width: 90%; /* Csökkentett szélesség kisebb képernyőn */
+    .form-container {
+        padding: 15px 20px;
     }
 }

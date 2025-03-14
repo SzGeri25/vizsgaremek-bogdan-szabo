@@ -19,8 +19,6 @@ export interface Patient {
   isAdmin: boolean;
   isDeleted: boolean;
   createdAt: string;
-  updatedAt: string;
-  deletedAt?: string;
 }
 
 @Component({
@@ -48,8 +46,6 @@ export class AdminComponent implements OnInit, AfterViewInit {
     'isAdmin', 
     'isDeleted', 
     'createdAt', 
-    'updatedAt', 
-    'deletedAt', 
     'actions'
   ];
   

@@ -68,8 +68,6 @@ export class NavbarComponent implements OnInit {
 
     onLogout(): void {
         this.authService.logout();
-        this.router.navigate(['/home']);
-        // Esetleg navigálhatunk is, pl. a login oldalra
-        // this.router.navigate(['/login']);
+        this.router.navigate(['/login']);
     }
 }

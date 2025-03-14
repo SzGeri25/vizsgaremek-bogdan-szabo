@@ -36,7 +36,7 @@
 
         <!-- Ha a felhasználó be van jelentkezve -->
         <li class="nav-item" *ngIf="isAuthenticated">
-          <a class="nav-link" href="javascript:void(0)" (click)="onLogout()">Kijelentkezés</a>
+          <button title="Kijelentkezés" class="logout-button" href="javascript:void(0)" (click)="onLogout()" aria-label="Logout"><i class="fas fa-sign-out-alt"></i></button>
         </li>
       </ul>
     </div>
