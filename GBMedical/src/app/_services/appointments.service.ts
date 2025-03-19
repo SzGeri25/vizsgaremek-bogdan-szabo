@@ -27,4 +27,13 @@ export class AppointmentService {
     const url = `${this.baseUrl}/addAppointmentWithNotification`;
     return this.http.post<any>(url, appointment);
   }
+
+  cancelAppointment(appointmentId: number, patientId: number): Observable<any> {
+    const url = `${this.baseUrl}/cancelAppointment`;
+    const params = new HttpParams()
+      .set('appointmentId', appointmentId.toString())
+      .set('patientId', patientId.toString());
+
+    return this.http.delete<any>(url, { params });
+  }
 }

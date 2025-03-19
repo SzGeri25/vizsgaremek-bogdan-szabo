@@ -137,9 +137,9 @@ export class CalendarComponent implements OnInit {
       if (response.status === 'success') {
         console.log('Lekért szabad időpontok:', response.slots);
         this.availableEvents = response.slots.map((slot: any) => ({
-          title: this.serviceId 
-            ? `${slot.doctorName} - ${slot.serviceName}` 
-            : `${slot.serviceName} - ${slot.doctorName}`, 
+          title: this.serviceId
+            ? `${slot.doctorName} - ${slot.serviceName}`
+            : `${slot.serviceName} - ${slot.doctorName}`,
           start: this.convertToLocalISOString(slot.slotStart),
           end: this.convertToLocalISOString(slot.slotEnd),
           backgroundColor: 'lightgreen',
@@ -149,7 +149,7 @@ export class CalendarComponent implements OnInit {
             serviceName: slot.serviceName,
             doctorName: slot.doctorName
           }
-        }));        
+        }));
       } else {
         console.error('Nincs találat vagy hiba történt (szabad időpontok):', response);
       }
@@ -207,6 +207,27 @@ export class CalendarComponent implements OnInit {
       return;
     }
 
+    const isOwner = patientId === info.event.extendedProps.patientId;
+    const isBooked = info.event.backgroundColor === 'blue'; // Foglalt időpontok színének ellenőrzése
+
+    if (isBooked) {
+      // Ha foglalt időpontra kattintottunk, hozzáadjuk az appointmentId-t és patientId-t az URL-hez
+      const currentUrl = new URL(window.location.href);
+
+      // Az appointmentId és patientId paraméterek hozzáadása, ha még nem léteznek az URL-ben
+      currentUrl.searchParams.set('appointmentId', info.event.id.toString());
+      currentUrl.searchParams.set('patientId', patientId.toString()); // Itt alakítjuk át patientId-t stringgé
+
+      // Az új URL beállítása az aktuális URL-hez hozzáadott paraméterekkel
+      window.history.pushState(
+        null,
+        '',
+        currentUrl.toString()
+      );
+    }
+
+
+
     const data: EventDetailsData = {
       title: info.event.title,
       start: startTime,
@@ -214,17 +235,19 @@ export class CalendarComponent implements OnInit {
       status: info.event.extendedProps?.status,
       doctorId: doctorId!,
       patientId: patientId,
-      serviceName: info.event.extendedProps?.serviceName || 'Nincs megadva', // Ha nincs, írja ki, hogy nincs megadva
-      doctorName: info.event.extendedProps?.doctorName || 'Nincs megadva' // Ha nincs, írja ki, hogy nincs megadva
-    };    
+      serviceName: info.event.extendedProps?.serviceName || 'Nincs megadva',
+      doctorName: info.event.extendedProps?.doctorName || 'Nincs megadva',
+      allowCancellation: isOwner, // Csak a saját foglalásoknál engedi a lemondást
+      appointmentId: info.event.id
+    };
 
     const dialogRef = this.dialog.open(EventDetailsModalComponent, {
       data,
       width: '400px'
     });
 
-    dialogRef.afterClosed().subscribe((result: { bookAppointment: boolean }) => {
-      if (result && result.bookAppointment) {
+    dialogRef.afterClosed().subscribe((result: { bookAppointment: boolean, cancelAppointment: boolean }) => {
+      if (result?.bookAppointment) {
         const appointment = {
           doctorId: doctorId,
           patientId: patientId,

@@ -4,6 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { AppointmentService } from '../../_services/appointments.service';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../_services/auth.service';
 
 export interface EventDetailsData {
   title: string;
@@ -14,6 +15,8 @@ export interface EventDetailsData {
   patientId: number;
   serviceName: string;
   doctorName: string;
+  allowCancellation: boolean;
+  appointmentId: number;
 }
 
 @Component({
@@ -23,11 +26,16 @@ export interface EventDetailsData {
   styleUrl: './event-details-modal.component.css'
 })
 export class EventDetailsModalComponent {
+  currentUserId: number | null = null; // Jelenlegi felhasználó ID-ja
+
   constructor(
     public dialogRef: MatDialogRef<EventDetailsModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: EventDetailsData,
-    private appointmentService: AppointmentService // Szerviz injektálása
-  ) { }
+    private appointmentService: AppointmentService,
+    private authService: AuthService
+  ) {
+    this.currentUserId = this.authService.getUserId(); // Felhasználó ID lekérése
+  }
 
   onClose(): void {
     this.dialogRef.close();
@@ -63,6 +71,39 @@ export class EventDetailsModalComponent {
         Swal.fire({
           title: 'Hiba!',
           text: 'Nem sikerült a foglalás. Próbáld újra később!',
+          icon: 'error',
+          timer: 3000
+        });
+      }
+    });
+  }
+
+  onCancelClick(): void {
+    if (this.data.patientId !== this.currentUserId) {
+      return;
+    }
+
+    // Ellenőrzés, hogy léteznek-e érvényes adatok
+    if (!this.data.appointmentId || !this.data.patientId) {
+      console.error('Nincs érvényes appointmentId vagy patientId.');
+      return;
+    }
+
+    // Hívjuk a cancelAppointment metódust appointmentId és patientId-val
+    this.appointmentService.cancelAppointment(this.data.appointmentId, this.data.patientId).subscribe({
+      next: response => {
+        Swal.fire({
+          title: 'Sikeres lemondás!',
+          text: 'Az időpontot sikeresen törölted.',
+          icon: 'success',
+          timer: 3000
+        });
+        this.dialogRef.close();
+      },
+      error: error => {
+        Swal.fire({
+          title: 'Hiba!',
+          text: 'Nem sikerült a lemondás. Próbáld újra később!',
           icon: 'error',
           timer: 3000
         });

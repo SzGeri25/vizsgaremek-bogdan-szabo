@@ -13,5 +13,11 @@
             class="bookingButton">
             Időpontfoglalás
         </button>
+
+        <!-- Lemondás gomb csak akkor jelenik meg, ha a jelenlegi felhasználóé az időpont -->
+        <button *ngIf="data.allowCancellation" mat-button color="warn" (click)="onCancelClick()" class="cancelButton">
+            Lemondás
+        </button>
+
     </div>
 </div>
