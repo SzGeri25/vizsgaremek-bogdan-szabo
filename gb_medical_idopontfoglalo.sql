@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: localhost:3306
--- Létrehozás ideje: 2025. Már 13. 11:14
+-- Létrehozás ideje: 2025. Már 19. 13:48
 -- Kiszolgáló verziója: 5.7.24
 -- PHP verzió: 8.1.0
 
@@ -253,10 +253,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `addService` (IN `nameIN` VARCHAR(10
     );
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `cancelAppointment` (IN `idIN` INT)   BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `cancelAppointment` (IN `idIN` INT, IN `patientIdIN` INT)   BEGIN
     DECLARE affectedRows INT;
 
-    -- Időpont frissítése törlés jelölésével
+    -- Időpont frissítése törlés jelölésével, ellenőrizve, hogy a bejelentkezett felhasználóhoz tartozik
     UPDATE `appointments` 
     SET 
         `is_deleted` = 1,
@@ -264,7 +264,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `cancelAppointment` (IN `idIN` INT) 
         `deleted_at` = NOW()
     WHERE 
         `id` = idIN 
-        AND `appointments`.`status` = "booked";
+        AND `status` = "booked"
+        AND `patient_id` = patientIdIN;
 
     -- Ellenőrizni, hogy történt-e frissítés
     SET affectedRows = ROW_COUNT();
@@ -820,17 +821,22 @@ INSERT INTO `appointments` (`id`, `doctor_id`, `patient_id`, `start_time`, `end_
 (22, 1, 12, '2024-10-01 15:00:00', '2024-10-01 15:30:00', 30, 'booked', 0, '2025-03-06 11:30:38', '2025-03-06 11:30:38', NULL, NULL, NULL),
 (23, 1, 12, '2024-10-01 15:30:00', '2024-10-01 16:00:00', 30, 'booked', 0, '2025-03-06 16:10:34', '2025-03-06 16:10:34', NULL, NULL, NULL),
 (24, 16, 7, '2024-10-01 15:30:00', '2024-10-01 16:00:00', 30, 'booked', 1, '2025-03-06 16:12:55', '2025-03-06 16:12:55', NULL, NULL, NULL),
-(25, 12, 9, '2025-02-28 09:00:00', '2025-02-28 09:30:00', 30, 'booked', 0, '2025-03-07 12:48:55', '2025-03-07 12:48:55', NULL, NULL, NULL),
+(25, 12, 9, '2025-02-28 09:00:00', '2025-02-28 09:30:00', 30, 'cancelled', 1, '2025-03-07 12:48:55', '2025-03-07 12:48:55', '2025-03-19 12:31:52', NULL, NULL),
 (26, 12, 9, '2025-02-28 09:30:00', '2025-02-28 10:00:00', 30, 'booked', 0, '2025-03-07 12:59:56', '2025-03-07 12:59:56', NULL, NULL, NULL),
 (27, 12, 9, '2025-02-28 10:30:00', '2025-02-28 11:00:00', 30, 'booked', 0, '2025-03-07 13:03:52', '2025-03-07 13:03:52', NULL, NULL, NULL),
-(28, 12, 47, '2025-02-28 11:00:00', '2025-02-28 11:30:00', 30, 'booked', 0, '2025-03-07 15:39:00', '2025-03-07 15:39:00', NULL, NULL, NULL),
+(28, 12, 47, '2025-02-28 11:00:00', '2025-02-28 11:30:00', 30, 'cancelled', 1, '2025-03-07 15:39:00', '2025-03-07 15:39:00', '2025-03-19 12:28:58', NULL, NULL),
 (29, 12, 47, '2025-02-28 13:00:00', '2025-02-28 13:30:00', 30, 'booked', 0, '2025-03-07 15:56:02', '2025-03-07 15:56:02', NULL, NULL, NULL),
 (30, 12, 47, '2025-02-28 15:00:00', '2025-02-28 15:30:00', 30, 'booked', 0, '2025-03-10 14:03:15', '2025-03-10 14:03:15', NULL, NULL, NULL),
-(31, 12, 47, '2025-02-28 15:30:00', '2025-02-28 16:00:00', 30, 'booked', 0, '2025-03-10 14:19:32', '2025-03-10 14:19:32', NULL, NULL, NULL),
-(32, 14, 47, '2025-02-14 09:00:00', '2025-02-14 09:30:00', 30, 'booked', 0, '2025-03-10 14:21:07', '2025-03-10 14:21:07', NULL, NULL, NULL),
+(31, 12, 47, '2025-02-28 15:30:00', '2025-02-28 16:00:00', 30, 'cancelled', 1, '2025-03-10 14:19:32', '2025-03-10 14:19:32', '2025-03-19 11:53:06', NULL, NULL),
+(32, 14, 47, '2025-02-14 09:00:00', '2025-02-14 09:30:00', 30, 'cancelled', 1, '2025-03-10 14:21:07', '2025-03-10 14:21:07', '2025-03-19 14:35:08', NULL, NULL),
 (33, 12, 47, '2025-02-12 07:00:00', '2025-02-12 07:30:00', 30, 'cancelled', 1, '2025-03-10 14:46:22', '2025-03-10 14:46:22', '2025-03-11 12:52:15', NULL, NULL),
-(34, 12, 47, '2025-02-12 12:00:00', '2025-02-12 12:30:00', 30, 'booked', 0, '2025-03-11 12:53:15', '2025-03-11 12:53:15', NULL, NULL, NULL),
-(36, 7, 47, '2025-02-23 16:00:00', '2025-02-23 16:30:00', 30, 'booked', 0, '2025-03-12 11:44:41', '2025-03-12 11:44:41', NULL, NULL, NULL);
+(34, 12, 47, '2025-02-12 12:00:00', '2025-02-12 12:30:00', 30, 'cancelled', 1, '2025-03-11 12:53:15', '2025-03-11 12:53:15', '2025-03-19 14:25:19', NULL, NULL),
+(36, 7, 47, '2025-02-23 16:00:00', '2025-02-23 16:30:00', 30, 'cancelled', 1, '2025-03-12 11:44:41', '2025-03-12 11:44:41', '2025-03-19 14:22:26', NULL, NULL),
+(37, 13, 47, '2025-02-13 10:00:00', '2025-02-13 10:30:00', 30, 'booked', 0, '2025-03-13 12:23:58', '2025-03-13 12:23:58', NULL, NULL, NULL),
+(38, 12, 47, '2025-02-12 11:00:00', '2025-02-12 11:30:00', 30, 'booked', 0, '2025-03-19 14:33:41', '2025-03-19 14:33:41', NULL, NULL, NULL),
+(39, 12, 47, '2025-02-12 14:00:00', '2025-02-12 14:30:00', 30, 'booked', 0, '2025-03-19 14:34:14', '2025-03-19 14:34:14', NULL, NULL, NULL),
+(40, 10, 47, '2025-02-26 15:30:00', '2025-02-26 16:00:00', 30, 'booked', 0, '2025-03-19 14:38:03', '2025-03-19 14:38:03', NULL, NULL, NULL),
+(41, 9, 2, '2025-02-25 16:00:00', '2025-02-25 16:30:00', 30, 'cancelled', 1, '2025-03-19 14:47:28', '2025-03-19 14:47:28', '2025-03-19 14:47:54', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -947,7 +953,12 @@ INSERT INTO `notifications` (`id`, `user_id`, `message`, `sent_at`, `is_sent`, `
 (16, 47, 'Időpont foglalva: 2025-02-14 09:00:00 - 2025-02-14 09:30:00', NULL, 0, '2025-03-10 14:21:07'),
 (17, 47, 'Időpont foglalva: 2025-02-12 07:00:00 - 2025-02-12 07:30:00', NULL, 0, '2025-03-10 14:46:22'),
 (18, 47, 'Időpont foglalva: 2025-02-12 12:00:00 - 2025-02-12 12:30:00', NULL, 0, '2025-03-11 12:53:15'),
-(19, 47, 'Időpont foglalva: 2025-02-23 16:00:00 - 2025-02-23 16:30:00', NULL, 0, '2025-03-12 11:44:41');
+(19, 47, 'Időpont foglalva: 2025-02-23 16:00:00 - 2025-02-23 16:30:00', NULL, 0, '2025-03-12 11:44:41'),
+(20, 47, 'Időpont foglalva: 2025-02-13 10:00:00 - 2025-02-13 10:30:00', NULL, 0, '2025-03-13 12:23:58'),
+(21, 47, 'Időpont foglalva: 2025-02-12 11:00:00 - 2025-02-12 11:30:00', NULL, 0, '2025-03-19 14:33:41'),
+(22, 47, 'Időpont foglalva: 2025-02-12 14:00:00 - 2025-02-12 14:30:00', NULL, 0, '2025-03-19 14:34:14'),
+(23, 47, 'Időpont foglalva: 2025-02-26 15:30:00 - 2025-02-26 16:00:00', NULL, 0, '2025-03-19 14:38:03'),
+(24, 2, 'Időpont foglalva: 2025-02-25 16:00:00 - 2025-02-25 16:30:00', NULL, 0, '2025-03-19 14:47:28');
 
 -- --------------------------------------------------------
 
@@ -1064,9 +1075,11 @@ INSERT INTO `patients` (`id`, `first_name`, `last_name`, `email`, `phone_number`
 (55, 'Próba', 'Vizsga', 'probavizsga@gmail.com', '0611111112', 'b0541812754eba498b8c2cf2ba3eb2a778d5f750', 0, 0, '2025-03-05 13:57:19', '2025-03-05 13:57:19', NULL),
 (56, 'Test', 'register2', 'testreg2@gmail.com', '5555898941', '40e869a48a074b408e76df9a735e53e71f0ba16b', 0, 0, '2025-03-12 13:04:40', '2025-03-12 13:04:40', NULL),
 (59, 'Test', 'register2', 'testreg3@gmail.com', '0678954623', '40e869a48a074b408e76df9a735e53e71f0ba16b', 0, 0, '2025-03-12 13:07:21', '2025-03-12 13:07:21', NULL),
-(60, 'Test', 'register4', 'testreg4@gmail.com', '0678954628', '40e869a48a074b408e76df9a735e53e71f0ba16b', 0, 0, '2025-03-12 13:08:38', '2025-03-12 13:08:38', NULL),
+(60, 'Test', 'register4', 'testreg4@gmail.com', '0678954628', '40e869a48a074b408e76df9a735e53e71f0ba16b', 0, 1, '2025-03-12 13:08:38', '2025-03-14 09:45:27', '2025-03-14 09:45:27'),
 (61, 'Teszt', 'Felhasználó', 'teszt@pelda.hu', '06201234567', '9bde3453d74ad925bcc1a07d782709fbb94e60d8', 0, 0, '2025-03-13 10:01:35', '2025-03-13 10:01:35', NULL),
-(62, 'Teszt', 'Felhasználó', 'teszt1@pelda.hu', '06301234567', '9bde3453d74ad925bcc1a07d782709fbb94e60d8', 0, 0, '2025-03-13 12:00:38', '2025-03-13 12:00:38', NULL);
+(62, 'Teszt', 'Felhasználó', 'teszt1@pelda.hu', '06301234567', '9bde3453d74ad925bcc1a07d782709fbb94e60d8', 0, 0, '2025-03-13 12:00:38', '2025-03-13 12:00:38', NULL),
+(64, 'Teszt', 'Felhasználó', 'teszt2@pelda.hu', '06301234568', '9bde3453d74ad925bcc1a07d782709fbb94e60d8', 0, 0, '2025-03-13 18:05:08', '2025-03-13 18:05:08', NULL),
+(65, 'Teszt', 'Felhasználó', 'teszt3@pelda.hu', '06307544480', '9bde3453d74ad925bcc1a07d782709fbb94e60d8', 0, 0, '2025-03-13 18:28:41', '2025-03-13 18:28:41', NULL);
 
 -- --------------------------------------------------------
 
@@ -1090,7 +1103,9 @@ CREATE TABLE `patient_verifications` (
 
 INSERT INTO `patient_verifications` (`id`, `patient_id`, `token`, `verified`, `created_at`, `expires_at`, `verified_at`) VALUES
 (1, 61, 'c36dbad3-a17e-40d9-87f8-f4c0359f89bb', 1, '2025-03-13 09:01:35', '2025-03-14 10:01:36', '2025-03-13 11:45:30'),
-(2, 62, 'abb5a943-92e4-44bf-9b76-ae95ccc04425', 1, '2025-03-13 11:00:38', '2025-03-14 12:00:38', '2025-03-13 12:06:29');
+(2, 62, 'abb5a943-92e4-44bf-9b76-ae95ccc04425', 1, '2025-03-13 11:00:38', '2025-03-14 12:00:38', '2025-03-13 12:06:29'),
+(3, 64, 'e0ce11c4-5d10-4e36-b7c7-9af4112f87d1', 1, '2025-03-13 17:05:08', '2025-03-14 18:05:09', '2025-03-13 18:06:40'),
+(4, 65, '0eb68480-f5e0-4c53-b9c5-c53cdf2278b9', 1, '2025-03-13 17:28:41', '2025-03-14 18:28:42', '2025-03-13 18:29:10');
 
 -- --------------------------------------------------------
 
@@ -1376,7 +1391,12 @@ INSERT INTO `user_notifications` (`id`, `notification_id`, `user_id`) VALUES
 (16, 16, 47),
 (17, 17, 47),
 (18, 18, 47),
-(19, 19, 47);
+(19, 19, 47),
+(20, 20, 47),
+(21, 21, 47),
+(22, 22, 47),
+(23, 23, 47),
+(24, 24, 2);
 
 --
 -- Indexek a kiírt táblákhoz
@@ -1487,7 +1507,7 @@ ALTER TABLE `user_notifications`
 -- AUTO_INCREMENT a táblához `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT a táblához `doctors`
@@ -1499,7 +1519,7 @@ ALTER TABLE `doctors`
 -- AUTO_INCREMENT a táblához `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT a táblához `password_reset_tokens`
@@ -1511,13 +1531,13 @@ ALTER TABLE `password_reset_tokens`
 -- AUTO_INCREMENT a táblához `patients`
 --
 ALTER TABLE `patients`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 
 --
 -- AUTO_INCREMENT a táblához `patient_verifications`
 --
 ALTER TABLE `patient_verifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT a táblához `payments`
@@ -1553,7 +1573,7 @@ ALTER TABLE `services`
 -- AUTO_INCREMENT a táblához `user_notifications`
 --
 ALTER TABLE `user_notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- Megkötések a kiírt táblákhoz
