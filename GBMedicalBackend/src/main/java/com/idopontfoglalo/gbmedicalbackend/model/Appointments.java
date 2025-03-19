@@ -500,7 +500,7 @@ public class Appointments implements Serializable {
         return slots;
     }
 
-    public boolean cancelAppointment(int id) {
+    public boolean cancelAppointment(int appointmentId, int patientId) {
         EntityManager em = emf.createEntityManager();
 
         try {
@@ -509,9 +509,11 @@ public class Appointments implements Serializable {
 
             // Bemeneti paraméterek regisztrálása
             spq.registerStoredProcedureParameter("idIN", Integer.class, ParameterMode.IN);
+            spq.registerStoredProcedureParameter("patientIdIN", Integer.class, ParameterMode.IN);
 
             // Paraméterek beállítása
-            spq.setParameter("idIN", id);
+            spq.setParameter("idIN", appointmentId);
+            spq.setParameter("patientIdIN", patientId);
 
             // Tárolt eljárás futtatása
             spq.execute();

@@ -69,9 +69,10 @@ public class AppointmentController {
     @DELETE
     @Path("cancelAppointment")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response cancelAppointment(@QueryParam("appointmentId") int appointmentId) {
-        JSONObject obj = layer.cancelAppointment(appointmentId);
-        return Response.status(obj.getInt("statusCode")).entity(obj.toString()).build();
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response cancelAppointment(@QueryParam("appointmentId") int appointmentId, @QueryParam("patientId") int patientId) {
+        JSONObject response = layer.cancelAppointment(appointmentId, patientId);
+        return Response.status(response.getInt("statusCode")).entity(response.toString()).build();
     }
 
     @PUT

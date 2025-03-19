@@ -193,47 +193,44 @@ public class AppointmentService {
         return toReturn;
     }
 
-    public JSONObject cancelAppointment(int id) {
+    public JSONObject cancelAppointment(int appointmentId, int patientId) {
         JSONObject toReturn = new JSONObject();
         String responseStatus = "success";
         int statusCode = 200;
 
         try {
-            if (id <= 0) {
+            if (appointmentId <= 0 || patientId <= 0) {
                 responseStatus = "invalidInput";
                 statusCode = 400;
-                throw new IllegalArgumentException("Invalid appointment ID provided.");
+                throw new IllegalArgumentException("Invalid appointment ID or patient ID provided.");
+            }
+
+            // Modell réteg meghívása
+            boolean modelResult = layer.cancelAppointment(appointmentId, patientId);
+
+            if (!modelResult) {
+                responseStatus = "notFound";
+                statusCode = 404;
+                throw new Exception("Appointment not found or not allowed to cancel.");
             } else {
-                boolean modelResult = layer.cancelAppointment(id);
+                JSONObject result = new JSONObject();
+                result.put("message", "Appointment successfully cancelled");
+                result.put("appointmentId", layer.getId());
+                result.put("doctorId", layer.getDoctorId());
+                result.put("patientId", layer.getPatientId());
+                result.put("startTime", layer.getStartTime());
+                result.put("endTime", layer.getEndTime());
+                result.put("status", layer.getStatus());
 
-                if (!modelResult) {
-                    responseStatus = "modelException";
-                    statusCode = 500;
-                }
-                if (modelResult == false) {
-                    responseStatus = "notFound";
-                    statusCode = 404;
-                    throw new Exception("Appointment not found or cannot be cancelled.");
-                } else {
-                    JSONObject result = new JSONObject();
-                    result.put("message", "Appointment successfully cancelled");
-                    result.put("appointmentId", layer.getId());
-                    result.put("doctorId", layer.getDoctorId());
-                    result.put("patientId", layer.getPatientId());
-                    result.put("startTime", layer.getStartTime());
-                    result.put("endTime", layer.getEndTime());
-                    result.put("status", layer.getStatus());
-
-                    toReturn.put("result", result);
-                }
+                toReturn.put("result", result);
             }
         } catch (IllegalArgumentException e) {
-            // Rossz bemeneti adatok kezelése
             toReturn.put("error", e.getMessage());
         } catch (Exception e) {
-            // Egyéb hibák kezelése
             responseStatus = "error";
-            statusCode = statusCode == 200 ? 500 : statusCode; // Ha nem volt más specifikus hiba
+            if (statusCode == 200) {
+                statusCode = 500;
+            }
             toReturn.put("error", e.getMessage());
         }
 
