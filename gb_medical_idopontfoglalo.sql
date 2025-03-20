@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: localhost:3306
--- Létrehozás ideje: 2025. Már 19. 13:48
+-- Létrehozás ideje: 2025. Már 20. 12:16
 -- Kiszolgáló verziója: 5.7.24
 -- PHP verzió: 8.1.0
 
@@ -440,6 +440,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `getAvailableSlotsByDoctor` (IN `doc
       ON ts.doctor_id = a.doctor_id
       AND ts.slot_start < a.end_time
       AND ts.slot_end > a.start_time
+      AND a.status <> 'cancelled'
     LEFT JOIN doctors_x_services dxs
       ON ts.doctor_id = dxs.doctor_id
     LEFT JOIN services ser
@@ -491,6 +492,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `getAvailableSlotsByService` (IN `se
       ON ts.doctor_id = a.doctor_id
       AND ts.slot_start < a.end_time
       AND ts.slot_end > a.start_time
+      AND a.status <> 'cancelled'
     LEFT JOIN doctors d
       ON ts.doctor_id = d.id
     LEFT JOIN doctors_x_services dxs
@@ -836,7 +838,8 @@ INSERT INTO `appointments` (`id`, `doctor_id`, `patient_id`, `start_time`, `end_
 (38, 12, 47, '2025-02-12 11:00:00', '2025-02-12 11:30:00', 30, 'booked', 0, '2025-03-19 14:33:41', '2025-03-19 14:33:41', NULL, NULL, NULL),
 (39, 12, 47, '2025-02-12 14:00:00', '2025-02-12 14:30:00', 30, 'booked', 0, '2025-03-19 14:34:14', '2025-03-19 14:34:14', NULL, NULL, NULL),
 (40, 10, 47, '2025-02-26 15:30:00', '2025-02-26 16:00:00', 30, 'booked', 0, '2025-03-19 14:38:03', '2025-03-19 14:38:03', NULL, NULL, NULL),
-(41, 9, 2, '2025-02-25 16:00:00', '2025-02-25 16:30:00', 30, 'cancelled', 1, '2025-03-19 14:47:28', '2025-03-19 14:47:28', '2025-03-19 14:47:54', NULL, NULL);
+(41, 9, 2, '2025-02-25 16:00:00', '2025-02-25 16:30:00', 30, 'cancelled', 1, '2025-03-19 14:47:28', '2025-03-19 14:47:28', '2025-03-19 14:47:54', NULL, NULL),
+(42, 8, 47, '2025-02-24 14:00:00', '2025-02-24 14:30:00', 30, 'cancelled', 1, '2025-03-20 13:05:36', '2025-03-20 13:05:36', '2025-03-20 13:10:26', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -958,7 +961,8 @@ INSERT INTO `notifications` (`id`, `user_id`, `message`, `sent_at`, `is_sent`, `
 (21, 47, 'Időpont foglalva: 2025-02-12 11:00:00 - 2025-02-12 11:30:00', NULL, 0, '2025-03-19 14:33:41'),
 (22, 47, 'Időpont foglalva: 2025-02-12 14:00:00 - 2025-02-12 14:30:00', NULL, 0, '2025-03-19 14:34:14'),
 (23, 47, 'Időpont foglalva: 2025-02-26 15:30:00 - 2025-02-26 16:00:00', NULL, 0, '2025-03-19 14:38:03'),
-(24, 2, 'Időpont foglalva: 2025-02-25 16:00:00 - 2025-02-25 16:30:00', NULL, 0, '2025-03-19 14:47:28');
+(24, 2, 'Időpont foglalva: 2025-02-25 16:00:00 - 2025-02-25 16:30:00', NULL, 0, '2025-03-19 14:47:28'),
+(25, 47, 'Időpont foglalva: 2025-02-24 14:00:00 - 2025-02-24 14:30:00', NULL, 0, '2025-03-20 13:05:36');
 
 -- --------------------------------------------------------
 
@@ -1396,7 +1400,8 @@ INSERT INTO `user_notifications` (`id`, `notification_id`, `user_id`) VALUES
 (21, 21, 47),
 (22, 22, 47),
 (23, 23, 47),
-(24, 24, 2);
+(24, 24, 2),
+(25, 25, 47);
 
 --
 -- Indexek a kiírt táblákhoz
@@ -1507,7 +1512,7 @@ ALTER TABLE `user_notifications`
 -- AUTO_INCREMENT a táblához `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT a táblához `doctors`
@@ -1519,7 +1524,7 @@ ALTER TABLE `doctors`
 -- AUTO_INCREMENT a táblához `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT a táblához `password_reset_tokens`
@@ -1573,7 +1578,7 @@ ALTER TABLE `services`
 -- AUTO_INCREMENT a táblához `user_notifications`
 --
 ALTER TABLE `user_notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- Megkötések a kiírt táblákhoz
