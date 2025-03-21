@@ -18,6 +18,7 @@ public class EmailService {
     public enum EmailType {
         REGISTRATION_CONFIRMATION,
         APPOINTMENT_CONFIRMATION,
+        APPOINTMENT_CANCELLATION, // Új enum érték hozzáadva
         PASSWORD_RESET
     }
 
@@ -56,6 +57,10 @@ public class EmailService {
                     break;
                 case APPOINTMENT_CONFIRMATION:
                     subject = "Időpontfoglalás megerősítése";
+                    content = additionalContent;
+                    break;
+                case APPOINTMENT_CANCELLATION: // Új case ág a lemondáshoz
+                    subject = "Időpont lemondás megerősítése";
                     content = additionalContent;
                     break;
                 case PASSWORD_RESET:

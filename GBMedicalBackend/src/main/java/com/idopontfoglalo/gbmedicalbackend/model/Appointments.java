@@ -35,6 +35,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import org.json.JSONObject;
 
 /**
  *
@@ -500,33 +501,53 @@ public class Appointments implements Serializable {
         return slots;
     }
 
-    public boolean cancelAppointment(int appointmentId, int patientId) {
+    public JSONObject cancelAppointment(int appointmentId, int patientId) {
         EntityManager em = emf.createEntityManager();
+        JSONObject result = new JSONObject();
 
         try {
             // Tárolt eljárás meghívása
             StoredProcedureQuery spq = em.createStoredProcedureQuery("cancelAppointment");
-
-            // Bemeneti paraméterek regisztrálása
             spq.registerStoredProcedureParameter("idIN", Integer.class, ParameterMode.IN);
             spq.registerStoredProcedureParameter("patientIdIN", Integer.class, ParameterMode.IN);
-
-            // Paraméterek beállítása
             spq.setParameter("idIN", appointmentId);
             spq.setParameter("patientIdIN", patientId);
 
             // Tárolt eljárás futtatása
             spq.execute();
 
-            return true; // Sikeres végrehajtás
+            // Eredményhalmaz feldolgozása
+            List<Object[]> results = spq.getResultList();
+            if (results.isEmpty()) {
+                throw new Exception("Nem sikerült lekérni az időpont adatait.");
+            }
+
+            // Adatok kinyerése
+            Object[] record = results.get(0);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            JSONObject appointmentDetails = new JSONObject();
+            appointmentDetails.put("appointmentId", record[0]);
+            appointmentDetails.put("startTime", sdf.format(record[1]));
+            appointmentDetails.put("endTime", sdf.format(record[2]));
+            appointmentDetails.put("doctorName", record[3]);
+            appointmentDetails.put("patientEmail", record[4]);
+            appointmentDetails.put("patientName", record[5] + " " + record[6]);
+            appointmentDetails.put("services", record[7]);
+
+            result.put("success", true);
+            result.put("appointmentDetails", appointmentDetails);
 
         } catch (Exception e) {
+            result.put("success", false);
+            result.put("error", e.getMessage());
             System.err.println("Hiba a `cancelAppointment` során: " + e.getMessage());
-            return false; // Hiba esetén visszatérés
         } finally {
             em.clear();
             em.close();
         }
+
+        return result;
     }
 
     public boolean updateAppointment(int appointmentId, Integer doctorId, Integer patientId,

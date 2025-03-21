@@ -199,38 +199,37 @@ public class AppointmentService {
         int statusCode = 200;
 
         try {
-            if (appointmentId <= 0 || patientId <= 0) {
-                responseStatus = "invalidInput";
-                statusCode = 400;
-                throw new IllegalArgumentException("Invalid appointment ID or patient ID provided.");
-            }
-
             // Modell réteg meghívása
-            boolean modelResult = layer.cancelAppointment(appointmentId, patientId);
+            JSONObject modelResult = layer.cancelAppointment(appointmentId, patientId);
 
-            if (!modelResult) {
-                responseStatus = "notFound";
-                statusCode = 404;
-                throw new Exception("Appointment not found or not allowed to cancel.");
-            } else {
-                JSONObject result = new JSONObject();
-                result.put("message", "Appointment successfully cancelled");
-                result.put("appointmentId", layer.getId());
-                result.put("doctorId", layer.getDoctorId());
-                result.put("patientId", layer.getPatientId());
-                result.put("startTime", layer.getStartTime());
-                result.put("endTime", layer.getEndTime());
-                result.put("status", layer.getStatus());
-
-                toReturn.put("result", result);
+            if (!modelResult.getBoolean("success")) {
+                throw new Exception(modelResult.getString("error"));
             }
-        } catch (IllegalArgumentException e) {
-            toReturn.put("error", e.getMessage());
+
+            // Email küldése
+            JSONObject details = modelResult.getJSONObject("appointmentDetails");
+            String emailContent = "<h3>Időpont lemondva</h3>"
+                    + "<p>Kedves " + details.getString("patientName") + ",</p>"
+                    + "<p>Az alábbi időpontodat lemondtuk:</p>"
+                    + "<ul>"
+                    + "<li><strong>Orvos:</strong> " + details.getString("doctorName") + "</li>"
+                    + "<li><strong>Szolgáltatások:</strong> " + details.getString("services") + "</li>"
+                    + "<li><strong>Időpont:</strong> " + details.getString("startTime") + " - " + details.getString("endTime") + "</li>"
+                    + "</ul>";
+
+            boolean emailSent = EmailService.sendEmail(
+                    details.getString("patientEmail"),
+                    EmailService.EmailType.APPOINTMENT_CANCELLATION,
+                    emailContent
+            );
+
+            // Válasz összeállítása
+            toReturn.put("result", modelResult);
+            toReturn.put("emailSent", emailSent);
+
         } catch (Exception e) {
             responseStatus = "error";
-            if (statusCode == 200) {
-                statusCode = 500;
-            }
+            statusCode = 500;
             toReturn.put("error", e.getMessage());
         }
 
