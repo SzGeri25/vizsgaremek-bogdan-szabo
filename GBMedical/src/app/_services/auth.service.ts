@@ -60,19 +60,21 @@ export class AuthService {
         },
         body: JSON.stringify(patientData)
       });
-
+  
       if (!response.ok) {
-        const errorData = await response.text();
-        throw new Error(`Hiba történt: ${response.status} - ${errorData}`);
+        // JSON formátumú hibaválasz feltételezése
+        const errorData = await response.json();
+        // Itt közvetlenül dobjuk az errorData-t, így a komponensben hozzáférhető lesz a status mező
+        throw errorData;
       }
-
+  
       const data = await response.json();
       return data;
     } catch (error) {
       console.error('Regisztráció hiba:', error);
       throw error;
     }
-  }
+  }  
 
 
 

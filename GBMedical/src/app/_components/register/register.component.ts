@@ -70,7 +70,7 @@ export class RegisterComponent implements OnInit {
     if (this.registerForm.invalid || !this.passwordsMatch) {
       return;
     }
-
+  
     const registerData = this.registerForm.value;
     try {
       await this.authService.register(registerData);
@@ -81,10 +81,36 @@ export class RegisterComponent implements OnInit {
         this.router.navigate(['/login']);
       });
     } catch (error) {
-      Swal.fire({
-        title: 'Sikertelen regisztráció!',
-        icon: 'error'
-      });
+      // Az error most már a backend által küldött JSON struktúra,
+      // amiben pl. error.status van (pl. 'PatientAlreadyExists')
+      const err = error as { status: string };
+      const status = err.status;
+      
+      if (status === 'PatientAlreadyExists') {
+        Swal.fire({
+          title: 'Ez az e-mail cím már regisztrálva van!',
+          icon: 'error',
+          showConfirmButton: true,
+          timer: 3000,
+          timerProgressBar: true
+        });
+      } else if (status === 'fail') {
+        Swal.fire({
+          title: 'Ez a telefonszám már regisztrálva van!',
+          icon: 'error',
+          showConfirmButton: true,
+          timer: 3000,
+          timerProgressBar: true
+        });
+      } else {
+        Swal.fire({
+          title: 'Sikertelen regisztráció!',
+          icon: 'error',
+          showConfirmButton: true,
+          timer: 3000,
+          timerProgressBar: true
+        });
+      }
     }
-  }
+  }    
 }
