@@ -165,3 +165,46 @@ h1 {
     cursor: pointer;
 }
 
+@media (max-width: 768px) {
+    #form {
+        padding: 1.5rem;
+        margin: 6vh auto;
+    }
+
+    .input-group input {
+        font-size: 0.9rem;
+        padding: 0.6rem;
+    }
+
+    .loginButton, .registerButton {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .error {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    #form {
+        width: 95%;
+        padding: 1rem;
+    }
+
+    h1 {
+        font-size: 1.3rem;
+    }
+
+    .input-group input {
+        font-size: 0.8rem;
+    }
+
+    .toggle-password {
+        right: 0.5rem;
+    }
+
+    .forgot-password, .dont-have-an-account {
+        font-size: 0.8rem;
+    }
+}
