@@ -59,7 +59,14 @@ export class LoginComponent implements OnInit {
       }
 
     } catch (error) {
-      console.error('Login sikertelen:', error);
+      Swal.fire({
+        title: "Sikertelen bejelentkezés!",
+        text: "Hibás e-mail cím vagy jelszó!",
+        icon: "error",
+        timer: 3000, // 1500 ms után bezáródik
+        showConfirmButton: true, // OK gomb eltávolítása
+        timerProgressBar: true, // opcionális, ha szeretnél látni egy progress bar-t
+      });
     }
   }
 
