@@ -11,7 +11,7 @@ import { AppointmentService } from '../../_services/appointments.service';
 import { ServicesComponent } from '../services/services.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FooterComponent } from "../footer/footer.component";
 import { AuthService } from '../../_services/auth.service';
 import Swal from 'sweetalert2';
@@ -60,13 +60,15 @@ export class CalendarComponent implements OnInit {
   };
 
   private bookedApiUrl = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/appointments/getBookedAppointments';
+  
 
   constructor(
     private http: HttpClient,
     private dialog: MatDialog,
     private appointmentService: AppointmentService,
     private route: ActivatedRoute,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -202,9 +204,25 @@ export class CalendarComponent implements OnInit {
     if (!patientId) {
         Swal.fire({
             title: 'Jelentkezz be a foglaláshoz!',
-            icon: 'error',
-            timer: 3000
+            icon: 'warning',
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'Bejelentkezés!',
+            cancelButtonText: 'Mégsem',
+            customClass: {
+              actions: 'my-actions',
+              cancelButton: 'order-1 right-gap',
+              confirmButton: 'order-2',
+              denyButton: 'order-3',
+            },
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.router.navigate(['/login']);
+            } else if (result.isDenied) {
+              Swal.fire('Changes are not saved', '', 'info')
+            }
         });
+
         return;
     }
 
