@@ -188,98 +188,85 @@ export class CalendarComponent implements OnInit {
 
   handleEventClick(info: any): void {
     if (this.doctorId === null && this.serviceId === null) {
-      console.error('Nincs orvos vagy szolgáltatás ID elérhető!');
-      return;
+        console.error('Nincs orvos vagy szolgáltatás ID elérhető!');
+        return;
     }
 
     const startTime: string = info.event.start ? this.convertToLocalISOString(info.event.start) : '';
     const endTime: string = info.event.end ? this.convertToLocalISOString(info.event.end) : '';
 
-    const doctorId: number | null = this.doctorId;
+    // Itt a változás: serviceId alapján is kezeljük a foglalást
+    const doctorId: number | null = info.event.extendedProps?.doctorId || this.doctorId;
     const patientId: number | null = this.authService.getUserId();
 
     if (!patientId) {
-      Swal.fire({
-        title: 'Jelentkezz be a foglaláshoz!',
-        icon: 'error',
-        timer: 3000
-      });
-      return;
+        Swal.fire({
+            title: 'Jelentkezz be a foglaláshoz!',
+            icon: 'error',
+            timer: 3000
+        });
+        return;
     }
 
-    const isOwner = patientId === info.event.extendedProps.patientId;
-    const isBooked = info.event.backgroundColor === 'blue'; // Foglalt időpontok színének ellenőrzése
+    const isOwner = patientId === info.event.extendedProps?.patientId;
+    const isBooked = info.event.backgroundColor === 'blue';
 
     if (isBooked) {
-      // Ha foglalt időpontra kattintottunk, hozzáadjuk az appointmentId-t és patientId-t az URL-hez
-      const currentUrl = new URL(window.location.href);
-
-      // Az appointmentId és patientId paraméterek hozzáadása, ha még nem léteznek az URL-ben
-      currentUrl.searchParams.set('appointmentId', info.event.id.toString());
-      currentUrl.searchParams.set('patientId', patientId.toString()); // Itt alakítjuk át patientId-t stringgé
-
-      // Az új URL beállítása az aktuális URL-hez hozzáadott paraméterekkel
-      window.history.pushState(
-        null,
-        '',
-        currentUrl.toString()
-      );
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('appointmentId', info.event.id.toString());
+        currentUrl.searchParams.set('patientId', patientId.toString());
+        window.history.pushState(null, '', currentUrl.toString());
     }
 
-
-
     const data: EventDetailsData = {
-      title: info.event.title,
-      start: startTime,
-      end: endTime,
-      status: info.event.extendedProps?.status,
-      doctorId: doctorId!,
-      patientId: patientId,
-      serviceName: info.event.extendedProps?.serviceName || 'Nincs megadva',
-      doctorName: info.event.extendedProps?.doctorName || 'Nincs megadva',
-      allowCancellation: isOwner, // Csak a saját foglalásoknál engedi a lemondást
-      appointmentId: info.event.id
+        title: info.event.title,
+        start: startTime,
+        end: endTime,
+        status: info.event.extendedProps?.status,
+        doctorId: doctorId!,
+        patientId: patientId,
+        serviceName: info.event.extendedProps?.serviceName || 'Nincs megadva',
+        doctorName: info.event.extendedProps?.doctorName || 'Nincs megadva',
+        allowCancellation: isOwner,
+        appointmentId: info.event.id
     };
 
     const dialogRef = this.dialog.open(EventDetailsModalComponent, {
-      data,
-      width: '400px'
+        data,
+        width: '400px'
     });
 
     dialogRef.afterClosed().subscribe((result: { bookAppointment: boolean, cancelAppointment: boolean }) => {
-      if (result?.bookAppointment) {
-        const appointment = {
-          doctorId: doctorId,
-          patientId: patientId,
-          startTime: startTime,
-          endTime: endTime
-        };
+        if (result?.bookAppointment) {
+            const appointment = {
+                doctorId: doctorId,
+                patientId: patientId,
+                startTime: startTime,
+                endTime: endTime,
+            };
 
-        this.appointmentService.addAppointmentWithNotification(appointment).subscribe({
-          next: response => {
-            console.log('Foglalás sikeres:', response);
-
-            Swal.fire({
-              title: 'Sikeres foglalás!',
-              text: 'Az időpontot sikeresen lefoglaltad.',
-              icon: 'success',
-              timer: 3000
+            this.appointmentService.addAppointmentWithNotification(appointment).subscribe({
+                next: response => {
+                    console.log('Foglalás sikeres:', response);
+                    Swal.fire({
+                        title: 'Sikeres foglalás!',
+                        text: 'Az időpontot sikeresen lefoglaltad.',
+                        icon: 'success',
+                        timer: 3000
+                    });
+                    this.fetchBookedAppointments().then(() => this.updateCalendarEvents());
+                },
+                error: error => {
+                    console.error('Foglalás hiba:', error);
+                    Swal.fire({
+                        title: 'Hiba!',
+                        text: 'Nem sikerült a foglalás. Próbáld újra később!',
+                        icon: 'error',
+                        timer: 3000
+                    });
+                }
             });
-
-            this.fetchBookedAppointments().then(() => this.updateCalendarEvents());
-          },
-          error: error => {
-            console.error('Foglalás hiba:', error);
-
-            Swal.fire({
-              title: 'Hiba!',
-              text: 'Nem sikerült a foglalás. Próbáld újra később!',
-              icon: 'error',
-              timer: 3000
-            });
-          }
-        });
-      }
+        }
     });
-  }
+}
 }
