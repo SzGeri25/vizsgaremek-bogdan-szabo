@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: localhost:3306
--- Létrehozás ideje: 2025. Már 20. 12:16
+-- Létrehozás ideje: 2025. Már 24. 09:16
 -- Kiszolgáló verziója: 5.7.24
 -- PHP verzió: 8.1.0
 
@@ -256,24 +256,40 @@ END$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `cancelAppointment` (IN `idIN` INT, IN `patientIdIN` INT)   BEGIN
     DECLARE affectedRows INT;
 
-    -- Időpont frissítése törlés jelölésével, ellenőrizve, hogy a bejelentkezett felhasználóhoz tartozik
+    -- Időpont frissítése
     UPDATE `appointments` 
     SET 
         `is_deleted` = 1,
-        `status` = "cancelled",
+        `status` = 'cancelled',
         `deleted_at` = NOW()
     WHERE 
         `id` = idIN 
-        AND `status` = "booked"
+        AND `status` = 'booked'
         AND `patient_id` = patientIdIN;
 
-    -- Ellenőrizni, hogy történt-e frissítés
     SET affectedRows = ROW_COUNT();
 
-    -- Siker vagy hiba visszaadása
     IF affectedRows = 0 THEN
         SIGNAL SQLSTATE '45000' 
-        SET MESSAGE_TEXT = 'No appointment found or not allowed to delete.';
+        SET MESSAGE_TEXT = 'Nem található időpont vagy érvénytelen művelet.';
+    ELSE
+        -- Visszaadjuk a részleteket
+        SELECT 
+            a.id AS appointment_id,
+            a.start_time,
+            a.end_time,
+            d.name AS doctor_name,
+            p.email AS patient_email,
+            p.first_name AS patient_first_name,
+            p.last_name AS patient_last_name,
+            GROUP_CONCAT(s.name SEPARATOR ', ') AS services
+        FROM appointments a
+        JOIN doctors d ON a.doctor_id = d.id
+        JOIN patients p ON a.patient_id = p.id
+        LEFT JOIN doctors_X_services ds ON d.id = ds.doctor_id
+        LEFT JOIN services s ON ds.service_id = s.id
+        WHERE a.id = idIN
+        GROUP BY a.id;
     END IF;
 END$$
 
@@ -406,8 +422,27 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `getAllServices` ()   BEGIN
     GROUP BY s.id, s.name, s.description, s.price, s.duration;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `getAppointmentById` (IN `idIN` INT)   SELECT * FROM `appointments`
-WHERE `id` = idIN AND `is_deleted` = 0$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getAppointmentById` (IN `idIN` INT)   BEGIN
+    SELECT 
+        a.id AS appointment_id,
+        a.doctor_id,
+        a.patient_id,
+        a.start_time,
+        a.end_time,
+        a.status,
+        d.name AS doctor_name,
+        CONCAT(p.first_name, ' ', p.last_name) AS patient_name,
+        s.name AS service_name
+    FROM 
+        appointments a
+    JOIN doctors d ON a.doctor_id = d.id
+    JOIN patients p ON a.patient_id = p.id
+    JOIN doctors_x_services dxs ON d.id = dxs.doctor_id
+    JOIN services s ON dxs.service_id = s.id
+    WHERE 
+        a.is_deleted = 0 
+        AND a.id = idIN;
+END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getAvailableSlotsByDoctor` (IN `doctorIdIN` INT)   BEGIN
     -- Ideiglenes tábla létrehozása a doktor schedule-jából generált slotokkal
@@ -819,7 +854,7 @@ INSERT INTO `appointments` (`id`, `doctor_id`, `patient_id`, `start_time`, `end_
 (18, 1, 2, '2025-01-15 10:00:00', '2025-01-15 11:00:00', 60, 'cancelled', 1, '2025-01-14 14:39:56', '2025-01-14 14:39:56', '2025-01-21 15:15:13', NULL, NULL),
 (19, 1, 2, '2025-01-15 10:00:00', '2025-01-15 11:00:00', 60, 'booked', 0, '2025-01-14 14:49:40', '2025-01-14 14:49:40', NULL, NULL, NULL),
 (20, 5, 7, '2025-03-14 08:00:00', '2025-03-14 08:30:00', 30, 'booked', 0, '2025-03-06 10:42:54', '2025-03-06 10:42:54', NULL, NULL, NULL),
-(21, 1, 11, '2024-10-01 10:00:00', '2024-10-01 10:30:00', 30, 'booked', 0, '2025-03-06 11:24:48', '2025-03-06 11:24:48', NULL, NULL, NULL),
+(21, 1, 11, '2024-10-01 10:00:00', '2024-10-01 10:30:00', 30, 'cancelled', 1, '2025-03-06 11:24:48', '2025-03-06 11:24:48', '2025-03-21 14:25:10', NULL, NULL),
 (22, 1, 12, '2024-10-01 15:00:00', '2024-10-01 15:30:00', 30, 'booked', 0, '2025-03-06 11:30:38', '2025-03-06 11:30:38', NULL, NULL, NULL),
 (23, 1, 12, '2024-10-01 15:30:00', '2024-10-01 16:00:00', 30, 'booked', 0, '2025-03-06 16:10:34', '2025-03-06 16:10:34', NULL, NULL, NULL),
 (24, 16, 7, '2024-10-01 15:30:00', '2024-10-01 16:00:00', 30, 'booked', 1, '2025-03-06 16:12:55', '2025-03-06 16:12:55', NULL, NULL, NULL),
@@ -827,8 +862,8 @@ INSERT INTO `appointments` (`id`, `doctor_id`, `patient_id`, `start_time`, `end_
 (26, 12, 9, '2025-02-28 09:30:00', '2025-02-28 10:00:00', 30, 'booked', 0, '2025-03-07 12:59:56', '2025-03-07 12:59:56', NULL, NULL, NULL),
 (27, 12, 9, '2025-02-28 10:30:00', '2025-02-28 11:00:00', 30, 'booked', 0, '2025-03-07 13:03:52', '2025-03-07 13:03:52', NULL, NULL, NULL),
 (28, 12, 47, '2025-02-28 11:00:00', '2025-02-28 11:30:00', 30, 'cancelled', 1, '2025-03-07 15:39:00', '2025-03-07 15:39:00', '2025-03-19 12:28:58', NULL, NULL),
-(29, 12, 47, '2025-02-28 13:00:00', '2025-02-28 13:30:00', 30, 'booked', 0, '2025-03-07 15:56:02', '2025-03-07 15:56:02', NULL, NULL, NULL),
-(30, 12, 47, '2025-02-28 15:00:00', '2025-02-28 15:30:00', 30, 'booked', 0, '2025-03-10 14:03:15', '2025-03-10 14:03:15', NULL, NULL, NULL),
+(29, 12, 47, '2025-02-28 13:00:00', '2025-02-28 13:30:00', 30, 'cancelled', 1, '2025-03-07 15:56:02', '2025-03-07 15:56:02', '2025-03-21 09:28:26', NULL, NULL),
+(30, 12, 47, '2025-02-28 15:00:00', '2025-02-28 15:30:00', 30, 'cancelled', 1, '2025-03-10 14:03:15', '2025-03-10 14:03:15', '2025-03-21 12:33:22', NULL, NULL),
 (31, 12, 47, '2025-02-28 15:30:00', '2025-02-28 16:00:00', 30, 'cancelled', 1, '2025-03-10 14:19:32', '2025-03-10 14:19:32', '2025-03-19 11:53:06', NULL, NULL),
 (32, 14, 47, '2025-02-14 09:00:00', '2025-02-14 09:30:00', 30, 'cancelled', 1, '2025-03-10 14:21:07', '2025-03-10 14:21:07', '2025-03-19 14:35:08', NULL, NULL),
 (33, 12, 47, '2025-02-12 07:00:00', '2025-02-12 07:30:00', 30, 'cancelled', 1, '2025-03-10 14:46:22', '2025-03-10 14:46:22', '2025-03-11 12:52:15', NULL, NULL),
@@ -836,10 +871,19 @@ INSERT INTO `appointments` (`id`, `doctor_id`, `patient_id`, `start_time`, `end_
 (36, 7, 47, '2025-02-23 16:00:00', '2025-02-23 16:30:00', 30, 'cancelled', 1, '2025-03-12 11:44:41', '2025-03-12 11:44:41', '2025-03-19 14:22:26', NULL, NULL),
 (37, 13, 47, '2025-02-13 10:00:00', '2025-02-13 10:30:00', 30, 'booked', 0, '2025-03-13 12:23:58', '2025-03-13 12:23:58', NULL, NULL, NULL),
 (38, 12, 47, '2025-02-12 11:00:00', '2025-02-12 11:30:00', 30, 'booked', 0, '2025-03-19 14:33:41', '2025-03-19 14:33:41', NULL, NULL, NULL),
-(39, 12, 47, '2025-02-12 14:00:00', '2025-02-12 14:30:00', 30, 'booked', 0, '2025-03-19 14:34:14', '2025-03-19 14:34:14', NULL, NULL, NULL),
-(40, 10, 47, '2025-02-26 15:30:00', '2025-02-26 16:00:00', 30, 'booked', 0, '2025-03-19 14:38:03', '2025-03-19 14:38:03', NULL, NULL, NULL),
+(39, 12, 47, '2025-02-12 14:00:00', '2025-02-12 14:30:00', 30, 'cancelled', 1, '2025-03-19 14:34:14', '2025-03-19 14:34:14', '2025-03-21 12:39:59', NULL, NULL),
+(40, 10, 47, '2025-02-26 15:30:00', '2025-02-26 16:00:00', 30, 'cancelled', 1, '2025-03-19 14:38:03', '2025-03-19 14:38:03', '2025-03-21 12:52:10', NULL, NULL),
 (41, 9, 2, '2025-02-25 16:00:00', '2025-02-25 16:30:00', 30, 'cancelled', 1, '2025-03-19 14:47:28', '2025-03-19 14:47:28', '2025-03-19 14:47:54', NULL, NULL),
-(42, 8, 47, '2025-02-24 14:00:00', '2025-02-24 14:30:00', 30, 'cancelled', 1, '2025-03-20 13:05:36', '2025-03-20 13:05:36', '2025-03-20 13:10:26', NULL, NULL);
+(42, 8, 47, '2025-02-24 14:00:00', '2025-02-24 14:30:00', 30, 'cancelled', 1, '2025-03-20 13:05:36', '2025-03-20 13:05:36', '2025-03-20 13:10:26', NULL, NULL),
+(43, 8, 47, '2025-02-24 15:00:00', '2025-02-24 15:30:00', 30, 'cancelled', 1, '2025-03-21 09:34:21', '2025-03-21 09:34:21', '2025-03-21 11:34:00', NULL, NULL),
+(44, 9, 1, '2025-02-25 12:00:00', '2025-02-25 12:30:00', 30, 'cancelled', 1, '2025-03-21 11:37:15', '2025-03-21 11:37:15', '2025-03-21 11:37:46', NULL, NULL),
+(45, 9, 1, '2025-02-25 10:00:00', '2025-02-25 10:30:00', 30, 'cancelled', 1, '2025-03-21 11:43:21', '2025-03-21 11:43:21', '2025-03-21 11:44:37', NULL, NULL),
+(46, 7, 1, '2025-02-23 16:30:00', '2025-02-23 17:00:00', 30, 'cancelled', 1, '2025-03-21 12:26:08', '2025-03-21 12:26:08', '2025-03-21 12:27:14', NULL, NULL),
+(47, 12, 47, '2025-02-28 13:30:00', '2025-02-28 14:00:00', 30, 'cancelled', 1, '2025-03-21 12:28:45', '2025-03-21 12:28:45', '2025-03-21 12:30:31', NULL, NULL),
+(48, 11, 47, '2025-02-27 15:00:00', '2025-02-27 15:30:00', 30, 'cancelled', 1, '2025-03-21 12:37:31', '2025-03-21 12:37:31', '2025-03-21 12:37:49', NULL, NULL),
+(49, 10, 47, '2025-02-26 10:30:00', '2025-02-26 11:00:00', 30, 'cancelled', 1, '2025-03-21 12:50:41', '2025-03-21 12:50:41', '2025-03-21 12:51:22', NULL, NULL),
+(50, 11, 47, '2025-02-27 11:00:00', '2025-02-27 11:30:00', 30, 'cancelled', 1, '2025-03-21 14:37:11', '2025-03-21 14:37:11', '2025-03-21 14:38:49', NULL, NULL),
+(51, 6, 47, '2025-02-06 15:00:00', '2025-02-06 15:30:00', 30, 'cancelled', 1, '2025-03-21 14:40:50', '2025-03-21 14:40:50', '2025-03-21 14:41:16', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -962,7 +1006,16 @@ INSERT INTO `notifications` (`id`, `user_id`, `message`, `sent_at`, `is_sent`, `
 (22, 47, 'Időpont foglalva: 2025-02-12 14:00:00 - 2025-02-12 14:30:00', NULL, 0, '2025-03-19 14:34:14'),
 (23, 47, 'Időpont foglalva: 2025-02-26 15:30:00 - 2025-02-26 16:00:00', NULL, 0, '2025-03-19 14:38:03'),
 (24, 2, 'Időpont foglalva: 2025-02-25 16:00:00 - 2025-02-25 16:30:00', NULL, 0, '2025-03-19 14:47:28'),
-(25, 47, 'Időpont foglalva: 2025-02-24 14:00:00 - 2025-02-24 14:30:00', NULL, 0, '2025-03-20 13:05:36');
+(25, 47, 'Időpont foglalva: 2025-02-24 14:00:00 - 2025-02-24 14:30:00', NULL, 0, '2025-03-20 13:05:36'),
+(26, 47, 'Időpont foglalva: 2025-02-24 15:00:00 - 2025-02-24 15:30:00', NULL, 0, '2025-03-21 09:34:21'),
+(27, 1, 'Időpont foglalva: 2025-02-25 12:00:00 - 2025-02-25 12:30:00', NULL, 0, '2025-03-21 11:37:15'),
+(28, 1, 'Időpont foglalva: 2025-02-25 10:00:00 - 2025-02-25 10:30:00', NULL, 0, '2025-03-21 11:43:21'),
+(29, 1, 'Időpont foglalva: 2025-02-23 16:30:00 - 2025-02-23 17:00:00', NULL, 0, '2025-03-21 12:26:08'),
+(30, 47, 'Időpont foglalva: 2025-02-28 13:30:00 - 2025-02-28 14:00:00', NULL, 0, '2025-03-21 12:28:45'),
+(31, 47, 'Időpont foglalva: 2025-02-27 15:00:00 - 2025-02-27 15:30:00', NULL, 0, '2025-03-21 12:37:31'),
+(32, 47, 'Időpont foglalva: 2025-02-26 10:30:00 - 2025-02-26 11:00:00', NULL, 0, '2025-03-21 12:50:41'),
+(33, 47, 'Időpont foglalva: 2025-02-27 11:00:00 - 2025-02-27 11:30:00', NULL, 0, '2025-03-21 14:37:11'),
+(34, 47, 'Időpont foglalva: 2025-02-06 15:00:00 - 2025-02-06 15:30:00', NULL, 0, '2025-03-21 14:40:50');
 
 -- --------------------------------------------------------
 
@@ -1401,7 +1454,16 @@ INSERT INTO `user_notifications` (`id`, `notification_id`, `user_id`) VALUES
 (22, 22, 47),
 (23, 23, 47),
 (24, 24, 2),
-(25, 25, 47);
+(25, 25, 47),
+(26, 26, 47),
+(27, 27, 1),
+(28, 28, 1),
+(29, 29, 1),
+(30, 30, 47),
+(31, 31, 47),
+(32, 32, 47),
+(33, 33, 47),
+(34, 34, 47);
 
 --
 -- Indexek a kiírt táblákhoz
@@ -1512,7 +1574,7 @@ ALTER TABLE `user_notifications`
 -- AUTO_INCREMENT a táblához `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT a táblához `doctors`
@@ -1524,7 +1586,7 @@ ALTER TABLE `doctors`
 -- AUTO_INCREMENT a táblához `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT a táblához `password_reset_tokens`
@@ -1578,7 +1640,7 @@ ALTER TABLE `services`
 -- AUTO_INCREMENT a táblához `user_notifications`
 --
 ALTER TABLE `user_notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- Megkötések a kiírt táblákhoz
