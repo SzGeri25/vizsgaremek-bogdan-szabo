@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: localhost:3306
--- Létrehozás ideje: 2025. Már 24. 09:16
+-- Létrehozás ideje: 2025. Már 24. 12:49
 -- Kiszolgáló verziója: 5.7.24
 -- PHP verzió: 8.1.0
 
@@ -883,7 +883,9 @@ INSERT INTO `appointments` (`id`, `doctor_id`, `patient_id`, `start_time`, `end_
 (48, 11, 47, '2025-02-27 15:00:00', '2025-02-27 15:30:00', 30, 'cancelled', 1, '2025-03-21 12:37:31', '2025-03-21 12:37:31', '2025-03-21 12:37:49', NULL, NULL),
 (49, 10, 47, '2025-02-26 10:30:00', '2025-02-26 11:00:00', 30, 'cancelled', 1, '2025-03-21 12:50:41', '2025-03-21 12:50:41', '2025-03-21 12:51:22', NULL, NULL),
 (50, 11, 47, '2025-02-27 11:00:00', '2025-02-27 11:30:00', 30, 'cancelled', 1, '2025-03-21 14:37:11', '2025-03-21 14:37:11', '2025-03-21 14:38:49', NULL, NULL),
-(51, 6, 47, '2025-02-06 15:00:00', '2025-02-06 15:30:00', 30, 'cancelled', 1, '2025-03-21 14:40:50', '2025-03-21 14:40:50', '2025-03-21 14:41:16', NULL, NULL);
+(51, 6, 47, '2025-02-06 15:00:00', '2025-02-06 15:30:00', 30, 'cancelled', 1, '2025-03-21 14:40:50', '2025-03-21 14:40:50', '2025-03-21 14:41:16', NULL, NULL),
+(52, 2, 47, '2025-02-02 15:00:00', '2025-02-02 15:30:00', 30, 'booked', 0, '2025-03-24 12:52:43', '2025-03-24 12:52:43', NULL, NULL, NULL),
+(53, 9, 47, '2025-02-25 16:30:00', '2025-02-25 17:00:00', 30, 'cancelled', 1, '2025-03-24 13:31:49', '2025-03-24 13:31:49', '2025-03-24 13:32:17', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -926,9 +928,9 @@ INSERT INTO `doctors` (`id`, `name`, `email`, `phone_number`, `password`, `bio`,
 (14, 'Dr. Molnár László', 'laszlo.molnar@example.com', '06305552345', 'drlaszlo123', 'Gyermekorvos, gyermekkori betegségek kezelése.', 0, 0, '2024-09-29 18:05:43', '2024-09-29 18:05:43', NULL),
 (15, 'Dr. Papp Éva', 'eva.papp@example.com', '06306662345', 'dreva123', 'Klinikai pszichológus, mentális egészség és terápia.', 0, 0, '2024-09-29 18:05:43', '2024-09-29 18:05:43', NULL),
 (16, 'Dr. Szabó Gergely', 'lofasz@gmail.com', '06725269787', 'e984d4dff4b8bb01b404f650282ccc2d0afa48fc', 'Seggluktágítás', 0, 1, '2024-10-22 12:58:45', '2024-10-22 13:06:43', '2024-11-04 11:31:23'),
-(17, 'Dr. Test Doctor', 'testregisterDoctor@gmail.com', '06305461327', '9a6fed200ac6d8c22e7e12c7629a01593ee535a0', '', 1, 0, '2025-01-10 10:02:53', '2025-01-10 10:02:53', NULL),
-(18, 'Dr. Test Doctor2', 'testregisterDoctor2@gmail.com', '06305461328', '9a6fed200ac6d8c22e7e12c7629a01593ee535a0', 'Szia én egy jó doki vagyok', 1, 0, '2025-01-10 10:16:11', '2025-01-10 10:16:11', NULL),
-(19, 'Dr. Máté Hermann', 'peter.nagy@example.com', '06704088704', '5e1f587249665d7f50c30e84e1dd85342e1db3d5', 'Intim masszázs', 1, 0, '2025-03-04 14:06:08', '2025-03-04 14:06:08', NULL);
+(17, 'Dr. Test Doctor', 'testregisterDoctor@gmail.com', '06305461327', '9a6fed200ac6d8c22e7e12c7629a01593ee535a0', '', 1, 1, '2025-01-10 10:02:53', '2025-01-10 10:02:53', '2025-03-24 13:38:21'),
+(18, 'Dr. Test Doctor2', 'testregisterDoctor2@gmail.com', '06305461328', '9a6fed200ac6d8c22e7e12c7629a01593ee535a0', 'Szia én egy jó doki vagyok', 1, 1, '2025-01-10 10:16:11', '2025-01-10 10:16:11', '2025-03-24 13:38:27'),
+(19, 'Dr. Máté Hermann', 'peter.nagy@example.com', '06704088704', '5e1f587249665d7f50c30e84e1dd85342e1db3d5', 'Intim masszázs', 1, 1, '2025-03-04 14:06:08', '2025-03-04 14:06:08', '2025-03-24 13:38:31');
 
 -- --------------------------------------------------------
 
@@ -1015,7 +1017,9 @@ INSERT INTO `notifications` (`id`, `user_id`, `message`, `sent_at`, `is_sent`, `
 (31, 47, 'Időpont foglalva: 2025-02-27 15:00:00 - 2025-02-27 15:30:00', NULL, 0, '2025-03-21 12:37:31'),
 (32, 47, 'Időpont foglalva: 2025-02-26 10:30:00 - 2025-02-26 11:00:00', NULL, 0, '2025-03-21 12:50:41'),
 (33, 47, 'Időpont foglalva: 2025-02-27 11:00:00 - 2025-02-27 11:30:00', NULL, 0, '2025-03-21 14:37:11'),
-(34, 47, 'Időpont foglalva: 2025-02-06 15:00:00 - 2025-02-06 15:30:00', NULL, 0, '2025-03-21 14:40:50');
+(34, 47, 'Időpont foglalva: 2025-02-06 15:00:00 - 2025-02-06 15:30:00', NULL, 0, '2025-03-21 14:40:50'),
+(35, 47, 'Időpont foglalva: 2025-02-02 15:00:00 - 2025-02-02 15:30:00', NULL, 0, '2025-03-24 12:52:43'),
+(36, 47, 'Időpont foglalva: 2025-02-25 16:30:00 - 2025-02-25 17:00:00', NULL, 0, '2025-03-24 13:31:49');
 
 -- --------------------------------------------------------
 
@@ -1136,7 +1140,8 @@ INSERT INTO `patients` (`id`, `first_name`, `last_name`, `email`, `phone_number`
 (61, 'Teszt', 'Felhasználó', 'teszt@pelda.hu', '06201234567', '9bde3453d74ad925bcc1a07d782709fbb94e60d8', 0, 0, '2025-03-13 10:01:35', '2025-03-13 10:01:35', NULL),
 (62, 'Teszt', 'Felhasználó', 'teszt1@pelda.hu', '06301234567', '9bde3453d74ad925bcc1a07d782709fbb94e60d8', 0, 0, '2025-03-13 12:00:38', '2025-03-13 12:00:38', NULL),
 (64, 'Teszt', 'Felhasználó', 'teszt2@pelda.hu', '06301234568', '9bde3453d74ad925bcc1a07d782709fbb94e60d8', 0, 0, '2025-03-13 18:05:08', '2025-03-13 18:05:08', NULL),
-(65, 'Teszt', 'Felhasználó', 'teszt3@pelda.hu', '06307544480', '9bde3453d74ad925bcc1a07d782709fbb94e60d8', 0, 0, '2025-03-13 18:28:41', '2025-03-13 18:28:41', NULL);
+(65, 'Teszt', 'Felhasználó', 'teszt3@pelda.hu', '06307544480', '9bde3453d74ad925bcc1a07d782709fbb94e60d8', 0, 0, '2025-03-13 18:28:41', '2025-03-13 18:28:41', NULL),
+(68, 'Gergely', 'Szabó', 'szabo.gergely25@simonyiszki.org', '06307565988', '37baf9c9b2ff4290db86bee6ab6758a235a63f05', 0, 0, '2025-03-24 12:47:49', '2025-03-24 12:47:49', NULL);
 
 -- --------------------------------------------------------
 
@@ -1162,7 +1167,8 @@ INSERT INTO `patient_verifications` (`id`, `patient_id`, `token`, `verified`, `c
 (1, 61, 'c36dbad3-a17e-40d9-87f8-f4c0359f89bb', 1, '2025-03-13 09:01:35', '2025-03-14 10:01:36', '2025-03-13 11:45:30'),
 (2, 62, 'abb5a943-92e4-44bf-9b76-ae95ccc04425', 1, '2025-03-13 11:00:38', '2025-03-14 12:00:38', '2025-03-13 12:06:29'),
 (3, 64, 'e0ce11c4-5d10-4e36-b7c7-9af4112f87d1', 1, '2025-03-13 17:05:08', '2025-03-14 18:05:09', '2025-03-13 18:06:40'),
-(4, 65, '0eb68480-f5e0-4c53-b9c5-c53cdf2278b9', 1, '2025-03-13 17:28:41', '2025-03-14 18:28:42', '2025-03-13 18:29:10');
+(4, 65, '0eb68480-f5e0-4c53-b9c5-c53cdf2278b9', 1, '2025-03-13 17:28:41', '2025-03-14 18:28:42', '2025-03-13 18:29:10'),
+(5, 68, '29355816-58e3-4e03-80a2-6f4a77f4e1d7', 0, '2025-03-24 11:47:49', '2025-03-25 12:47:50', NULL);
 
 -- --------------------------------------------------------
 
@@ -1463,7 +1469,9 @@ INSERT INTO `user_notifications` (`id`, `notification_id`, `user_id`) VALUES
 (31, 31, 47),
 (32, 32, 47),
 (33, 33, 47),
-(34, 34, 47);
+(34, 34, 47),
+(35, 35, 47),
+(36, 36, 47);
 
 --
 -- Indexek a kiírt táblákhoz
@@ -1574,7 +1582,7 @@ ALTER TABLE `user_notifications`
 -- AUTO_INCREMENT a táblához `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT a táblához `doctors`
@@ -1586,7 +1594,7 @@ ALTER TABLE `doctors`
 -- AUTO_INCREMENT a táblához `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT a táblához `password_reset_tokens`
@@ -1598,13 +1606,13 @@ ALTER TABLE `password_reset_tokens`
 -- AUTO_INCREMENT a táblához `patients`
 --
 ALTER TABLE `patients`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
 -- AUTO_INCREMENT a táblához `patient_verifications`
 --
 ALTER TABLE `patient_verifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT a táblához `payments`
@@ -1640,7 +1648,7 @@ ALTER TABLE `services`
 -- AUTO_INCREMENT a táblához `user_notifications`
 --
 ALTER TABLE `user_notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- Megkötések a kiírt táblákhoz
