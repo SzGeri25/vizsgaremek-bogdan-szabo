@@ -2,4 +2,15 @@
     margin: 20px;
 }
 
+/* Reszponzív módosítások */
+@media (max-width: 768px) {
+    .calendar-container {
+        margin: 10px;
+    }
+}
 
+@media (max-width: 480px) {
+    .calendar-container {
+        margin: 5px;
+    }
+}
