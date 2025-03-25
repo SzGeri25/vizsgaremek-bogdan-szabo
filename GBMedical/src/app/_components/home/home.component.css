@@ -18,19 +18,30 @@
 }
 
 .typewriter {
+    position: relative;
+    /* Szükséges a ::after pozicionáláshoz */
     overflow: hidden;
-    border-right: .15em solid orange;
     white-space: nowrap;
     margin: 0 auto;
     letter-spacing: .10em;
-    /* Módosítások itt: */
     animation:
-        typing 3s steps(40, end) 1s forwards,
-        /* 1 másodperces késleltetés */
-        blink-caret .75s step-end 3.5s infinite;
-    /* 3.5s késleltetés (0.5 + 3) */
+        typing 3s steps(40, end) 1s forwards;
     width: 0;
-    /* Kezdeti szélesség hozzáadva */
+}
+
+/* Kurzor animáció (eltűnik a gépelés végén) */
+.typewriter::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: .15em;
+    height: 1em;
+    background: orange;
+    animation:
+        blink-caret .75s step-end 1.5s infinite,
+        hide-cursor 0.1s forwards 5s;
+    /* 1s delay + 3s typing */
 }
 
 @keyframes typing {
@@ -47,11 +58,17 @@
 
     from,
     to {
-        border-color: transparent;
+        opacity: 0;
     }
 
     50% {
-        border-color: orange;
+        opacity: 1;
+    }
+}
+
+@keyframes hide-cursor {
+    to {
+        opacity: 0;
     }
 }
 
