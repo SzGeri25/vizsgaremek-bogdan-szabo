@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { ChevronUpComponent } from "../chevron-up/chevron-up.component";
+import { Router } from '@angular/router';
 
 interface Doctor {
     id: number;
@@ -69,7 +70,7 @@ export class SpecialistsComponent implements OnInit {
     private baseUrl = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources';
 
 
-    constructor(private authService: AuthService) { }
+    constructor(private authService: AuthService, private router: Router) { }
 
     async ngOnInit(): Promise<void> {
         this.currentPatientId = this.authService.getUserId();
@@ -136,10 +137,22 @@ export class SpecialistsComponent implements OnInit {
 
         if (!this.currentPatientId) {
             Swal.fire({
-                title: 'Hiba!',
-                text: 'Jelentkezz be az értékeléshez!',
-                icon: 'error',
-                timer: 3000
+                title: 'Jelentkezz be az értékeléshez!',
+                icon: 'warning',
+                showConfirmButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Bejelentkezés!',
+                cancelButtonText: 'Mégsem',
+                customClass: {
+                    actions: 'my-actions',
+                    cancelButton: 'order-1 right-gap',
+                    confirmButton: 'order-2',
+                    denyButton: 'order-3',
+                },
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.router.navigate(['/login']);
+                }
             });
             return;
         }
@@ -160,10 +173,10 @@ export class SpecialistsComponent implements OnInit {
             if (!response.ok) {
                 throw new Error(`Hálózati hiba: ${response.statusText}`);
             }
-              Swal.fire({
-                    title: "Köszönjük az értékelést!",
-                    icon: "success"
-                  });
+            Swal.fire({
+                title: "Köszönjük az értékelést!",
+                icon: "success"
+            });
             this.closeAddReviewModal();
         } catch (error) {
             console.error('Hiba az értékelés elküldésekor:', error);

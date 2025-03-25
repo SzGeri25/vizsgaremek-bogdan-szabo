@@ -31,38 +31,42 @@ body {
     gap: 30px;
 }
 
-/* Rugalmas oszlopok */
+/* Rugalmas oszlopok alapbeállítása */
 .col-md-4,
 .col-lg-3,
 .col-sm-6 {
     flex: 1 1 300px;
-    /* Kártyák alapmérete */
     max-width: 300px;
-    /* Legnagyobb szélesség */
     margin-bottom: 15px;
 }
 
-/* A kártya 100%-os szélességű legyen a legkisebb képernyőn */
-@media (max-width: 767px) {
+/* Mobil nézet (<576px): egy kártya sorban */
+@media (max-width: 575px) {
     .col-sm-6 {
         flex: 1 1 100%;
-        /* Teljes szélesség mobilon */
+        max-width: 100%;
     }
 }
 
-/* Két kártya egy sorban közepes képernyőkön */
+/* Kis-méretű képernyők (576px–767px): két kártya sorban */
+@media (min-width: 576px) and (max-width: 767px) {
+    .col-sm-6 {
+        flex: 1 1 48%;
+        max-width: 48%;
+    }
+}
+
+/* Két kártya egy sorban közepes képernyőkön (768px–991px) */
 @media (min-width: 768px) and (max-width: 991px) {
     .col-md-4 {
         flex: 1 1 48%;
-        /* Két kártya egy sorban */
     }
 }
 
-/* A kártyák 25%-os szélességűek lesznek a nagyobb képernyőn */
+/* Négy kártya egy sorban nagyobb képernyőkön (min-width: 992px) */
 @media (min-width: 992px) {
     .col-lg-3 {
         flex: 1 1 23%;
-        /* Négy kártya egy sorban */
     }
 }
 
@@ -304,10 +308,10 @@ body {
     color: #008080;
 }
 
-.mat-label{
+.mat-label {
     color: #008080;
 }
 
-.mdc-text-field{
+.mdc-text-field {
     color: #008080;
 }
