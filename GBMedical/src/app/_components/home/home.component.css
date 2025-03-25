@@ -84,11 +84,52 @@
     margin-top: 1rem;
     background-color: #E66050;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    border: #E66050;
+    border: none;
 }
 
 .btn-primary:hover {
     background-color: #C94F42;
     /* Sötétebb vöröses-narancs */
     transform: scale(1.05);
+}
+
+/* Reszponzív módosítások */
+@media (max-width: 768px) {
+    .hero-section {
+        height: 50vh;
+        padding: 1rem;
+    }
+
+    .hero-content {
+        padding: 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    .typewriter {
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        padding: 0.65rem 1.2rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-section {
+        height: 40vh;
+    }
+
+    .hero-content {
+        padding: 1rem;
+    }
+
+    .typewriter {
+        font-size: 0.9rem;
+    }
+
+    .btn-primary {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
 }
