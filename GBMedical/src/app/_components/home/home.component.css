@@ -17,6 +17,44 @@
     border-radius: 8px;
 }
 
+.typewriter {
+    overflow: hidden;
+    border-right: .15em solid orange;
+    white-space: nowrap;
+    margin: 0 auto;
+    letter-spacing: .10em;
+    /* Módosítások itt: */
+    animation:
+        typing 3s steps(40, end) 1s forwards,
+        /* 1 másodperces késleltetés */
+        blink-caret .75s step-end 3.5s infinite;
+    /* 3.5s késleltetés (0.5 + 3) */
+    width: 0;
+    /* Kezdeti szélesség hozzáadva */
+}
+
+@keyframes typing {
+    from {
+        width: 0;
+    }
+
+    to {
+        width: 100%;
+    }
+}
+
+@keyframes blink-caret {
+
+    from,
+    to {
+        border-color: transparent;
+    }
+
+    50% {
+        border-color: orange;
+    }
+}
+
 /* Szolgáltatások szekció stílusai */
 .services-section {
     margin-top: 2rem;
@@ -33,6 +71,7 @@
 }
 
 .btn-primary:hover {
-    background-color: #C94F42; /* Sötétebb vöröses-narancs */
+    background-color: #C94F42;
+    /* Sötétebb vöröses-narancs */
     transform: scale(1.05);
 }
