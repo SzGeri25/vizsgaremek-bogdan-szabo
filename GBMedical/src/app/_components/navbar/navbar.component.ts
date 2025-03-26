@@ -13,6 +13,8 @@ import { CommonModule } from '@angular/common';
 export class NavbarComponent implements OnInit {
     isAuthenticated: boolean = false;
     isMenuOpen = false; // Kezdetben zárt menü
+    
+    
 
     constructor(private router: Router, private authService: AuthService, private eRef: ElementRef) { };
 
@@ -70,4 +72,6 @@ export class NavbarComponent implements OnInit {
         this.authService.logout();
         this.router.navigate(['/login']);
     }
+
+    
 }
