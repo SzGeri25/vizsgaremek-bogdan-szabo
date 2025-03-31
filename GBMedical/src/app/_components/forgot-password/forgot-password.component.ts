@@ -12,22 +12,31 @@ import { NavbarComponent } from '../navbar/navbar.component';
   styleUrl: './forgot-password.component.css'
 })
 export class ForgotPasswordComponent {
-  email: string = ''; // Az input mező adatát tárolja
-  message: string = ''; // Üzenet a felhasználónak
+  email: string = '';
+  message: string = '';
+  isError: boolean = false; // Üzenet típusa
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   onSubmit() {
     if (!this.email) {
       this.message = 'Kérlek, add meg az email címed!';
+      this.isError = true;
       return;
     }
 
     const requestBody = { email: this.email };
     this.http.post('http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/password/forgotPassword', requestBody)
       .subscribe({
-        next: () => this.message = 'A visszaállító email elküldve!',
-        error: () => this.message = 'Hibás vagy nem található az email cím! Regisztráltál már?'
+        next: () => {
+          this.message = 'A visszaállító email elküldve!';
+          this.isError = false;
+        },
+        error: () => {
+          this.message = 'Hibás vagy nem található az email cím! Regisztráltál már?';
+          this.isError = true;
+        }
       });
   }
 }
+
