@@ -1,0 +1,44 @@
+
+<div class="doctors-carousel">
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  
+    <div *ngIf="error" class="alert alert-danger text-center">
+      Failed to load doctors. Please try again later.
+    </div>
+  
+    <div *ngIf="!loading && !error && doctors.length > 0" class="carousel-container">
+      <div id="doctorsCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div *ngFor="let doctor of doctors; let i = index" 
+               class="carousel-item" 
+               [class.active]="i === activeIndex">
+            <div class="doctor-card">
+              <div class="doctor-image-container">
+                <img [src]="getImageUrl(i)" class="doctor-image" alt="{{doctor.name}}">
+              </div>
+              <div class="doctor-info">
+                <h3 class="doctor-name">{{doctor.name}}</h3>
+                <p class="doctor-specialty">{{doctor.bio}}</p>
+                <div class="doctor-contact">
+                  <p><i class="bi bi-telephone"></i> {{doctor.phoneNumber}}</p>
+                  <p><i class="bi bi-envelope"></i> {{doctor.email}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" (click)="onSlideChange('prev')">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" (click)="onSlideChange('next')" >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+  </div>

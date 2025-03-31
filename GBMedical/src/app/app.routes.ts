@@ -14,6 +14,7 @@ import { ChevronUpComponent } from './_components/chevron-up/chevron-up.componen
 import { VerifyComponent } from './_components/verify/verify.component';
 
 import { AuthGuard } from './auth.guard';
+import { CarouselComponent } from '@coreui/angular';
 
 
 export const routes: Routes = [
@@ -32,6 +33,7 @@ export const routes: Routes = [
     { path: 'newPassword', component: NewPasswordComponent},
     { path: 'admin', component: AdminComponent, canActivate: [AuthGuard] },
     {path: 'chevron-up', component: ChevronUpComponent},
+    {path: 'carousel', component: CarouselComponent},
 
 
     { path: '**', redirectTo: '/home' } // 404 esetén visszairányítás a Home-ra, ez legyen legalul!!!

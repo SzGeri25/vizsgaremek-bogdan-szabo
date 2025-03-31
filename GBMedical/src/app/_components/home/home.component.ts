@@ -13,6 +13,7 @@ import { BookingComponent } from "../booking/booking.component";
 import { start } from '@popperjs/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../_services/auth.service';
+import { CarouselComponent } from "../carousel/carousel.component";
 
 interface Service {
     id: number;
@@ -31,7 +32,7 @@ interface Service {
 
 @Component({
     selector: 'app-home',
-    imports: [NavbarComponent, FormsModule, FooterComponent, ChevronUpComponent, SpecialistsComponent, CommonModule, ServicesComponent, ContactComponent, CalendarComponent, BookingComponent],
+    imports: [NavbarComponent, FormsModule, FooterComponent, ChevronUpComponent, SpecialistsComponent, CommonModule, ServicesComponent, ContactComponent, CalendarComponent, BookingComponent, CarouselComponent],
     templateUrl: './home.component.html',
     styleUrl: './home.component.css',
     animations: [

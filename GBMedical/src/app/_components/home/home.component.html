@@ -45,12 +45,14 @@
   </nav>
 
 <!-- Hero szekció: háttérkép és üdvözlő szöveg -->
-<div class="hero-section" [@fadeIn]>
+<div class="hero-section" [@fadeIn] style="color: #f5f5f5;">
     <div class="hero-content">
         <h1 class="typewriter">Üdvözöljük a GB Medical rendszerben!</h1>
         <button class="btn btn-primary" (click)="scrollToBooking2()" id="bookingButton2">Időpontfoglalás</button>
     </div>
 </div>
+
+
 
 <!-- Szolgáltatások szekció -->
 <div class="container services-section" [@fadeIn] >
@@ -73,8 +75,7 @@
     </div>
 </div>
 
-
-
+<app-carousel></app-carousel>
 
 <section class="hero" id="idopontfoglalas">
     <div class="overlay"></div>
