@@ -4,6 +4,7 @@ import { FooterComponent } from '../footer/footer.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ViewportScroller } from '@angular/common';
 
 interface Service {
   id: number;
@@ -41,7 +42,7 @@ export class BookingComponent implements OnInit {
   private apiUrl = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/services/getAllServices';
   private apiUrl2 = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/doctors/getAllDoctors';
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private viewportScroller: ViewportScroller) { }
 
   ngOnInit(): void {
     this.fetchServices();
@@ -74,7 +75,9 @@ export class BookingComponent implements OnInit {
     const doctorId = Number(selectElement.value);
     this.selectedDoctor = this.doctors.find(doctor => doctor.id === doctorId) || null;
     this.selectedDoctorId = doctorId;
-    this.router.navigate(['/calendar'], { queryParams: { doctorId: doctorId } });
+    this.router.navigate(['/calendar'], { queryParams: { doctorId: doctorId } }).then(() =>{
+      this.viewportScroller.scrollToPosition([0, 0]);
+    });
   }
 
   fetchServices(): void {
@@ -104,7 +107,9 @@ export class BookingComponent implements OnInit {
     this.selectedServiceId = serviceId;
 
     if (this.selectedService) {
-      this.router.navigate(['/calendar'], { queryParams: { serviceId: serviceId } });
+      this.router.navigate(['/calendar'], { queryParams: { serviceId: serviceId } }).then(() =>{
+        this.viewportScroller.scrollToPosition([0, 0]);
+      });;
     }
   }
 }

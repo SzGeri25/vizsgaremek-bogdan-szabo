@@ -14,6 +14,7 @@ import { start } from '@popperjs/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../_services/auth.service';
 import { CarouselComponent } from "../carousel/carousel.component";
+import { ViewportScroller } from '@angular/common';
 
 interface Service {
     id: number;
@@ -65,7 +66,7 @@ export class HomeComponent {
     isNavbarVisible = true; // Navbar láthatóságának állapota
     private lastScrollPosition = 0; // Utolsó görgetési pozíció
 
-constructor(private router: Router, private authService: AuthService, private eRef: ElementRef){}
+constructor(private router: Router, private authService: AuthService, private eRef: ElementRef, private viewportScroller: ViewportScroller){}
 
     goToBooking(): void {
         this.router.navigate(['/booking']);
@@ -132,7 +133,9 @@ toggleMenu(): void {
         const doctorId = Number(selectElement.value);
         this.selectedDoctor = this.doctors.find(doctor => doctor.id === doctorId) || null;
         this.selectedDoctorId = doctorId;
-        this.router.navigate(['/calendar'], { queryParams: { doctorId: doctorId } });
+        this.router.navigate(['/calendar'], { queryParams: { doctorId: doctorId } }).then(() =>{
+          this.viewportScroller.scrollToPosition([0, 0]);
+        });;
       }
     
       fetchServices(): void {
@@ -162,7 +165,9 @@ toggleMenu(): void {
         this.selectedServiceId = serviceId;
     
         if (this.selectedService) {
-          this.router.navigate(['/calendar'], { queryParams: { serviceId: serviceId } });
+          this.router.navigate(['/calendar'], { queryParams: { serviceId: serviceId } }).then(() =>{
+            this.viewportScroller.scrollToPosition([0, 0]);
+          });;
         }
       }
 
