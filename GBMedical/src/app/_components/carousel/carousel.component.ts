@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Doctor } from './doctor.model'; // You'll need to create this interface
 import { CommonModule } from '@angular/common';
@@ -17,8 +17,23 @@ export class CarouselComponent implements OnInit {
   doctorChunks: Doctor[][] = [];
   visibleDoctors: Doctor[] = [];
   currentIndex = 0;
+  isMobileView = false;
+  chunkSize = 3;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    this.checkViewport();
+   }
+
+   @HostListener('window:resize', ['$event'])
+   onResize(event: any) {
+     this.checkViewport();
+   }
+
+   private checkViewport() {
+    this.isMobileView = window.innerWidth < 768;
+    this.chunkSize = this.isMobileView ? 1 : 3;
+    this.updateVisibleDoctors(); // Frissítjük a látható doktorokat
+  }
 
   ngOnInit(): void {
     this.fetchDoctors();
@@ -43,30 +58,30 @@ export class CarouselComponent implements OnInit {
   }
 
   updateVisibleDoctors(): void {
-    this.visibleDoctors = this.doctors.slice(this.currentIndex * 3, (this.currentIndex * 3) + 3);
-
-    
+    this.visibleDoctors = this.doctors.slice(
+      this.currentIndex * this.chunkSize, 
+      (this.currentIndex * this.chunkSize) + this.chunkSize
+    );
   }
 
   // Split doctors into chunks for carousel items
   getDoctorChunks(): Doctor[][] {
-    const chunkSize = 3;
     this.doctorChunks = [];
-    for (let i = 0; i < this.doctors.length; i += chunkSize) {
-      this.doctorChunks.push(this.doctors.slice(i, i + chunkSize));
+    for (let i = 0; i < this.doctors.length; i += this.chunkSize) {
+      this.doctorChunks.push(this.doctors.slice(i, i + this.chunkSize));
     }
     return this.doctorChunks;
   }
 
   nextSlide(): void {
-    if ((this.currentIndex + 1) * 3 < this.doctors.length) {
+    const chunkSize = this.getChunkSize();
+    if ((this.currentIndex + 1) * chunkSize < this.doctors.length) {
       this.currentIndex++;
       this.updateVisibleDoctors();
       this.updateActiveSlide();
     }
   }
   
-  // Előző dia
   prevSlide(): void {
     if (this.currentIndex > 0) {
       this.currentIndex--;
@@ -74,6 +89,18 @@ export class CarouselComponent implements OnInit {
       this.updateActiveSlide();
     }
   }
+  
+  // Új segédfüggvény a chunk mérethez
+  private getChunkSize(): number {
+    if(window.innerWidth < 768){
+      return 1
+    }
+    else{
+
+      return 3;
+    }
+  }
+  
   
   // Aktív dia frissítése
   public updateActiveSlide(): void {
