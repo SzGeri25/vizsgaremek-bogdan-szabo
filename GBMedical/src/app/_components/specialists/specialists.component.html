@@ -15,7 +15,7 @@
     <div class="col-md-4 col-lg-3 col-sm-6 mb-4" *ngFor="let doctor of filteredDoctors">
       <div class="card">
         <div class="card-body">
-          <img src="doctor.jpg" alt="doctor" class="card-img-top mb-2">
+          <img [src]="doctor.imageUrl" alt="{{doctor.name}} profilképe" class="card-img-top mb-2">
           <h5 class="card-title" [innerHTML]="doctor.name | highlight:searchTerm"></h5>
           <p class="card-text">
             <strong>Bio: </strong> <span [innerHTML]="doctor.bio | highlight:searchTerm"></span>

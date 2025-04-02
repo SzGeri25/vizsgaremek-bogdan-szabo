@@ -37,7 +37,6 @@ body {
 .col-sm-6 {
     flex: 1 1 300px;
     max-width: 300px;
-    margin-bottom: 15px;
 }
 
 /* Mobil nézet (<576px): egy kártya sorban */
@@ -94,8 +93,8 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     width: 100%;
-    margin: 10px 0;
-    height: 550px;
+    height: auto;
+    min-height: 550px;
 }
 
 .card:hover {
@@ -113,10 +112,10 @@ body {
 
 .card-img-top {
     width: 100%;
-    max-width: 15rem;
-    border-radius: 8px;
+    max-width: none;
+    border-radius: 10px;
     object-fit: cover;
-    margin-bottom: 15px;
+    margin-bottom: 0;
 }
 
 .card-title {

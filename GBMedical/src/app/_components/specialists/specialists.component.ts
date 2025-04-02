@@ -18,6 +18,7 @@ interface Doctor {
     phoneNumber: string;
     bio: string;
     email: string;
+    imageUrl?: string;
 }
 
 interface Review {
@@ -69,6 +70,24 @@ export class SpecialistsComponent implements OnInit {
 
     private baseUrl = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources';
 
+    // Statikus mapping az orvosok képeinek
+    private doctorImagesMapping: { [key: number]: string } = {
+        1: './doctor_images/doctor1.jpg',
+        2: './doctor_images/doctor9.jpg',
+        3: './doctor_images/doctor6.jpg',
+        4: './doctor_images/doctor5.jpg',
+        5: './doctor_images/doctor4.jpg',
+        6: './doctor_images/doctor3.jpg',
+        7: './doctor_images/doctor7.jpg',
+        8: './doctor_images/doctor8.jpg',
+        9: './doctor_images/doctor9.jpg',
+        10: './doctor_images/doctor10.jpg',
+        11: './doctor_images/doctor11.jpg',
+        12: './doctor_images/doctor12.jpg',
+        13: './doctor_images/doctor13.jpg',
+        14: './doctor_images/doctor14.jpg',
+        15: './doctor_images/doctor15.jpg',
+    };    
 
     constructor(private authService: AuthService, private router: Router) { }
 
@@ -80,8 +99,14 @@ export class SpecialistsComponent implements OnInit {
                 throw new Error(`Hálózati hiba: ${response.statusText}`);
             }
             const data = await response.json();
+            console.log(data);
+
             // Feltételezzük, hogy az API { result: Doctor[] } formátumban adja vissza az adatokat
-            this.doctors = data.result;
+            this.doctors = data.result.map((doctor: Doctor) => {
+                // Minden orvoshoz hozzárendeljük a képet a mapping alapján, ha nincs mapping akkor az alapértelmezett
+                doctor.imageUrl = this.doctorImagesMapping[doctor.id];
+                return doctor;
+            });
         } catch (error) {
             console.error('Hiba a doktorok lekérésekor:', error);
             this.errorMessage = 'Nem sikerült betölteni az adatokat.';
