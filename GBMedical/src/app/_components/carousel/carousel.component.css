@@ -1,6 +1,6 @@
 .doctors-carousel {
     padding: 3rem 0;
-    background-color: #f8f9fa;
+    background-color: #e5f9f9;
     position: relative; 
   }
 
@@ -76,7 +76,7 @@
     }
   
     .card-img-top {
-      height: 200px;
+      height: 350px;
       object-fit: cover;
       object-position: top;
     }

@@ -4,6 +4,7 @@ export interface Doctor {
   bio: string;
   phoneNumber: string;
   email: string;
+  imageUrl?: string;
 }
   
   export interface DoctorsResponse {

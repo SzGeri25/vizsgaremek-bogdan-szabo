@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-carousel',
   templateUrl: './carousel.component.html',
   standalone: true,
-  imports:[CommonModule],
+  imports: [CommonModule],
   styleUrls: ['./carousel.component.css']
 })
 export class CarouselComponent implements OnInit {
@@ -20,16 +20,35 @@ export class CarouselComponent implements OnInit {
   isMobileView = false;
   chunkSize = 3;
 
+  // Statikus mapping az orvosok képeinek
+  private doctorImagesMapping: { [key: number]: string } = {
+    1: './doctor_images/doctor1.jpg',
+    2: './doctor_images/doctor9.jpg',
+    3: './doctor_images/doctor6.jpg',
+    4: './doctor_images/doctor5.jpg',
+    5: './doctor_images/doctor4.jpg',
+    6: './doctor_images/doctor3.jpg',
+    7: './doctor_images/doctor7.jpg',
+    8: './doctor_images/doctor8.jpg',
+    9: './doctor_images/doctor9.jpg',
+    10: './doctor_images/doctor10.jpg',
+    11: './doctor_images/doctor11.jpg',
+    12: './doctor_images/doctor12.jpg',
+    13: './doctor_images/doctor13.jpg',
+    14: './doctor_images/doctor14.jpg',
+    15: './doctor_images/doctor15.jpg',
+  };
+
   constructor(private http: HttpClient) {
     this.checkViewport();
-   }
+  }
 
-   @HostListener('window:resize', ['$event'])
-   onResize(event: any) {
-     this.checkViewport();
-   }
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkViewport();
+  }
 
-   private checkViewport() {
+  private checkViewport() {
     this.isMobileView = window.innerWidth < 768;
     this.chunkSize = this.isMobileView ? 1 : 3;
     this.updateVisibleDoctors(); // Frissítjük a látható doktorokat
@@ -44,7 +63,12 @@ export class CarouselComponent implements OnInit {
       .subscribe({
         next: (response) => {
           if (response.status === 'success') {
-            this.doctors = response.result;
+            this.doctors = response.result.map((doctor: Doctor) => {
+              return {
+                ...doctor,
+                imageUrl: this.doctorImagesMapping[doctor.id]
+              };
+            });
             this.updateVisibleDoctors();
           }
           this.loading = false;
@@ -59,7 +83,7 @@ export class CarouselComponent implements OnInit {
 
   updateVisibleDoctors(): void {
     this.visibleDoctors = this.doctors.slice(
-      this.currentIndex * this.chunkSize, 
+      this.currentIndex * this.chunkSize,
       (this.currentIndex * this.chunkSize) + this.chunkSize
     );
   }
@@ -81,7 +105,7 @@ export class CarouselComponent implements OnInit {
       this.updateActiveSlide();
     }
   }
-  
+
   prevSlide(): void {
     if (this.currentIndex > 0) {
       this.currentIndex--;
@@ -89,41 +113,41 @@ export class CarouselComponent implements OnInit {
       this.updateActiveSlide();
     }
   }
-  
+
   // Új segédfüggvény a chunk mérethez
   private getChunkSize(): number {
-    if(window.innerWidth < 768){
+    if (window.innerWidth < 768) {
       return 1
     }
-    else{
+    else {
 
       return 3;
     }
   }
-  
-  
+
+
   // Aktív dia frissítése
   public updateActiveSlide(): void {
     const slides = document.getElementsByClassName('carousel-item');
-    
+
     // Összes slide inaktívvá tétele
     Array.from(slides).forEach(slide => {
       slide.classList.remove('active');
     });
-  
+
     // Aktív slide beállítása
     if (slides[this.currentIndex]) {
       slides[this.currentIndex].classList.add('active');
     }
-  
+
     // Indikátorok frissítése
     this.updateIndicators();
   }
-  
+
   // Indikátorok frissítése
   private updateIndicators(): void {
     const indicators = document.getElementsByClassName('carousel-indicator');
-    
+
     Array.from(indicators).forEach((indicator, index) => {
       if (index === this.currentIndex) {
         indicator.classList.add('active');
