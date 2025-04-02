@@ -29,7 +29,7 @@
                class="carousel-item" 
                [class.active]="i === 0">
             <div class="row g-4">
-              <div *ngFor="let doctor of visibleDoctors" class="col-md-4">
+              <div *ngFor="let doctor of visibleDoctors" class="{{isMobileView ? 'col-12' : 'col-md-4'}}">
                 <div class="card h-100 doctor-card">
                   <img src="/doctor.jpg" class="card-img-top" alt="{{doctor.name}}">
                   <div class="card-body text-center">
