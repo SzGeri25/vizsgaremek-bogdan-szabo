@@ -245,41 +245,15 @@ body {
     .card-text {
         font-size: 0.9rem;
     }
-
+    
     .btn {
-        font-size: 0.9rem;
+        font-size: 0.8rem;
         padding: 2px 7px;
     }
-
+    
     .search-input {
         font-size: 14px;
         padding: 10px;
-    }
-}
-
-@media (max-width: 480px) {
-    .card {
-        margin: 10px;
-        padding: 10px;
-    }
-
-    .card-title {
-        font-size: 1rem;
-    }
-
-    .card-text {
-        font-size: 0.85rem;
-    }
-
-    .btn {
-        font-size: 0.85rem;
-        padding: 6px 12px;
-    }
-
-    .search-input {
-        font-size: 13px;
-        padding: 8px;
-        border-radius: 20px;
     }
 }
 
@@ -308,6 +282,33 @@ body {
         border-radius: 20px;
     }
 }
+
+@media (max-width: 480px) {
+    .card {
+        margin: 10px;
+        padding: 10px;
+    }
+
+    .card-title {
+        font-size: 1rem;
+    }
+    
+    .card-text {
+        font-size: 0.85rem;
+    }
+    
+    .btn {
+        font-size: 0.85rem;
+        padding: 6px 12px;
+    }
+
+    .search-input {
+        font-size: 13px;
+        padding: 8px;
+        border-radius: 20px;
+    }
+}
+
 
 .search-container {
     display: flex;
