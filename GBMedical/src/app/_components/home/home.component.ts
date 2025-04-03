@@ -15,6 +15,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../_services/auth.service';
 import { CarouselComponent } from "../carousel/carousel.component";
 import { ViewportScroller } from '@angular/common';
+import { AppointmentService } from '../../_services/appointments.service';
 
 interface Service {
   id: number;
@@ -66,10 +67,16 @@ export class HomeComponent {
   isNavbarVisible = true; // Navbar láthatóságának állapota
   private lastScrollPosition = 0; // Utolsó görgetési pozíció
 
-  constructor(private router: Router, private authService: AuthService, private eRef: ElementRef, private viewportScroller: ViewportScroller) { }
+  constructor(private router: Router, private authService: AuthService, private eRef: ElementRef, private viewportScroller: ViewportScroller, private appointmentService: AppointmentService) { }
 
   goToBooking(): void {
     this.router.navigate(['/booking']);
+  }
+
+  showAllAvailableSlots(): void {
+    this.router.navigate(['/calendar'], { queryParams: { allSlots: true } }).then(() => {
+      this.viewportScroller.scrollToPosition([0, 0]);
+    });
   }
 
   toggleMenu(): void {
