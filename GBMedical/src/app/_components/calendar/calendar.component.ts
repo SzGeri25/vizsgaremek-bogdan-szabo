@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FullCalendarModule } from '@fullcalendar/angular';
+import { FullCalendarComponent } from '@fullcalendar/angular';
 import { CalendarOptions } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { NavbarComponent } from '../navbar/navbar.component';
@@ -34,6 +35,18 @@ interface Service {
   styleUrls: ['./calendar.component.css']
 })
 export class CalendarComponent implements OnInit {
+  @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
+  private resizeTimeout: any;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    // Debounce a túl gyors újrarajzolások elkerüléséhez
+    clearTimeout(this.resizeTimeout);
+    this.resizeTimeout = setTimeout(() => {
+      this.adjustHeaderTools();
+      this.calendarComponent.getApi().updateSize();
+    }, 150);
+  }
 
   bookedEvents: any[] = [];
   availableEvents: any[] = [];
@@ -57,7 +70,15 @@ export class CalendarComponent implements OnInit {
     },
     plugins: [dayGridPlugin],
     events: [],
-    eventClick: this.handleEventClick.bind(this)
+    eventClick: this.handleEventClick.bind(this),
+    contentHeight: 'auto',
+    fixedWeekCount: false, // Ne mutasson mindig 6 hetet
+    aspectRatio: 1.5,     // Optimalizált arány
+    eventTimeFormat: {    // Időformátum
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    }
   };
 
   private bookedApiUrl = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/appointments/getBookedAppointments';
@@ -73,6 +94,8 @@ export class CalendarComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    // Kezdeti méretezés
+    this.adjustHeaderTools();
     this.route.queryParamMap.subscribe(params => {
       this.doctorId = params.has('doctorId') ? Number(params.get('doctorId')) : null;
       this.serviceId = params.has('serviceId') ? Number(params.get('serviceId')) : null;
@@ -85,6 +108,29 @@ export class CalendarComponent implements OnInit {
         });
       });
     });
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.resizeTimeout);
+  }
+
+  private adjustHeaderTools() {
+    const calendarApi = this.calendarComponent?.getApi();
+    if (!calendarApi) return;
+
+    if (window.innerWidth < 768) {
+      calendarApi.setOption('headerToolbar', {
+        left: 'prev,next',
+        center: 'title',
+        right: ''
+      });
+    } else {
+      calendarApi.setOption('headerToolbar', {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,dayGridWeek,dayGridDay'
+      });
+    }
   }
 
   async fetchBookedAppointments(): Promise<void> {
