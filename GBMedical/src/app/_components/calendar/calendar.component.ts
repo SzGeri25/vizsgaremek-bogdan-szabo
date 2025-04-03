@@ -61,7 +61,7 @@ export class CalendarComponent implements OnInit {
   };
 
   private bookedApiUrl = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/appointments/getBookedAppointments';
-  
+
 
   constructor(
     private http: HttpClient,
@@ -138,7 +138,7 @@ export class CalendarComponent implements OnInit {
 
       if (response.status === 'success') {
         this.availableEvents = response.slots.map((slot: any) => ({
-          title: this.showAllSlots 
+          title: this.showAllSlots
             ? `${slot.doctorName} - ${slot.serviceName}`
             : this.serviceId
               ? `${slot.doctorName} - ${slot.serviceName}`
@@ -189,10 +189,11 @@ export class CalendarComponent implements OnInit {
   }
 
   handleEventClick(info: any): void {
-    if (this.doctorId === null && this.serviceId === null) {
-        console.error('Nincs orvos vagy szolgáltatás ID elérhető!');
-        return;
+    if (!this.showAllSlots && this.doctorId === null && this.serviceId === null) {
+      console.error('Nincs orvos vagy szolgáltatás ID elérhető!');
+      return;
     }
+
 
     const startTime: string = info.event.start ? this.convertToLocalISOString(info.event.start) : '';
     const endTime: string = info.event.end ? this.convertToLocalISOString(info.event.end) : '';
@@ -202,89 +203,89 @@ export class CalendarComponent implements OnInit {
     const patientId: number | null = this.authService.getUserId();
 
     if (!patientId) {
-        Swal.fire({
-            title: 'Jelentkezz be a foglaláshoz!',
-            icon: 'warning',
-            showConfirmButton: true,
-            showCancelButton: true,
-            confirmButtonText: 'Bejelentkezés!',
-            cancelButtonText: 'Mégsem',
-            customClass: {
-              actions: 'my-actions',
-              cancelButton: 'order-1 right-gap',
-              confirmButton: 'order-2',
-              denyButton: 'order-3',
-            },
-          }).then((result) => {
-            if (result.isConfirmed) {
-              this.router.navigate(['/login']);
-            } else if (result.isDenied) {
-              Swal.fire('Changes are not saved', '', 'info')
-            }
-        });
+      Swal.fire({
+        title: 'Jelentkezz be a foglaláshoz!',
+        icon: 'warning',
+        showConfirmButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Bejelentkezés!',
+        cancelButtonText: 'Mégsem',
+        customClass: {
+          actions: 'my-actions',
+          cancelButton: 'order-1 right-gap',
+          confirmButton: 'order-2',
+          denyButton: 'order-3',
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.router.navigate(['/login']);
+        } else if (result.isDenied) {
+          Swal.fire('Changes are not saved', '', 'info')
+        }
+      });
 
-        return;
+      return;
     }
 
     const isOwner = patientId === info.event.extendedProps?.patientId;
     const isBooked = info.event.backgroundColor === 'blue';
 
     if (isBooked) {
-        const currentUrl = new URL(window.location.href);
-        currentUrl.searchParams.set('appointmentId', info.event.id.toString());
-        currentUrl.searchParams.set('patientId', patientId.toString());
-        window.history.pushState(null, '', currentUrl.toString());
+      const currentUrl = new URL(window.location.href);
+      currentUrl.searchParams.set('appointmentId', info.event.id.toString());
+      currentUrl.searchParams.set('patientId', patientId.toString());
+      window.history.pushState(null, '', currentUrl.toString());
     }
 
     const data: EventDetailsData = {
-        title: info.event.title,
-        start: startTime,
-        end: endTime,
-        status: info.event.extendedProps?.status,
-        doctorId: doctorId!,
-        patientId: patientId,
-        serviceName: info.event.extendedProps?.serviceName || 'Nincs megadva',
-        doctorName: info.event.extendedProps?.doctorName || 'Nincs megadva',
-        allowCancellation: isOwner,
-        appointmentId: info.event.id
+      title: info.event.title,
+      start: startTime,
+      end: endTime,
+      status: info.event.extendedProps?.status,
+      doctorId: doctorId!,
+      patientId: patientId,
+      serviceName: info.event.extendedProps?.serviceName || 'Nincs megadva',
+      doctorName: info.event.extendedProps?.doctorName || 'Nincs megadva',
+      allowCancellation: isOwner,
+      appointmentId: info.event.id
     };
 
     const dialogRef = this.dialog.open(EventDetailsModalComponent, {
-        data,
-        width: '400px'
+      data,
+      width: '400px'
     });
 
     dialogRef.afterClosed().subscribe((result: { bookAppointment: boolean, cancelAppointment: boolean }) => {
-        if (result?.bookAppointment) {
-            const appointment = {
-                doctorId: doctorId,
-                patientId: patientId,
-                startTime: startTime,
-                endTime: endTime,
-            };
+      if (result?.bookAppointment) {
+        const appointment = {
+          doctorId: doctorId,
+          patientId: patientId,
+          startTime: startTime,
+          endTime: endTime,
+        };
 
-            this.appointmentService.addAppointmentWithNotification(appointment).subscribe({
-                next: response => {
-                    console.log('Foglalás sikeres:', response);
-                    Swal.fire({
-                        title: 'Sikeres foglalás!',
-                        text: 'Az időpontot sikeresen lefoglaltad.',
-                        icon: 'success',
-                        timer: 3000
-                    });
-                    this.fetchBookedAppointments().then(() => this.updateCalendarEvents());
-                },
-                error: error => {
-                    console.error('Foglalás hiba:', error);
-                    Swal.fire({
-                        title: 'Hiba!',
-                        text: 'Nem sikerült a foglalás. Próbáld újra később!',
-                        icon: 'error',
-                        timer: 3000
-                    });
-                }
+        this.appointmentService.addAppointmentWithNotification(appointment).subscribe({
+          next: response => {
+            console.log('Foglalás sikeres:', response);
+            Swal.fire({
+              title: 'Sikeres foglalás!',
+              text: 'Az időpontot sikeresen lefoglaltad.',
+              icon: 'success',
+              timer: 3000
             });
-        }
+            this.fetchBookedAppointments().then(() => this.updateCalendarEvents());
+          },
+          error: error => {
+            console.error('Foglalás hiba:', error);
+            Swal.fire({
+              title: 'Hiba!',
+              text: 'Nem sikerült a foglalás. Próbáld újra később!',
+              icon: 'error',
+              timer: 3000
+            });
+          }
+        });
+      }
     });
-}
+  }
 }
