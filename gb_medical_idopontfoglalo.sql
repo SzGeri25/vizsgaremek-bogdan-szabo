@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: localhost:3306
--- Létrehozás ideje: 2025. Már 24. 12:49
+-- Létrehozás ideje: 2025. Ápr 03. 09:16
 -- Kiszolgáló verziója: 5.7.24
--- PHP verzió: 8.1.0
+-- PHP verzió: 8.3.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -444,6 +444,52 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `getAppointmentById` (IN `idIN` INT)
         AND a.id = idIN;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getAvailableSlots` ()   BEGIN
+    -- Ideiglenes tábla létrehozása a schedule-okból generált slotokkal
+    CREATE TEMPORARY TABLE TimeSlots AS
+    SELECT 
+        s.doctor_id,
+        s.start_time + INTERVAL n.x * 30 MINUTE AS slot_start,
+        s.start_time + INTERVAL (n.x + 1) * 30 MINUTE AS slot_end
+    FROM schedules s
+    JOIN (
+        SELECT 0 AS x UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3
+        UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7
+        UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10 UNION ALL SELECT 11
+        UNION ALL SELECT 12 UNION ALL SELECT 13 UNION ALL SELECT 14 UNION ALL SELECT 15
+        UNION ALL SELECT 16 UNION ALL SELECT 17 UNION ALL SELECT 18 UNION ALL SELECT 19
+        UNION ALL SELECT 20 UNION ALL SELECT 21 UNION ALL SELECT 22 UNION ALL SELECT 23
+    ) AS n 
+      ON n.x * 30 < TIMESTAMPDIFF(MINUTE, s.start_time, s.end_time);
+    
+    -- Szabad slotok lekérdezése: összekapcsolva az orvosok és a szolgáltatások adataival,
+    -- és csak a jelenlegi idő utáni időpontok jelennek meg
+    SELECT 
+        ts.slot_start, 
+        ts.slot_end, 
+        ts.doctor_id, 
+        d.name AS doctor_name,
+        dxs.service_id,
+        ser.name AS service_name
+    FROM TimeSlots ts
+    LEFT JOIN Appointments a
+      ON ts.doctor_id = a.doctor_id
+      AND ts.slot_start < a.end_time
+      AND ts.slot_end > a.start_time
+      AND a.status <> 'cancelled'
+    LEFT JOIN doctors_x_services dxs
+      ON ts.doctor_id = dxs.doctor_id
+    LEFT JOIN services ser
+      ON dxs.service_id = ser.id
+    LEFT JOIN doctors d
+      ON ts.doctor_id = d.id
+    WHERE a.id IS NULL
+      AND ts.slot_start > NOW()   -- Csak a jövőbeli időpontok jelennek meg
+    ORDER BY ts.slot_start;
+    
+    DROP TEMPORARY TABLE TimeSlots;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getAvailableSlotsByDoctor` (IN `doctorIdIN` INT)   BEGIN
     -- Ideiglenes tábla létrehozása a doktor schedule-jából generált slotokkal
     CREATE TEMPORARY TABLE TimeSlots AS
@@ -483,6 +529,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `getAvailableSlotsByDoctor` (IN `doc
     LEFT JOIN doctors d
       ON ts.doctor_id = d.id
     WHERE a.id IS NULL
+    	AND ts.slot_start > NOW()   -- Csak a jövőbeli időpontok jelennek meg
     ORDER BY ts.slot_start;
     
     DROP TEMPORARY TABLE TimeSlots;
@@ -535,40 +582,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `getAvailableSlotsByService` (IN `se
     LEFT JOIN services ser
       ON dxs.service_id = ser.id
     WHERE a.id IS NULL
+    	AND ts.slot_start > NOW()   -- Csak a jövőbeli időpontok jelennek meg
     ORDER BY ts.slot_start;
     
     DROP TEMPORARY TABLE TimeSlots;
     DROP TEMPORARY TABLE ServiceDoctors;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `getAvailableSlots_Wrong` (IN `doctorIdIN` INT, IN `startDateIN` DATETIME, IN `endDateIN` DATETIME)   BEGIN
-    CREATE TEMPORARY TABLE TimeSlots AS
-    SELECT 
-        schedules.doctor_id,
-        schedules.start_time + INTERVAL x * 30 MINUTE AS slot_start,
-        schedules.start_time + INTERVAL (x + 1) * 30 MINUTE AS slot_end
-    FROM schedules
-    JOIN (
-        SELECT 0 AS x UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3
-        UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7
-        UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10 UNION ALL SELECT 11
-        UNION ALL SELECT 12 UNION ALL SELECT 13 UNION ALL SELECT 14 UNION ALL SELECT 15
-        UNION ALL SELECT 16 UNION ALL SELECT 17 UNION ALL SELECT 18 UNION ALL SELECT 19
-        UNION ALL SELECT 20 UNION ALL SELECT 21 UNION ALL SELECT 22 UNION ALL SELECT 23
-    ) AS Numbers ON x * 30 < TIMESTAMPDIFF(MINUTE, schedules.start_time, schedules.end_time)
-    WHERE schedules.doctor_id = doctorIdIN
-      AND schedules.start_time >= startDateIN
-      AND schedules.end_time <= endDateIN;
-
-    SELECT ts.slot_start, ts.slot_end, ts.doctor_id
-    FROM TimeSlots ts
-    LEFT JOIN Appointments a
-    ON ts.doctor_id = a.doctor_id
-       AND ts.slot_start < a.end_time
-       AND ts.slot_end > a.start_time
-    WHERE a.id IS NULL;
-
-    DROP TEMPORARY TABLE TimeSlots;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getBookedAppointments` ()   BEGIN
@@ -885,7 +903,11 @@ INSERT INTO `appointments` (`id`, `doctor_id`, `patient_id`, `start_time`, `end_
 (50, 11, 47, '2025-02-27 11:00:00', '2025-02-27 11:30:00', 30, 'cancelled', 1, '2025-03-21 14:37:11', '2025-03-21 14:37:11', '2025-03-21 14:38:49', NULL, NULL),
 (51, 6, 47, '2025-02-06 15:00:00', '2025-02-06 15:30:00', 30, 'cancelled', 1, '2025-03-21 14:40:50', '2025-03-21 14:40:50', '2025-03-21 14:41:16', NULL, NULL),
 (52, 2, 47, '2025-02-02 15:00:00', '2025-02-02 15:30:00', 30, 'booked', 0, '2025-03-24 12:52:43', '2025-03-24 12:52:43', NULL, NULL, NULL),
-(53, 9, 47, '2025-02-25 16:30:00', '2025-02-25 17:00:00', 30, 'cancelled', 1, '2025-03-24 13:31:49', '2025-03-24 13:31:49', '2025-03-24 13:32:17', NULL, NULL);
+(53, 9, 47, '2025-02-25 16:30:00', '2025-02-25 17:00:00', 30, 'cancelled', 1, '2025-03-24 13:31:49', '2025-03-24 13:31:49', '2025-03-24 13:32:17', NULL, NULL),
+(54, 10, 47, '2025-02-26 16:30:00', '2025-02-26 17:00:00', 30, 'cancelled', 1, '2025-03-25 12:01:40', '2025-03-25 12:01:40', '2025-03-25 12:06:10', NULL, NULL),
+(55, 14, 1, '2025-02-14 13:00:00', '2025-02-14 13:30:00', 30, 'cancelled', 1, '2025-03-31 17:02:11', '2025-03-31 17:02:11', '2025-03-31 17:05:42', NULL, NULL),
+(56, 14, 47, '2025-02-14 16:30:00', '2025-02-14 17:00:00', 30, 'cancelled', 1, '2025-04-01 15:43:25', '2025-04-01 15:43:25', '2025-04-01 15:43:53', NULL, NULL),
+(57, 11, 47, '2025-04-22 12:30:00', '2025-04-22 13:00:00', 30, 'cancelled', 1, '2025-04-03 10:00:17', '2025-04-03 10:00:17', '2025-04-03 10:00:56', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1019,7 +1041,11 @@ INSERT INTO `notifications` (`id`, `user_id`, `message`, `sent_at`, `is_sent`, `
 (33, 47, 'Időpont foglalva: 2025-02-27 11:00:00 - 2025-02-27 11:30:00', NULL, 0, '2025-03-21 14:37:11'),
 (34, 47, 'Időpont foglalva: 2025-02-06 15:00:00 - 2025-02-06 15:30:00', NULL, 0, '2025-03-21 14:40:50'),
 (35, 47, 'Időpont foglalva: 2025-02-02 15:00:00 - 2025-02-02 15:30:00', NULL, 0, '2025-03-24 12:52:43'),
-(36, 47, 'Időpont foglalva: 2025-02-25 16:30:00 - 2025-02-25 17:00:00', NULL, 0, '2025-03-24 13:31:49');
+(36, 47, 'Időpont foglalva: 2025-02-25 16:30:00 - 2025-02-25 17:00:00', NULL, 0, '2025-03-24 13:31:49'),
+(37, 47, 'Időpont foglalva: 2025-02-26 16:30:00 - 2025-02-26 17:00:00', NULL, 0, '2025-03-25 12:01:40'),
+(38, 1, 'Időpont foglalva: 2025-02-14 13:00:00 - 2025-02-14 13:30:00', NULL, 0, '2025-03-31 17:02:11'),
+(39, 47, 'Időpont foglalva: 2025-02-14 16:30:00 - 2025-02-14 17:00:00', NULL, 0, '2025-04-01 15:43:25'),
+(40, 47, 'Időpont foglalva: 2025-04-22 12:30:00 - 2025-04-22 13:00:00', NULL, 0, '2025-04-03 10:00:17');
 
 -- --------------------------------------------------------
 
@@ -1059,7 +1085,12 @@ INSERT INTO `password_reset_tokens` (`id`, `email`, `token`, `expires_at`, `used
 (16, 'szabo.gergely2@simonyiszki.org', '29e8d3e1-f5cf-449f-a9b7-f0faf23d9ff4', '2025-02-26 14:03:52', 0, '2025-02-26 12:03:52'),
 (17, 'mate.hermann@gmail.com', '85c4d1ff-da36-445c-aa2e-7e913e84c77e', '2025-03-04 15:11:42', 0, '2025-03-04 13:11:42'),
 (18, 'szabo.gergely2@simonyiszki.org', 'bc141137-3336-4063-a90d-5ff9f30c49b3', '2025-03-04 15:14:33', 1, '2025-03-04 13:14:33'),
-(19, 'szabo.gergely2@simonyiszki.org', '79a5d90a-301c-4894-bd2d-8ab22952db46', '2025-03-05 14:58:16', 1, '2025-03-05 12:58:16');
+(19, 'szabo.gergely2@simonyiszki.org', '79a5d90a-301c-4894-bd2d-8ab22952db46', '2025-03-05 14:58:16', 1, '2025-03-05 12:58:16'),
+(20, 'asd@gmail.com', '17e84810-dabd-48b7-9a5f-4906e09d3dfb', '2025-03-31 21:35:43', 0, '2025-03-31 18:35:43'),
+(21, 'teszt1@pelda.hu', '96f67054-b1d9-437b-afb9-766c1603c51f', '2025-03-31 21:36:40', 0, '2025-03-31 18:36:40'),
+(22, 'teszt1@pelda.hu', 'a2e31703-9811-47d8-b9cf-60874907e5fb', '2025-03-31 21:37:12', 1, '2025-03-31 18:37:12'),
+(23, 'teszt2@pelda.hu', 'f1f21d1a-e42b-45ed-87fd-b6da35088a80', '2025-03-31 21:42:29', 0, '2025-03-31 18:42:29'),
+(24, 'teszt2@pelda.hu', 'e811baeb-ea3b-4845-95e7-67cc41642b50', '2025-03-31 21:44:08', 1, '2025-03-31 18:44:08');
 
 -- --------------------------------------------------------
 
@@ -1138,10 +1169,12 @@ INSERT INTO `patients` (`id`, `first_name`, `last_name`, `email`, `phone_number`
 (59, 'Test', 'register2', 'testreg3@gmail.com', '0678954623', '40e869a48a074b408e76df9a735e53e71f0ba16b', 0, 0, '2025-03-12 13:07:21', '2025-03-12 13:07:21', NULL),
 (60, 'Test', 'register4', 'testreg4@gmail.com', '0678954628', '40e869a48a074b408e76df9a735e53e71f0ba16b', 0, 1, '2025-03-12 13:08:38', '2025-03-14 09:45:27', '2025-03-14 09:45:27'),
 (61, 'Teszt', 'Felhasználó', 'teszt@pelda.hu', '06201234567', '9bde3453d74ad925bcc1a07d782709fbb94e60d8', 0, 0, '2025-03-13 10:01:35', '2025-03-13 10:01:35', NULL),
-(62, 'Teszt', 'Felhasználó', 'teszt1@pelda.hu', '06301234567', '9bde3453d74ad925bcc1a07d782709fbb94e60d8', 0, 0, '2025-03-13 12:00:38', '2025-03-13 12:00:38', NULL),
-(64, 'Teszt', 'Felhasználó', 'teszt2@pelda.hu', '06301234568', '9bde3453d74ad925bcc1a07d782709fbb94e60d8', 0, 0, '2025-03-13 18:05:08', '2025-03-13 18:05:08', NULL),
+(62, 'Teszt', 'Felhasználó', 'teszt1@pelda.hu', '06301234567', 'ac401131f575a6499fcfcef912509279369bd708', 0, 0, '2025-03-13 12:00:38', '2025-03-13 12:00:38', NULL),
+(64, 'Teszt', 'Felhasználó', 'teszt2@pelda.hu', '06301234568', 'ecbdd642b5b751deab706968c1e8a9026a380b6e', 0, 0, '2025-03-13 18:05:08', '2025-03-13 18:05:08', NULL),
 (65, 'Teszt', 'Felhasználó', 'teszt3@pelda.hu', '06307544480', '9bde3453d74ad925bcc1a07d782709fbb94e60d8', 0, 0, '2025-03-13 18:28:41', '2025-03-13 18:28:41', NULL),
-(68, 'Gergely', 'Szabó', 'szabo.gergely25@simonyiszki.org', '06307565988', '37baf9c9b2ff4290db86bee6ab6758a235a63f05', 0, 0, '2025-03-24 12:47:49', '2025-03-24 12:47:49', NULL);
+(68, 'Gergely', 'Szabó', 'szabo.gergely25@simonyiszki.org', '06307565988', '37baf9c9b2ff4290db86bee6ab6758a235a63f05', 0, 0, '2025-03-24 12:47:49', '2025-03-24 12:47:49', NULL),
+(71, 'Gergely', 'Szabó', 'szabo.gergely25@gmail.com', '06207565980', '7cf747a2db1416c2fa03f0c4b358e1a94e1473b1', 0, 0, '2025-03-25 12:08:52', '2025-03-25 12:08:52', NULL),
+(72, 'x', 'd', 'asd@gmail.com', '06888888888', 'c54a1951f72088816b4dd8ff66f0d43813abf098', 0, 0, '2025-03-31 16:29:17', '2025-03-31 16:29:17', NULL);
 
 -- --------------------------------------------------------
 
@@ -1168,7 +1201,9 @@ INSERT INTO `patient_verifications` (`id`, `patient_id`, `token`, `verified`, `c
 (2, 62, 'abb5a943-92e4-44bf-9b76-ae95ccc04425', 1, '2025-03-13 11:00:38', '2025-03-14 12:00:38', '2025-03-13 12:06:29'),
 (3, 64, 'e0ce11c4-5d10-4e36-b7c7-9af4112f87d1', 1, '2025-03-13 17:05:08', '2025-03-14 18:05:09', '2025-03-13 18:06:40'),
 (4, 65, '0eb68480-f5e0-4c53-b9c5-c53cdf2278b9', 1, '2025-03-13 17:28:41', '2025-03-14 18:28:42', '2025-03-13 18:29:10'),
-(5, 68, '29355816-58e3-4e03-80a2-6f4a77f4e1d7', 0, '2025-03-24 11:47:49', '2025-03-25 12:47:50', NULL);
+(5, 68, '29355816-58e3-4e03-80a2-6f4a77f4e1d7', 0, '2025-03-24 11:47:49', '2025-03-25 12:47:50', NULL),
+(6, 71, '632cd9ba-da2a-4d74-a0b1-34d566401dce', 1, '2025-03-25 11:08:52', '2025-03-26 12:08:53', '2025-03-25 12:09:36'),
+(7, 72, 'db28c8a7-67fb-47cc-beed-53892daf4614', 1, '2025-03-31 14:29:17', '2025-04-01 16:29:17', '2025-03-31 16:34:17');
 
 -- --------------------------------------------------------
 
@@ -1306,7 +1341,9 @@ INSERT INTO `reviews` (`id`, `doctor_id`, `patient_id`, `rating`, `review_text`,
 (31, 19, 51, 5, 'HMMMM...', 0, '2025-03-04 14:10:51', '2025-03-04 14:10:51', NULL),
 (32, 2, 52, 3, 'Szuper', 0, '2025-03-04 14:50:22', '2025-03-04 14:50:22', NULL),
 (33, 11, 52, 4, 'Jó', 0, '2025-03-04 15:28:03', '2025-03-04 15:28:03', NULL),
-(34, 7, 55, 5, 'Szuper volt', 0, '2025-03-05 13:57:57', '2025-03-05 13:57:57', NULL);
+(34, 7, 55, 5, 'Szuper volt', 0, '2025-03-05 13:57:57', '2025-03-05 13:57:57', NULL),
+(35, 1, 47, 1, '', 0, '2025-03-25 12:41:47', '2025-03-25 12:41:47', NULL),
+(36, 7, 1, 5, 'Elégedett voltam a szolgáltatással!', 0, '2025-03-31 17:12:40', '2025-03-31 17:12:40', NULL);
 
 -- --------------------------------------------------------
 
@@ -1375,7 +1412,52 @@ INSERT INTO `schedules` (`id`, `doctor_id`, `start_time`, `end_time`, `available
 (70, 9, '2025-02-25 09:00:00', '2025-02-25 17:00:00', 8, 0, '2025-02-17 15:53:34', '2025-02-17 15:53:34', NULL),
 (71, 10, '2025-02-26 09:00:00', '2025-02-26 17:00:00', 8, 0, '2025-02-17 15:53:34', '2025-02-17 15:53:34', NULL),
 (72, 11, '2025-02-27 09:00:00', '2025-02-27 17:00:00', 8, 0, '2025-02-17 15:53:34', '2025-02-17 15:53:34', NULL),
-(73, 12, '2025-02-28 09:00:00', '2025-02-28 17:00:00', 8, 0, '2025-02-17 15:53:34', '2025-02-17 15:53:34', NULL);
+(73, 12, '2025-02-28 09:00:00', '2025-02-28 17:00:00', 8, 0, '2025-02-17 15:53:34', '2025-02-17 15:53:34', NULL),
+(74, 1, '2025-04-02 09:00:00', '2025-04-02 17:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(75, 2, '2025-04-04 10:00:00', '2025-04-04 18:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(76, 3, '2025-04-06 12:00:00', '2025-04-06 20:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(77, 4, '2025-04-08 08:00:00', '2025-04-08 12:00:00', 4, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(78, 5, '2025-04-10 08:00:00', '2025-04-10 16:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(79, 6, '2025-04-12 09:00:00', '2025-04-12 17:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(80, 7, '2025-04-14 10:00:00', '2025-04-14 18:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(81, 8, '2025-04-16 12:00:00', '2025-04-16 20:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(82, 9, '2025-04-18 08:00:00', '2025-04-18 12:00:00', 4, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(83, 10, '2025-04-20 08:00:00', '2025-04-20 16:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(84, 11, '2025-04-22 09:00:00', '2025-04-22 17:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(85, 12, '2025-04-24 10:00:00', '2025-04-24 18:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(86, 13, '2025-04-26 12:00:00', '2025-04-26 20:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(87, 14, '2025-04-28 08:00:00', '2025-04-28 12:00:00', 4, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(88, 15, '2025-04-30 08:00:00', '2025-04-30 16:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(89, 1, '2025-05-03 09:00:00', '2025-05-03 17:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(90, 2, '2025-05-05 10:00:00', '2025-05-05 18:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(91, 3, '2025-05-07 12:00:00', '2025-05-07 20:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(92, 4, '2025-05-09 08:00:00', '2025-05-09 12:00:00', 4, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(93, 5, '2025-05-11 08:00:00', '2025-05-11 16:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(94, 6, '2025-05-13 09:00:00', '2025-05-13 17:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(95, 7, '2025-05-15 10:00:00', '2025-05-15 18:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(96, 8, '2025-05-17 12:00:00', '2025-05-17 20:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(97, 9, '2025-05-19 08:00:00', '2025-05-19 12:00:00', 4, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(98, 10, '2025-05-21 08:00:00', '2025-05-21 16:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(99, 11, '2025-05-23 09:00:00', '2025-05-23 17:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(100, 12, '2025-05-25 10:00:00', '2025-05-25 18:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(101, 13, '2025-05-27 12:00:00', '2025-05-27 20:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(102, 14, '2025-05-29 08:00:00', '2025-05-29 12:00:00', 4, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(103, 15, '2025-05-31 08:00:00', '2025-05-31 16:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(104, 1, '2025-06-02 09:00:00', '2025-06-02 17:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(105, 2, '2025-06-04 10:00:00', '2025-06-04 18:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(106, 3, '2025-06-06 12:00:00', '2025-06-06 20:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(107, 4, '2025-06-08 08:00:00', '2025-06-08 12:00:00', 4, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(108, 5, '2025-06-10 08:00:00', '2025-06-10 16:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(109, 6, '2025-06-12 09:00:00', '2025-06-12 17:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(110, 7, '2025-06-14 10:00:00', '2025-06-14 18:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(111, 8, '2025-06-16 12:00:00', '2025-06-16 20:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(112, 9, '2025-06-18 08:00:00', '2025-06-18 12:00:00', 4, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(113, 10, '2025-06-20 08:00:00', '2025-06-20 16:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(114, 11, '2025-06-22 09:00:00', '2025-06-22 17:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(115, 12, '2025-06-24 10:00:00', '2025-06-24 18:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(116, 13, '2025-06-26 12:00:00', '2025-06-26 20:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(117, 14, '2025-06-28 08:00:00', '2025-06-28 12:00:00', 4, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL),
+(118, 15, '2025-06-30 08:00:00', '2025-06-30 16:00:00', 8, 0, '2025-03-15 10:00:00', '2025-03-15 10:00:00', NULL);
 
 -- --------------------------------------------------------
 
@@ -1471,7 +1553,11 @@ INSERT INTO `user_notifications` (`id`, `notification_id`, `user_id`) VALUES
 (33, 33, 47),
 (34, 34, 47),
 (35, 35, 47),
-(36, 36, 47);
+(36, 36, 47),
+(37, 37, 47),
+(38, 38, 1),
+(39, 39, 47),
+(40, 40, 47);
 
 --
 -- Indexek a kiírt táblákhoz
@@ -1582,7 +1668,7 @@ ALTER TABLE `user_notifications`
 -- AUTO_INCREMENT a táblához `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT a táblához `doctors`
@@ -1594,25 +1680,25 @@ ALTER TABLE `doctors`
 -- AUTO_INCREMENT a táblához `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT a táblához `password_reset_tokens`
 --
 ALTER TABLE `password_reset_tokens`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT a táblához `patients`
 --
 ALTER TABLE `patients`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
 
 --
 -- AUTO_INCREMENT a táblához `patient_verifications`
 --
 ALTER TABLE `patient_verifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT a táblához `payments`
@@ -1630,13 +1716,13 @@ ALTER TABLE `reminders`
 -- AUTO_INCREMENT a táblához `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT a táblához `schedules`
 --
 ALTER TABLE `schedules`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=119;
 
 --
 -- AUTO_INCREMENT a táblához `services`
@@ -1648,7 +1734,7 @@ ALTER TABLE `services`
 -- AUTO_INCREMENT a táblához `user_notifications`
 --
 ALTER TABLE `user_notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- Megkötések a kiírt táblákhoz
