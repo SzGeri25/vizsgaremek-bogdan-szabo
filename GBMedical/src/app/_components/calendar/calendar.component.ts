@@ -100,11 +100,11 @@ export class CalendarComponent implements OnInit {
       if (responseData && responseData.status === 'success' && responseData.appointments) {
         this.bookedEvents = responseData.appointments.map((appointment: any) => ({
           id: appointment.id,
-          title: `${appointment.doctorName} (${appointment.patientName})`,
+          title: `${appointment.doctorName} - ${appointment.serviceName}`,
           start: appointment.startTime,
           end: appointment.endTime,
-          backgroundColor: 'blue',
-          borderColor: 'blue',
+          backgroundColor: 'red',
+          borderColor: 'red',
           extendedProps: {
             status: appointment.status,
             doctorId: appointment.doctorId,
@@ -141,8 +141,10 @@ export class CalendarComponent implements OnInit {
           title: this.showAllSlots
             ? `${slot.doctorName} - ${slot.serviceName}`
             : this.serviceId
-              ? `${slot.doctorName} - ${slot.serviceName}`
-              : `${slot.serviceName} - ${slot.doctorName}`,
+              ? `${slot.doctorName}`  // Csak orvos neve, ha service választva
+              : this.doctorId
+                ? `${slot.serviceName}`  // Csak szolgáltatás neve, ha orvos választva
+                : `${slot.doctorName} - ${slot.serviceName}`, // Alapesetben mindkettő
           start: this.convertToLocalISOString(slot.slotStart),
           end: this.convertToLocalISOString(slot.slotEnd),
           backgroundColor: 'lightgreen',
