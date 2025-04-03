@@ -272,4 +272,41 @@ public class AppointmentService {
         return toReturn;
     }
 
+    public JSONObject getAvailableSlots() {
+        JSONObject toReturn = new JSONObject();
+        String responseStatus = "success";
+        int statusCode = 200;
+
+        try {
+            List<TimeSlotDTO> availableSlots = layer.getAvailableSlots();
+
+            if (availableSlots == null || availableSlots.isEmpty()) {
+                responseStatus = "noRecordsFound";
+                statusCode = 404;
+            } else {
+                JSONArray slotsArray = new JSONArray();
+                for (TimeSlotDTO slot : availableSlots) {
+                    JSONObject slotObject = new JSONObject();
+                    slotObject.put("slotStart", slot.getSlotStart());
+                    slotObject.put("slotEnd", slot.getSlotEnd());
+                    slotObject.put("doctorId", slot.getDoctorId());
+                    slotObject.put("doctorName", slot.getDoctorName());
+                    slotObject.put("serviceId", slot.getServiceId());
+                    slotObject.put("serviceName", slot.getServiceName());
+                    slotsArray.put(slotObject);
+                }
+
+                toReturn.put("slots", slotsArray);
+            }
+        } catch (JSONException e) {
+            responseStatus = "error";
+            statusCode = 500;
+            toReturn.put("errorMessage", e.getLocalizedMessage());
+        }
+
+        toReturn.put("status", responseStatus);
+        toReturn.put("statusCode", statusCode);
+        return toReturn;
+    }
+
 }

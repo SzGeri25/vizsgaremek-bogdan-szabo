@@ -106,4 +106,15 @@ public class AppointmentController {
                 .build();
     }
 
+    @GET
+    @Path("getAvailableSlots")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAvailableSlots() {
+        JSONObject obj = layer.getAvailableSlots();
+        return Response.status(obj.getInt("statusCode"))
+                .entity(obj.toString())
+                .type(MediaType.APPLICATION_JSON)
+                .build();
+    }
+
 }
