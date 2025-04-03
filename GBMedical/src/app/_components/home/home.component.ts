@@ -17,37 +17,37 @@ import { CarouselComponent } from "../carousel/carousel.component";
 import { ViewportScroller } from '@angular/common';
 
 interface Service {
-    id: number;
-    name: string;
-    description: string;
-    doctor_names: string[];
-    price: number;
-    duration: number;
-  }
-  
-  interface Doctor {
-    id: number;
-    name: string;
-    specialty: string;
-  }
+  id: number;
+  name: string;
+  description: string;
+  doctor_names: string[];
+  price: number;
+  duration: number;
+}
+
+interface Doctor {
+  id: number;
+  name: string;
+  specialty: string;
+}
 
 @Component({
-    selector: 'app-home',
-    imports: [NavbarComponent, FormsModule, FooterComponent, ChevronUpComponent, SpecialistsComponent, CommonModule, ServicesComponent, ContactComponent, CalendarComponent, BookingComponent, CarouselComponent],
-    templateUrl: './home.component.html',
-    styleUrl: './home.component.css',
-    animations: [
-        // Egyszerű beúszó animáció a komponenselemekhez
-        trigger('fadeIn', [
-            transition(':enter', [
-                style({ opacity: 0, transform: 'translateY(20px)' }),
-                animate('800ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
-            ])
-        ])
-    ]
+  selector: 'app-home',
+  imports: [NavbarComponent, FormsModule, FooterComponent, ChevronUpComponent, SpecialistsComponent, CommonModule, ServicesComponent, ContactComponent, CalendarComponent, BookingComponent, CarouselComponent],
+  templateUrl: './home.component.html',
+  styleUrl: './home.component.css',
+  animations: [
+    // Egyszerű beúszó animáció a komponenselemekhez
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(20px)' }),
+        animate('800ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+      ])
+    ])
+  ]
 })
 export class HomeComponent {
-    doctors: Doctor[] = [];
+  doctors: Doctor[] = [];
   selectedDoctor: Doctor | null = null;
   selectedDoctorId: number | null = null;
 
@@ -61,30 +61,30 @@ export class HomeComponent {
 
 
 
-    isAuthenticated: boolean = false;
-    isMenuOpen = false; // Kezdetben zárt menü
-    isNavbarVisible = true; // Navbar láthatóságának állapota
-    private lastScrollPosition = 0; // Utolsó görgetési pozíció
+  isAuthenticated: boolean = false;
+  isMenuOpen = false; // Kezdetben zárt menü
+  isNavbarVisible = true; // Navbar láthatóságának állapota
+  private lastScrollPosition = 0; // Utolsó görgetési pozíció
 
-constructor(private router: Router, private authService: AuthService, private eRef: ElementRef, private viewportScroller: ViewportScroller){}
+  constructor(private router: Router, private authService: AuthService, private eRef: ElementRef, private viewportScroller: ViewportScroller) { }
 
-    goToBooking(): void {
-        this.router.navigate(['/booking']);
+  goToBooking(): void {
+    this.router.navigate(['/booking']);
+  }
+
+  toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event): void {
+    if (!this.eRef.nativeElement.contains(event.target)) {
+      this.isMenuOpen = false;
     }
+  }
 
-toggleMenu(): void {
-        this.isMenuOpen = !this.isMenuOpen;
-    }
-    
-    @HostListener('document:click', ['$event'])
-    onClickOutside(event: Event): void {
-        if (!this.eRef.nativeElement.contains(event.target)) {
-            this.isMenuOpen = false;
-        }
-    }
-
-    @HostListener('window:scroll')
-    onWindowScroll(): void {
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
     const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
 
     // Navbar elrejtése/felfedése
@@ -98,165 +98,159 @@ toggleMenu(): void {
   }
 
 
-    ngOnInit(): void {
-        // Feliratkozás az autentikációs állapot változására
-        this.authService.isAuthenticated$.subscribe((state: boolean) => {
-            this.isAuthenticated = state;
-            this.fetchServices();
-            this.fetchDoctors();
-        });
-    }
+  ngOnInit(): void {
+    // Feliratkozás az autentikációs állapot változására
+    this.authService.isAuthenticated$.subscribe((state: boolean) => {
+      this.isAuthenticated = state;
+      this.fetchServices();
+      this.fetchDoctors();
+    });
+  }
 
-    fetchDoctors(): void {
-        fetch(this.apiUrl2)
-          .then(response => {
-            if (!response.ok) {
-              throw new Error(`Hálózati hiba: ${response.statusText}`);
-            }
-            return response.json();
-          })
-          .then((data) => {
-            if (data && data.result) {
-              this.doctors = data.result; // A doctors tömb a result kulcs alatt érkezik
-            } else {
-              console.error('Hibás API válasz formátum:', data);
-            }
-            console.log("API válasz:", data);
-          })
-          .catch(error => {
-            console.error('Hiba történt az orvosok lekérésekor:', error);
-          });
-      }
-
-      onSelectDoctor(event: Event): void {
-        const selectElement = event.target as HTMLSelectElement;
-        const doctorId = Number(selectElement.value);
-        this.selectedDoctor = this.doctors.find(doctor => doctor.id === doctorId) || null;
-        this.selectedDoctorId = doctorId;
-        this.router.navigate(['/calendar'], { queryParams: { doctorId: doctorId } }).then(() =>{
-          this.viewportScroller.scrollToPosition([0, 0]);
-        });;
-      }
-    
-      fetchServices(): void {
-        fetch(this.apiUrl)
-          .then(response => {
-            if (!response.ok) {
-              throw new Error(`Hálózati hiba: ${response.statusText}`);
-            }
-            return response.json();
-          })
-          .then((data: { services: Service[] }) => {
-            this.services = data.services;
-            console.log("Szolgáltatások:", data);
-          })
-          .catch((error) => {
-            console.error('Hiba történt az adatok lekérésekor:', error);
-            this.errorMessage = 'Nem sikerült betölteni az adatokat.';
-          });
-      }
-    
-      onSelectService(event: Event): void {
-        const selectElement = event.target as HTMLSelectElement;
-        const serviceId = Number(selectElement.value);
-        console.log("Kiválasztott szolgáltatás id:", serviceId);
-    
-        this.selectedService = this.services.find(service => service.id === serviceId) || null;
-        this.selectedServiceId = serviceId;
-    
-        if (this.selectedService) {
-          this.router.navigate(['/calendar'], { queryParams: { serviceId: serviceId } }).then(() =>{
-            this.viewportScroller.scrollToPosition([0, 0]);
-          });;
+  fetchDoctors(): void {
+    fetch(this.apiUrl2)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Hálózati hiba: ${response.statusText}`);
         }
-      }
+        return response.json();
+      })
+      .then((data) => {
+        if (data && data.result) {
+          this.doctors = data.result; // A doctors tömb a result kulcs alatt érkezik
+        } else {
+          console.error('Hibás API válasz formátum:', data);
+        }
+        console.log("API válasz:", data);
+      })
+      .catch(error => {
+        console.error('Hiba történt az orvosok lekérésekor:', error);
+      });
+  }
 
-    toCalendar(): void {
-        this.router.navigate(['/calendar']);
+  onSelectDoctor(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const doctorId = Number(selectElement.value);
+    this.selectedDoctor = this.doctors.find(doctor => doctor.id === doctorId) || null;
+    this.selectedDoctorId = doctorId;
+    this.router.navigate(['/calendar'], { queryParams: { doctorId: doctorId } }).then(() => {
+      this.viewportScroller.scrollToPosition([0, 0]);
+    });;
+  }
+
+  fetchServices(): void {
+    fetch(this.apiUrl)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Hálózati hiba: ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then((data: { services: Service[] }) => {
+        this.services = data.services;
+        console.log("Szolgáltatások:", data);
+      })
+      .catch((error) => {
+        console.error('Hiba történt az adatok lekérésekor:', error);
+        this.errorMessage = 'Nem sikerült betölteni az adatokat.';
+      });
+  }
+
+  onSelectService(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const serviceId = Number(selectElement.value);
+    console.log("Kiválasztott szolgáltatás id:", serviceId);
+
+    this.selectedService = this.services.find(service => service.id === serviceId) || null;
+    this.selectedServiceId = serviceId;
+
+    if (this.selectedService) {
+      this.router.navigate(['/calendar'], { queryParams: { serviceId: serviceId } }).then(() => {
+        this.viewportScroller.scrollToPosition([0, 0]);
+      });;
     }
+  }
 
-    toLogin(): void {
-        this.router.navigate(['/login']);
-    }
+  toCalendar(): void {
+    this.router.navigate(['/calendar']);
+  }
 
-    toRegister(): void {
-        this.router.navigate(['/register']);
-    }
+  toLogin(): void {
+    this.router.navigate(['/login']);
+  }
 
-    toSpecialists(): void {
-        this.router.navigate(['/specialists']);
-    }
+  toRegister(): void {
+    this.router.navigate(['/register']);
+  }
 
-    toBooking(): void {
-        this.router.navigate(['/booking']);
-    }
+  toSpecialists(): void {
+    this.router.navigate(['/specialists']);
+  }
 
-    toServices(): void {
-        this.router.navigate(['/services']);
-    }
+  toBooking(): void {
+    this.router.navigate(['/booking']);
+  }
 
-    toContact(): void {
-        this.router.navigate(['/contact']);
-    }
+  toServices(): void {
+    this.router.navigate(['/services']);
+  }
 
-    toHome(): void {
-        this.router.navigate(['/home']);
-    }
+  toContact(): void {
+    this.router.navigate(['/contact']);
+  }
 
-    onLogout(): void {
-        this.authService.logout();
-        this.router.navigate(['/login']);
-    }
+  toHome(): void {
+    this.router.navigate(['/home']);
+  }
+
+  onLogout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
 
 
-    scrollToSection(): void {
-        const bookingButton = document.getElementById("bookingButton") as HTMLButtonElement;
-        const targetSection = document.getElementById("idopontfoglalas") as HTMLElement;
+  scrollToSection(): void {
+    const bookingButton = document.getElementById("bookingButton") as HTMLButtonElement;
+    const targetSection = document.getElementById("idopontfoglalas") as HTMLElement;
 
-        bookingButton.addEventListener("click", () =>{
-            targetSection.scrollIntoView({
-                behavior: 'smooth',
-                block: start,
-            })
-        });
-    }
-    
-    scrollToContact(): void {
-        const contactButton = document.getElementById("contactButton") as HTMLButtonElement;
-        const targetSection = document.getElementById("kapcsolat") as HTMLElement;
+    bookingButton.addEventListener("click", () => {
+      targetSection.scrollIntoView({
+        behavior: 'smooth',
+        block: start,
+      })
+    });
+  }
 
-        contactButton.addEventListener("click", () =>{
-            targetSection.scrollIntoView({
-                behavior: 'smooth',
-                block: start,
-                
-            })
-        });
-    }
+  scrollToContact(): void {
+    const contactButton = document.getElementById("contactButton") as HTMLButtonElement;
+    const targetSection = document.getElementById("kapcsolat") as HTMLElement;
 
-    scrollToBooking(): void {
-        const bookingButton = document.getElementById("bookingButton") as HTMLButtonElement;
-        const targetSection = document.getElementById("idopontfoglalas") as HTMLElement;
+    contactButton.addEventListener("click", () => {
+      targetSection.scrollIntoView({
+        behavior: 'smooth',
+        block: start,
 
-        bookingButton.addEventListener("click", () =>{
-            targetSection.scrollIntoView({
-                behavior: 'smooth',
-                block: start,
-            })
-        });
-    }
+      })
+    });
+  }
 
-    scrollToBooking2(): void {
-        const bookingButton2 = document.getElementById("bookingButton2") as HTMLButtonElement;
-        const targetSection = document.getElementById("idopontfoglalas") as HTMLElement;
+  scrollToBooking(): void {
+    const targetSection = document.getElementById("idopontfoglalas") as HTMLElement;
 
-        bookingButton2.addEventListener("click", () =>{
-            targetSection.scrollIntoView({
-                behavior: 'smooth',
-                block: start,
-            })
-        });
-    }
+    targetSection.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start', // idézőjelek közé, mert string
+    });
+  }
 
-    
+  scrollToBooking2(): void {
+    const targetSection = document.getElementById("idopontfoglalas") as HTMLElement;
+    targetSection.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start', // idézőjelek közé, mert string
+    });
+  }
+
+
+
 }
