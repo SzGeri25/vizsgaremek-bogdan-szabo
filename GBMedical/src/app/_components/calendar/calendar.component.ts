@@ -39,6 +39,7 @@ export class CalendarComponent implements OnInit {
   availableEvents: any[] = [];
   doctorId: number | null = null;
   serviceId: number | null = null; // Új property a service ID tárolására
+  showAllSlots: boolean = false;
 
   calendarOptions: CalendarOptions = {
     initialView: 'dayGridMonth',
@@ -71,22 +72,19 @@ export class CalendarComponent implements OnInit {
     private router: Router
   ) { }
 
-  async ngOnInit(): Promise<void> {
-    // Query paraméterek lekérése: várhatóan ?doctorId=14 vagy ?serviceId=14
+  ngOnInit(): void {
     this.route.queryParamMap.subscribe(params => {
-      if (params.has('doctorId')) {
-        this.doctorId = Number(params.get('doctorId'));
-        console.log('Lekért orvos ID:', this.doctorId);
-      }
-      if (params.has('serviceId')) {
-        this.serviceId = Number(params.get('serviceId'));
-        console.log('Lekért szolgáltatás ID:', this.serviceId);
-      }
-    });
+      this.doctorId = params.has('doctorId') ? Number(params.get('doctorId')) : null;
+      this.serviceId = params.has('serviceId') ? Number(params.get('serviceId')) : null;
+      this.showAllSlots = params.get('allSlots') === 'true'; // allSlots kezelése
 
-    await this.fetchBookedAppointments();
-    await this.loadAvailableAppointments();
-    this.updateCalendarEvents();
+      // Adatok újratöltése paraméterváltozás esetén
+      this.fetchBookedAppointments().then(() => {
+        this.loadAvailableAppointments().then(() => {
+          this.updateCalendarEvents();
+        });
+      });
+    });
   }
 
   async fetchBookedAppointments(): Promise<void> {
@@ -123,25 +121,28 @@ export class CalendarComponent implements OnInit {
   }
 
   async loadAvailableAppointments(): Promise<void> {
-    if (!this.doctorId && !this.serviceId) {
-      console.error('Nincs orvos vagy szolgáltatás ID az URL-ben!');
-      return;
-    }
-
     try {
       let response: any;
-      // Ha van serviceId, akkor a getAvailableSlotsByService endpointot hívjuk
-      if (this.serviceId) {
+
+      if (this.showAllSlots) {
+        // Összes szabad időpont lekérése
+        response = await lastValueFrom(this.appointmentService.getAvailableSlots());
+      } else if (this.serviceId) {
         response = await lastValueFrom(this.appointmentService.getAvailableSlotsByService(this.serviceId));
       } else if (this.doctorId) {
         response = await lastValueFrom(this.appointmentService.getAvailableSlotsByDoctor(this.doctorId));
+      } else {
+        console.error('Nincs paraméter megadva!');
+        return;
       }
+
       if (response.status === 'success') {
-        console.log('Lekért szabad időpontok:', response.slots);
         this.availableEvents = response.slots.map((slot: any) => ({
-          title: this.serviceId
+          title: this.showAllSlots 
             ? `${slot.doctorName} - ${slot.serviceName}`
-            : `${slot.serviceName} - ${slot.doctorName}`,
+            : this.serviceId
+              ? `${slot.doctorName} - ${slot.serviceName}`
+              : `${slot.serviceName} - ${slot.doctorName}`,
           start: this.convertToLocalISOString(slot.slotStart),
           end: this.convertToLocalISOString(slot.slotEnd),
           backgroundColor: 'lightgreen',
@@ -153,13 +154,12 @@ export class CalendarComponent implements OnInit {
           }
         }));
       } else {
-        console.error('Nincs találat vagy hiba történt (szabad időpontok):', response);
+        console.error('Hiba történt:', response);
       }
     } catch (error) {
-      console.error('Hiba a szabad időpontok lekérése során:', error);
+      console.error('Hiba a szabad időpontok lekérésekor:', error);
     }
   }
-
   updateCalendarEvents() {
     const combinedEvents = [...this.bookedEvents, ...this.availableEvents];
     this.calendarOptions = {

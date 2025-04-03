@@ -11,6 +11,11 @@ export class AppointmentService {
 
   constructor(private http: HttpClient) { }
 
+  getAvailableSlots(): Observable<any> {
+    const url = `${this.baseUrl}/getAvailableSlots`;
+    return this.http.get<any>(url);
+  }
+
   getAvailableSlotsByDoctor(doctorId: number): Observable<any> {
     const url = `${this.baseUrl}/getAvailableSlotsByDoctor`;
     const params = new HttpParams().set('doctorId', doctorId.toString());

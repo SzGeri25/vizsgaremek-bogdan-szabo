@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ViewportScroller } from '@angular/common';
+import { AppointmentService } from '../../_services/appointments.service';
 
 interface Service {
   id: number;
@@ -42,7 +43,7 @@ export class BookingComponent implements OnInit {
   private apiUrl = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/services/getAllServices';
   private apiUrl2 = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/doctors/getAllDoctors';
 
-  constructor(private router: Router, private viewportScroller: ViewportScroller) { }
+  constructor(private router: Router, private viewportScroller: ViewportScroller,   private appointmentService: AppointmentService) { }
 
   ngOnInit(): void {
     this.fetchServices();
@@ -68,6 +69,12 @@ export class BookingComponent implements OnInit {
       .catch(error => {
         console.error('Hiba történt az orvosok lekérésekor:', error);
       });
+  }
+
+  showAllAvailableSlots(): void {
+    this.router.navigate(['/calendar'], { queryParams: { allSlots: true } }).then(() => {
+      this.viewportScroller.scrollToPosition([0, 0]);
+    });
   }
 
   onSelectDoctor(event: Event): void {
