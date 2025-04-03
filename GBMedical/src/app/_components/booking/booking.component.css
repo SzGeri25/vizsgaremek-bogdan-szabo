@@ -104,6 +104,24 @@
     pointer-events: none;
 }
 
+.allAvailableSlotsButton{
+    border-radius: 8px;
+    color: #f5f5f5;
+    background-color: #E66050;
+    padding: 12px 20px;
+    border: 2px solid #E66050;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px !important;
+}
+
+.allAvailableSlotsButton:hover{
+    background-color: #C94F42;
+    /* Sötétebb vöröses-narancs */
+    transform: scale(1.03);
+    border: 2px solid #C94F42;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px !important;
+}
+
 /* Mobilbarát stílus */
 @media (max-width: 768px) {
     .hero {
