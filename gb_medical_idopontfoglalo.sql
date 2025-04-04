@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: localhost:3306
--- Létrehozás ideje: 2025. Ápr 03. 09:16
+-- Létrehozás ideje: 2025. Ápr 04. 11:39
 -- Kiszolgáló verziója: 5.7.24
 -- PHP verzió: 8.3.1
 
@@ -907,7 +907,8 @@ INSERT INTO `appointments` (`id`, `doctor_id`, `patient_id`, `start_time`, `end_
 (54, 10, 47, '2025-02-26 16:30:00', '2025-02-26 17:00:00', 30, 'cancelled', 1, '2025-03-25 12:01:40', '2025-03-25 12:01:40', '2025-03-25 12:06:10', NULL, NULL),
 (55, 14, 1, '2025-02-14 13:00:00', '2025-02-14 13:30:00', 30, 'cancelled', 1, '2025-03-31 17:02:11', '2025-03-31 17:02:11', '2025-03-31 17:05:42', NULL, NULL),
 (56, 14, 47, '2025-02-14 16:30:00', '2025-02-14 17:00:00', 30, 'cancelled', 1, '2025-04-01 15:43:25', '2025-04-01 15:43:25', '2025-04-01 15:43:53', NULL, NULL),
-(57, 11, 47, '2025-04-22 12:30:00', '2025-04-22 13:00:00', 30, 'cancelled', 1, '2025-04-03 10:00:17', '2025-04-03 10:00:17', '2025-04-03 10:00:56', NULL, NULL);
+(57, 11, 47, '2025-04-22 12:30:00', '2025-04-22 13:00:00', 30, 'cancelled', 1, '2025-04-03 10:00:17', '2025-04-03 10:00:17', '2025-04-03 10:00:56', NULL, NULL),
+(58, 8, 47, '2025-04-16 18:00:00', '2025-04-16 18:30:00', 30, 'cancelled', 1, '2025-04-03 12:49:14', '2025-04-03 12:49:14', '2025-04-03 13:54:36', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1045,7 +1046,8 @@ INSERT INTO `notifications` (`id`, `user_id`, `message`, `sent_at`, `is_sent`, `
 (37, 47, 'Időpont foglalva: 2025-02-26 16:30:00 - 2025-02-26 17:00:00', NULL, 0, '2025-03-25 12:01:40'),
 (38, 1, 'Időpont foglalva: 2025-02-14 13:00:00 - 2025-02-14 13:30:00', NULL, 0, '2025-03-31 17:02:11'),
 (39, 47, 'Időpont foglalva: 2025-02-14 16:30:00 - 2025-02-14 17:00:00', NULL, 0, '2025-04-01 15:43:25'),
-(40, 47, 'Időpont foglalva: 2025-04-22 12:30:00 - 2025-04-22 13:00:00', NULL, 0, '2025-04-03 10:00:17');
+(40, 47, 'Időpont foglalva: 2025-04-22 12:30:00 - 2025-04-22 13:00:00', NULL, 0, '2025-04-03 10:00:17'),
+(41, 47, 'Időpont foglalva: 2025-04-16 18:00:00 - 2025-04-16 18:30:00', NULL, 0, '2025-04-03 12:49:14');
 
 -- --------------------------------------------------------
 
@@ -1557,7 +1559,8 @@ INSERT INTO `user_notifications` (`id`, `notification_id`, `user_id`) VALUES
 (37, 37, 47),
 (38, 38, 1),
 (39, 39, 47),
-(40, 40, 47);
+(40, 40, 47),
+(41, 41, 47);
 
 --
 -- Indexek a kiírt táblákhoz
@@ -1668,7 +1671,7 @@ ALTER TABLE `user_notifications`
 -- AUTO_INCREMENT a táblához `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
 -- AUTO_INCREMENT a táblához `doctors`
@@ -1680,7 +1683,7 @@ ALTER TABLE `doctors`
 -- AUTO_INCREMENT a táblához `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT a táblához `password_reset_tokens`
@@ -1734,7 +1737,7 @@ ALTER TABLE `services`
 -- AUTO_INCREMENT a táblához `user_notifications`
 --
 ALTER TABLE `user_notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- Megkötések a kiírt táblákhoz
