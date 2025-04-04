@@ -76,11 +76,44 @@ select {
     color: #555;
 }
 
-.doctors-list {
+/* Doctors section elrendezése */
+.doctors-section {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    align-items: flex-start;
+    /* Changed from center */
+    gap: 2rem;
+    /* Added for better spacing */
+    margin-top: 1.5rem;
 }
+
+@media (max-width: 768px) {
+    .doctors-section {
+        flex-direction: column;
+    }
+
+    .doctor-image {
+        max-width: 100%;
+        margin-left: 0;
+        order: -1;
+        /* Image before text on mobile */
+    }
+}
+
+/* A doktorok neveit tartalmazó lista kitöltése */
+.doctors-list {
+    flex: 1;
+}
+
+/* A doktor kép stílusai */
+.doctor-image {
+    max-width: 300px;
+    /* vagy a kívánt méret */
+    height: auto;
+    border-radius: 8px;
+    margin-left: 20px;
+    /* távolság a lista és a kép között */
+}
+
 
 .doctor-item {
     background: #f0f8f8;
@@ -88,6 +121,7 @@ select {
     border-radius: 20px;
     color: #008080;
     font-size: 0.9rem;
+    width: fit-content;
 }
 
 /* Gombok */
@@ -123,10 +157,16 @@ select {
     border-radius: 10px;
     padding: 1.5rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s;
+    transition: transform 0.2s ease-in-out;
+    &:hover {
+        transform: translateY(-3px);
+    }
     cursor: pointer;
     display: flex;
     flex-direction: column;
+    height: 100%; /* Ensures equal height in grid */
+    min-height: 300px; /* Minimum height for content */
+
 }
 
 .service-card:hover {
@@ -180,8 +220,22 @@ select {
     .all-services-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .service-details-card {
         padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .service-details-card {
+        padding: 1rem;
+    }
+    
+    select {
+        font-size: 0.9rem;
+    }
+    
+    .doctor-image {
+        margin-top: 1rem;
     }
 }

@@ -12,7 +12,7 @@
             <select (change)="onSelectService($event)">
                 <option disabled selected>Válassz szolgáltatásaink közül</option>
                 <option *ngFor="let service of services" [value]="service.name">
-                    {{ service.name }} ({{ service.price | currency:'HUF':'symbol':'1.0-0' }})
+                    {{ service.name }}
                 </option>
             </select>
         </div>
@@ -26,17 +26,18 @@
                     <span class="price">{{ selectedService.price | currency:'HUF':'symbol':'1.0-0' }}</span>
                 </div>
                 <p class="description">{{ selectedService.description }}</p>
-                
+
                 <div class="doctors-section">
-                    <h3>Elérhető orvosaink:</h3>
                     <div class="doctors-list">
+                        <h3>Elérhető orvosaink:</h3>
                         <div *ngFor="let doctorName of selectedService.doctor_names" class="doctor-item">
                             {{ doctorName }}
                         </div>
                     </div>
+                    <img [src]="selectedService.imageUrl" alt="Orvos kép" class="doctor-image" />
                 </div>
             </div>
-            
+
             <div class="service-actions">
                 <button class="book-button" (click)="bookService(selectedService)">
                     Időpontfoglalás
@@ -46,9 +47,8 @@
 
         <!-- Összes szolgáltatás kártyákon -->
         <div class="all-services-grid">
-            <div *ngFor="let service of services" class="service-card" 
-                 [class.selected]="service.id === selectedService?.id"
-                 (click)="selectService(service)">
+            <div *ngFor="let service of services" class="service-card"
+                [class.selected]="service.id === selectedService?.id" (click)="selectService(service)">
                 <h3>{{ service.name }}</h3>
                 <div class="card-meta">
                     <span>{{ service.duration }} perc</span>

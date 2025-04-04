@@ -13,6 +13,7 @@ interface Service {
   doctor_names: string[];
   price: number;
   duration: number;
+  imageUrl?: string;
 }
 
 @Component({
@@ -26,8 +27,27 @@ export class ServicesComponent implements OnInit {
   services: Service[] = [];
   selectedService: Service | null = null;
   errorMessage: string = '';
-  
+
   private apiUrl = 'http://127.0.0.1:8080/GBMedicalBackend-1.0-SNAPSHOT/webresources/services/getAllServices';
+
+  // Statikus mapping az orvosok képeinek
+  private doctorImagesMapping: { [key: number]: string } = {
+    1: './doctor_images/doctor1.jpg',
+    2: './doctor_images/doctor9.jpg',
+    3: './doctor_images/doctor6.jpg',
+    4: './doctor_images/doctor5.jpg',
+    5: './doctor_images/doctor4.jpg',
+    6: './doctor_images/doctor3.jpg',
+    7: './doctor_images/doctor7.jpg',
+    8: './doctor_images/doctor8.jpg',
+    9: './doctor_images/doctor9.jpg',
+    10: './doctor_images/doctor10.jpg',
+    11: './doctor_images/doctor11.jpg',
+    12: './doctor_images/doctor12.jpg',
+    13: './doctor_images/doctor13.jpg',
+    14: './doctor_images/doctor14.jpg',
+    15: './doctor_images/doctor15.jpg',
+  };
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -38,7 +58,12 @@ export class ServicesComponent implements OnInit {
   fetchServices(): void {
     this.http.get<{ services: Service[] }>(this.apiUrl).subscribe({
       next: (data) => {
-        this.services = data.services;
+        // A mapping-et alkalmazzuk minden egyes service-re
+        this.services = data.services.map(service => {
+          // Feltételezve, hogy a service id megegyezik az orvos id-vel
+          service.imageUrl = this.doctorImagesMapping[service.id];
+          return service;
+        });
       },
       error: (error) => {
         console.error('Hiba történt az adatok lekérésekor:', error);
@@ -58,8 +83,6 @@ export class ServicesComponent implements OnInit {
   }
 
   bookService(service: Service): void {
-    this.router.navigate(['/booking'], { 
-      queryParams: { serviceId: service.id } 
-    });
+    this.router.navigate(['/booking']);
   }
 }
