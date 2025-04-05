@@ -19,30 +19,32 @@
 
         <!-- Kiválasztott szolgáltatás részletei -->
         <div *ngIf="selectedService" class="service-details-card">
-            <div class="service-info">
-                <h2>{{ selectedService.name }}</h2>
-                <div class="service-meta">
-                    <span class="duration">{{ selectedService.duration }} perc</span>
-                    <span class="price">{{ selectedService.price | currency:'HUF':'symbol':'1.0-0' }}</span>
-                </div>
-                <p class="description">{{ selectedService.description }}</p>
-
-                <div class="doctors-section">
+            <div class="row service-info">
+                <div class="col">
+                    <h2>{{ selectedService.name }}</h2>
+                    <div class="service-meta">
+                        <span class="duration">{{ selectedService.duration }} perc</span>
+                        <span class="price">{{ selectedService.price | currency:'HUF':'symbol':'1.0-0' }}</span>
+                    </div>
+                    <p class="description">{{ selectedService.description }}</p>
                     <div class="doctors-list">
                         <h3>Elérhető orvosaink:</h3>
                         <div *ngFor="let doctorName of selectedService.doctor_names" class="doctor-item">
                             {{ doctorName }}
                         </div>
                     </div>
-                    <img [src]="selectedService.imageUrl" alt="Orvos kép" class="doctor-image" />
+                </div>
+
+
+                <div class="col">
+                    <div class="doctors-section">
+                        <img [src]="selectedService.imageUrl" alt="Orvos kép" class="doctor-image" />
+                    </div>
                 </div>
             </div>
-
-            <div class="service-actions">
-                <button class="book-button" (click)="bookService(selectedService)">
-                    Időpontfoglalás
-                </button>
-            </div>
+            <button class="book-button" (click)="bookService(selectedService)">
+                Időpontfoglalás
+            </button>
         </div>
 
         <!-- Összes szolgáltatás kártyákon -->
@@ -65,5 +67,3 @@
         </div>
     </div>
 </div>
-
-<app-footer></app-footer>

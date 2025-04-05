@@ -44,6 +44,7 @@ select {
     border-radius: 12px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
     padding: 2rem;
+    padding-bottom: 0px;
     margin-bottom: 2rem;
 }
 
@@ -138,6 +139,8 @@ select {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
+    position: relative;
+    bottom: 50px;
 }
 
 .book-button:hover {
