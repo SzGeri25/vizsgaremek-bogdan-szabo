@@ -81,9 +81,7 @@ select {
 .doctors-section {
     display: flex;
     align-items: flex-start;
-    /* Changed from center */
     gap: 2rem;
-    /* Added for better spacing */
     margin-top: 1.5rem;
 }
 
@@ -96,7 +94,6 @@ select {
         max-width: 100%;
         margin-left: 0;
         order: -1;
-        /* Image before text on mobile */
     }
 }
 
@@ -108,13 +105,10 @@ select {
 /* A doktor kép stílusai */
 .doctor-image {
     max-width: 300px;
-    /* vagy a kívánt méret */
     height: auto;
     border-radius: 8px;
     margin-left: 20px;
-    /* távolság a lista és a kép között */
 }
-
 
 .doctor-item {
     background: #f0f8f8;
@@ -145,7 +139,6 @@ select {
 
 .book-button:hover {
     background-color: #006666;
-    transform: translateY(-2px);
 }
 
 /* Összes szolgáltatás grid */
@@ -161,15 +154,11 @@ select {
     padding: 1.5rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s ease-in-out;
-    &:hover {
-        transform: translateY(-3px);
-    }
     cursor: pointer;
     display: flex;
     flex-direction: column;
-    height: 100%; /* Ensures equal height in grid */
-    min-height: 300px; /* Minimum height for content */
-
+    height: 100%;
+    min-height: 300px;
 }
 
 .service-card:hover {
@@ -229,16 +218,77 @@ select {
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 620px) {
     .service-details-card {
         padding: 1rem;
+        padding-bottom: 60px;
     }
-    
-    select {
+
+    .service-info.row {
+        flex-direction: column;
+    }
+
+    .doctors-section {
+        margin-top: 1rem;
+        align-items: center;
+    }
+
+    .doctor-image {
+        max-width: 100%;
+        margin: 1rem auto 0;
+        order: 1;
+    }
+
+    .book-button {
+        position: relative;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(100% - 2rem);
+        max-width: none;
+        margin: 0;
+    }
+
+    .service-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .doctors-list {
+        width: 100%;
+        text-align: center;
+    }
+
+    .doctor-item {
+        margin: 0.3rem auto;
+    }
+
+    .card-description {
         font-size: 0.9rem;
     }
-    
+
+    select {
+        font-size: 0.9rem;
+        padding: 10px 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .services-container {
+        padding: 1rem;
+    }
+
+    .service-details-card {
+        padding: 1rem;
+        padding-bottom: 60px;
+    }
+
     .doctor-image {
-        margin-top: 1rem;
+        margin-top: 0.5rem;
+    }
+
+    .book-button {
+        font-size: 0.9rem;
+        padding: 10px 20px;
     }
 }
