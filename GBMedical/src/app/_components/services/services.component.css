@@ -22,21 +22,42 @@
     font-size: 1.1rem;
 }
 
-/* Select stílusok */
 .select-wrapper {
     margin: 0 auto 2rem;
     max-width: 500px;
+    position: relative;
+    /* fontos a nyíl pozícionálásához */
 }
 
-select {
+.select-wrapper select {
     width: 100%;
-    padding: 12px 20px;
+    padding: 12px;
+    /* bal padding növelve, hogy legyen hely a nyílnak */
     border: 2px solid #008080;
     border-radius: 8px;
     font-size: 1rem;
     background-color: white;
     cursor: pointer;
+
+    /* alap nyíl eltüntetése */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
 }
+
+/* bal oldali nyíl hozzáadása */
+.select-wrapper::before {
+    content: '▼';
+    position: absolute;
+    right: 20px;
+    /* állíthatod, hogy mennyire legyen balra */
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #008080;
+    font-size: 0.8rem;
+}
+
 
 /* Kártya stílusok */
 .service-details-card {
