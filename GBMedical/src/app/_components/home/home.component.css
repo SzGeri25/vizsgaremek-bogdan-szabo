@@ -7,16 +7,19 @@
     align-items: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     height: 80px;
-    transition: transform 0.3s ease-in-out; /* Sima animáció */
-    position: fixed; /* Fix pozíció a tetején */
+    transition: transform 0.3s ease-in-out;
+    /* Sima animáció */
+    position: fixed;
+    /* Fix pozíció a tetején */
     top: 0;
     width: 100%;
     z-index: 1000;
 }
 
 .navbar-hidden {
-    transform: translateY(-100%); /* Navbar eltűntetése felfelé */
-  }
+    transform: translateY(-100%);
+    /* Navbar eltűntetése felfelé */
+}
 
 .navbar-nav {
     display: flex;
@@ -148,9 +151,7 @@
     font-size: 1.2rem;
 }
 
-.logout-button:hover {
-    
-}
+.logout-button:hover {}
 
 
 
@@ -253,7 +254,10 @@
     transform: scale(1.05);
 }
 
-.allAvailableSlotsButton{
+/* A gomb mindig középre igazítva, külön sorban */
+.allAvailableSlotsButton {
+    display: block;
+    margin: 20px auto 0 auto;
     border-radius: 8px;
     color: #f5f5f5;
     background-color: #E66050;
@@ -263,9 +267,8 @@
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px !important;
 }
 
-.allAvailableSlotsButton:hover{
+.allAvailableSlotsButton:hover {
     background-color: #C94F42;
-    /* Sötétebb vöröses-narancs */
     transform: scale(1.03);
     border: 2px solid #C94F42;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px !important;
@@ -312,11 +315,11 @@
     }
 }
 
-html{
+html {
     scroll-behavior: smooth;
 }
 
-nav{
+nav {
     .navbar {
         background-color: #008080;
         padding: 5px 20px;
@@ -326,7 +329,7 @@ nav{
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         height: 80px;
     }
-    
+
     .navbar-nav {
         display: flex;
         justify-content: space-around;
@@ -336,7 +339,7 @@ nav{
         padding: 0;
         color: #f5f5f5 !important;
     }
-    
+
     .nav-item {
         padding: 10px 15px;
         font-size: 16px;
@@ -344,21 +347,21 @@ nav{
         transition: background-color 0.3s ease, transform 0.2s ease;
         color: #f5f5f5 !important;
     }
-    
+
     .nav-item:hover {
         transform: scale(1.05);
         border-radius: 5px;
     }
-    
+
     .navbar-logo {
         width: 70px;
         cursor: pointer;
     }
-    
+
     .nav-link {
         color: #f5f5f5 !important;
     }
-    
+
     /* Responsive navbar mobil nézethez */
     @media (max-width: 991.98px) {
         .navbar-collapse {
@@ -373,17 +376,17 @@ nav{
             transition: transform 0.2s ease-in-out;
             z-index: 1050;
         }
-    
+
         .navbar-collapse.show {
             transform: translateX(0);
         }
     }
-    
+
     /* Navbar toggler gomb stílusai */
     .navbar-toggler {
         border-color: #fff;
     }
-    
+
     .navbar-toggler-icon {
         background-image: none !important;
         background-color: var(--bs-gray-800);
@@ -394,7 +397,7 @@ nav{
         transition: all 0.35s ease-out;
         transform-origin: center;
     }
-    
+
     .navbar-toggler-icon::before {
         display: block;
         background-color: var(--bs-gray-800);
@@ -405,7 +408,7 @@ nav{
         transition: all 0.15s ease-out;
         transform-origin: center;
     }
-    
+
     .navbar-toggler-icon::after {
         display: block;
         background-color: var(--bs-gray-800);
@@ -416,35 +419,35 @@ nav{
         transition: all 0.35s ease-out;
         transform-origin: center;
     }
-    
+
     .navbar-light .navbar-toggler-icon,
     .navbar-light .navbar-toggler-icon::before,
     .navbar-light .navbar-toggler-icon::after {
         background-color: #fff !important;
     }
-    
+
     .navbar-toggler:not(.collapsed) .navbar-toggler-icon {
         transform: rotate(45deg);
     }
-    
+
     .navbar-toggler:not(.collapsed) .navbar-toggler-icon::before {
         opacity: 0;
     }
-    
+
     .navbar-toggler:not(.collapsed) .navbar-toggler-icon::after {
         transform: rotate(-90deg) translateX(7px);
     }
-    
+
     .navbar-toggler:focus,
     .navbar-toggler:active {
         box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
         border-radius: 5px;
     }
-    
+
     .navbar-toggler.collapsed {
         box-shadow: none !important;
     }
-    
+
     /* Logout gomb stílusai */
     .logout-button {
         background: none;
@@ -456,10 +459,8 @@ nav{
         color: #E66050;
         font-size: 1.2rem;
     }
-    
-    .logout-button:hover {
-        
-    }
+
+    .logout-button:hover {}
 }
 
 body {
@@ -467,8 +468,9 @@ body {
     margin: 0;
     padding: 0;
     background-color: #e5f9f9;
-    
+
 }
+
 .container {
     display: flex;
     flex-wrap: wrap;
@@ -480,6 +482,7 @@ body {
     overflow: hidden;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
+
 .map {
     flex: 1;
     min-height: 500px;
@@ -487,6 +490,7 @@ body {
     padding-top: 20px;
     padding-bottom: 20px;
 }
+
 .map iframe {
     width: 100%;
     height: 100%;
@@ -494,6 +498,7 @@ body {
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
+
 .contact-info {
     flex: 1;
     padding: 40px;
@@ -501,16 +506,19 @@ body {
     flex-direction: column;
     justify-content: center;
 }
+
 .contact-info h2 {
     margin-bottom: 20px;
     color: #333;
 }
+
 .contact-info p {
     margin: 10px 0;
     color: #555;
     display: flex;
     align-items: center;
 }
+
 .icon {
     margin-right: 10px;
     color: #007BFF;
@@ -524,16 +532,20 @@ h3 {
 /* Hero szekció – teljes háttérkép, tartalom feljebb */
 .hero {
     position: relative;
-    width: 90%; /* Módosított szélesség */
-    margin: 0 auto; /* Középre igazítás */
+    width: 90%;
+    /* Módosított szélesség */
+    margin: 0 auto;
+    /* Középre igazítás */
     height: 85vh;
     background: url('/happy-woman-talking-receptionist-while-arriving-spa.jpg') no-repeat center center/cover;
     display: flex;
     align-items: flex-start;
     justify-content: center;
     padding-top: 80px;
-    border-radius: 20px; /* Lekerekített sarkok */
-    overflow: hidden; /* Biztosítja, hogy a tartalom is tartsa a lekerekítést */
+    border-radius: 20px;
+    /* Lekerekített sarkok */
+    overflow: hidden;
+    /* Biztosítja, hogy a tartalom is tartsa a lekerekítést */
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
@@ -545,7 +557,8 @@ h3 {
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
     z-index: 1;
-    border-radius: 20px; /* Ugyanaz a lekerekítés mint a hero-nak */
+    border-radius: 20px;
+    /* Ugyanaz a lekerekítés mint a hero-nak */
 }
 
 .hero-content {
@@ -569,19 +582,29 @@ h3 {
     border-radius: 8px;
 }
 
-/* Egyenletes elrendezés a select-ek és a "Vagy" szöveg között */
+/* Alapértelmezett elrendezés: kisebb képernyőkre (oszlopos) */
 .select-group {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px;
-    /* Egyenletes távolság az elemek között */
+}
+
+/* Nagyképernyős elrendezés: sorba rendezés */
+@media (min-width: 768px) {
+    .select-group {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        justify-content: center;
+    }
 }
 
 .select-wrapper {
     position: relative;
     width: 100%;
     max-width: 330px;
+    margin: 10px;
 }
 
 .separator {
@@ -628,20 +651,24 @@ h3 {
 /* Mobilbarát stílus */
 @media (max-width: 768px) {
     .hero {
-        width: 95%; /* Kicsit több hely mobilnézeten */
-        border-radius: 15px; /* Kisebb lekerekítés */
+        width: 95%;
+        /* Kicsit több hely mobilnézeten */
+        border-radius: 15px;
+        /* Kisebb lekerekítés */
     }
-    
+
     .overlay {
-        border-radius: 15px; /* Összhangban a hero-val */
+        border-radius: 15px;
+        /* Összhangban a hero-val */
     }
 }
 
 @media (max-width: 480px) {
     .hero {
-        border-radius: 10px; /* Minimális lekerekítés nagyon kis képernyőkön */
+        border-radius: 10px;
+        /* Minimális lekerekítés nagyon kis képernyőkön */
     }
-    
+
     .overlay {
         border-radius: 10px;
     }
