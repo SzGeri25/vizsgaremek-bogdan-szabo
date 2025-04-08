@@ -160,14 +160,15 @@
 .hero-section {
     background: url('/clinic.jpg') no-repeat center center;
     background-size: cover;
-    height: 70vh;
+    min-height: 70vh; /* Flexibilis magasság */
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fff;
+    color: #f5f5f5;
     text-align: center;
     position: relative;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    padding: 20px; /* Padding a kis képernyőkön */
 }
 
 .hero-content {
@@ -175,6 +176,7 @@
     padding: 2rem;
     border-radius: 8px;
     backdrop-filter: blur(2px);
+    max-width: 90%; 
 }
 
 .typewriter {
@@ -187,6 +189,7 @@
     animation:
         typing 3s steps(40, end) 1s forwards;
     width: 0;
+     font-size: 2.5rem; /* Alapértelmezett méret */
 }
 
 /* Kurzor animáció (eltűnik a gépelés végén) */
@@ -274,46 +277,6 @@
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px !important;
 }
 
-/* Reszponzív módosítások */
-@media (max-width: 768px) {
-    .hero-section {
-        height: 50vh;
-        padding: 1rem;
-    }
-
-    .hero-content {
-        padding: 1.5rem;
-        font-size: 0.9rem;
-    }
-
-    .typewriter {
-        font-size: 1.5rem;
-    }
-
-    .btn-primary {
-        padding: 0.65rem 1.2rem;
-        font-size: 1rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .hero-section {
-        height: 40vh;
-    }
-
-    .hero-content {
-        padding: 1rem;
-    }
-
-    .typewriter {
-        font-size: 0.9rem;
-    }
-
-    .btn-primary {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-    }
-}
 
 html {
     scroll-behavior: smooth;
@@ -363,30 +326,12 @@ nav {
     }
 
     /* Responsive navbar mobil nézethez */
-    @media (max-width: 991.98px) {
-        .navbar-collapse {
-            position: fixed;
-            top: 80px;
-            right: 0;
-            width: 250px;
-            height: 100%;
-            background-color: #333;
-            overflow-y: auto;
-            transform: translateX(100%);
-            transition: transform 0.2s ease-in-out;
-            z-index: 1050;
-        }
-
-        .navbar-collapse.show {
-            transform: translateX(0);
-        }
-    }
-
+    
     /* Navbar toggler gomb stílusai */
     .navbar-toggler {
         border-color: #fff;
     }
-
+    
     .navbar-toggler-icon {
         background-image: none !important;
         background-color: var(--bs-gray-800);
@@ -433,7 +378,7 @@ nav {
     .navbar-toggler:not(.collapsed) .navbar-toggler-icon::before {
         opacity: 0;
     }
-
+    
     .navbar-toggler:not(.collapsed) .navbar-toggler-icon::after {
         transform: rotate(-90deg) translateX(7px);
     }
@@ -443,7 +388,7 @@ nav {
         box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
         border-radius: 5px;
     }
-
+    
     .navbar-toggler.collapsed {
         box-shadow: none !important;
     }
@@ -459,7 +404,7 @@ nav {
         color: #E66050;
         font-size: 1.2rem;
     }
-
+    
     .logout-button:hover {}
 }
 
@@ -468,7 +413,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: #e5f9f9;
-
+    
 }
 
 .container {
@@ -547,6 +492,8 @@ h3 {
     overflow: hidden;
     /* Biztosítja, hogy a tartalom is tartsa a lekerekítést */
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .overlay {
@@ -574,30 +521,13 @@ h3 {
     margin-bottom: 30px;
 }
 
+
 /* Form konténer, amely a select-eket tartalmazza */
 .form-container {
     display: inline-block;
     background: rgba(255, 255, 255, 0.9);
     padding: 20px;
     border-radius: 8px;
-}
-
-/* Alapértelmezett elrendezés: kisebb képernyőkre (oszlopos) */
-.select-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-}
-
-/* Nagyképernyős elrendezés: sorba rendezés */
-@media (min-width: 768px) {
-    .select-group {
-        flex-direction: row;
-        align-items: center;
-        gap: 10px;
-        justify-content: center;
-    }
 }
 
 .select-wrapper {
@@ -648,8 +578,101 @@ h3 {
     pointer-events: none;
 }
 
-/* Mobilbarát stílus */
+/* A gomb mindig középre igazítva, külön sorban */
+.allAvailableSlotsButton {
+    display: block;
+    margin: 20px auto 0 auto;
+    border-radius: 8px;
+    color: #f5f5f5;
+    background-color: #E66050;
+    padding: 12px 20px;
+    border: 2px solid #E66050;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px !important;
+}
+
+.allAvailableSlotsButton:hover {
+    background-color: #C94F42;
+    transform: scale(1.03);
+    border: 2px solid #C94F42;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px !important;
+}
+
+@media (max-width: 992px) and (orientation: landscape) {
+    .hero-section {
+        min-height: 80vh;
+    }
+}
+
+@media (max-width: 992px) {
+    .navbar-collapse {
+        position: fixed;
+        top: 80px;
+        right: 0;
+        width: 250px;
+        height: 100%;
+        background-color: #333;
+        overflow-y: auto;
+        transform: translateX(100%);
+        transition: transform 0.2s ease-in-out;
+        z-index: 1050;
+    }
+
+    .typewriter {
+        font-size: 1.5rem !important;
+        letter-spacing: .05em;
+    }
+    
+    .hero-content {
+        padding: 1.5rem;
+        backdrop-filter: blur(1px);
+    }
+
+    .hero-content h1 {
+        font-size: 35px !important;
+        margin-bottom: 30px;
+    }
+
+    .navbar-collapse.show {
+        transform: translateX(0);
+    }
+}
+
+@media (max-width:800px){
+    #kapcsolat{
+        display: grid;
+    }
+}
+
 @media (max-width: 768px) {
+    .select-group {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .hero-section {
+        min-height: 60vh;
+        padding: 15px;
+    }
+    
+    .typewriter {
+        font-size: 1.3rem !important;
+        white-space: normal; /* Több sor engedélyezése */
+        animation: none; /* Kikapcsoljuk az animációt mobilra */
+        width: auto; /* Visszaállítjuk a normál szélességet */
+    }
+    
+    .typewriter::after {
+        display: none; /* Elrejtjük a kurzort mobilra */
+    }
+    
+    .btn-primary {
+        padding: 0.6rem 1.2rem;
+        font-size: 1rem;
+    }
+
     .hero {
         width: 95%;
         /* Kicsit több hely mobilnézeten */
@@ -672,4 +695,34 @@ h3 {
     .overlay {
         border-radius: 10px;
     }
+
+    .hero-section {
+        min-height: 50vh;
+        padding: 10px;
+    }
+
+    .hero-section h1{
+        font-size: 25px !important;
+    }
+    
+    .typewriter {
+        font-size: 1rem !important;
+        position: relative;
+        top: 20px;
+        line-height: 1.4;
+        text-wrap: auto;
+    }
+    
+    .hero-content {
+        padding: 1rem;
+        border-radius: 5px;
+    }
+    
+    .btn-primary {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+
 }
+
+/* Tableta orientációhoz */
