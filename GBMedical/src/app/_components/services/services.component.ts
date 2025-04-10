@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { ChevronUpComponent } from "../chevron-up/chevron-up.component";
 
 interface Service {
   id: number;
@@ -19,7 +20,7 @@ interface Service {
 @Component({
   selector: 'app-services',
   standalone: true,
-  imports: [NavbarComponent, FooterComponent, FormsModule, CommonModule],
+  imports: [NavbarComponent, FooterComponent, FormsModule, CommonModule, ChevronUpComponent],
   templateUrl: './services.component.html',
   styleUrls: ['./services.component.css']
 })
