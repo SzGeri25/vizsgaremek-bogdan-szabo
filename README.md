@@ -1,4 +1,4 @@
-\# GB Medical – Időpontfoglaló
+## GB Medical – Időpontfoglaló
 
 
 
