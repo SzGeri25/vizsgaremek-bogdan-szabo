@@ -76,7 +76,7 @@ Ezeket a fájlokat a következő Google Drive mappában érheted el:
 
 * Importáld a projektet NetBeans 19-be
 * Állítsd be a Wildfly szervert, indítsd el
-* Állítsd be a MySQL adatbázist a docs/sql mappában található scriptek segítségével
+* Állítsd be a MySQL adatbázist a database mappában található script segítségével
 
 
 
