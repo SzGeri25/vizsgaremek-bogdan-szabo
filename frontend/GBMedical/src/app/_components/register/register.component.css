@@ -1,0 +1,229 @@
+
+
+#form{
+    width: 90%;
+    max-width: 400px;
+    margin: 10vh auto 0 auto;
+    background-color: #008080;
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 150px;
+    color: #f5f5f5;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Lágy árnyék */
+}
+
+h1{
+    text-align: center;
+    color: #f5f5f5;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.input-group input {
+    border-radius: 20px !important;
+    font-size: 20px;
+    margin-bottom: 15px;
+    margin-top: 5px;
+    padding: 10px;
+    border: 1px solid rgb(34, 193, 195);
+    height: 35px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15); /* Lágy árnyék */
+    transition: box-shadow 0.3s ease-in-out;
+    width: 100%;
+    box-sizing: border-box ;
+}
+
+.error {
+    color: #ff4d4d;
+    font-size: 14px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+/* Piros szegély, ha az input mező hibás */
+.error-border {
+    border: 1px solid #ff4d4d !important;
+    box-shadow: 0px 0px 5px rgba(255, 77, 77, 0.5);
+}
+
+#name{
+    position: relative;
+    right: 10px;
+}
+
+/* Ha az input mezőre fókuszálunk, az árnyék erősebb lesz */
+.input-group input:focus {
+    outline: none;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Erősebb árnyék fókuszáláskor */
+}
+
+.registerButton{
+    background-color: #333333;
+    color: #f5f5f5;
+    border-radius: 20px !important;
+    height: 35px;
+    border: none;
+    padding: 0 20px;
+    position: relative;
+    margin-top: 5px; 
+    width: 100%;
+}
+
+.loginButton{
+    background-color: black;
+    color: #f5f5f5;
+    border-radius: 20px;
+    height: 35px;
+    border: none;
+    padding: 0 20px;
+    width: 100%;
+    position: relative;
+    left: 13px;
+    top: 4px;
+
+}
+
+.input-group input:focus {
+    outline: none;
+}
+
+/*.register{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: 200ms ease-in-out;
+    border: 1px solid black;
+    border-radius: 10px;
+    z-index: 10;
+    background-color: white;
+    width: 500px;
+    max-width: 80%;
+}
+
+.register:active{
+    transform: translate(-50%, -50%) scale(0);
+}
+
+.register-header{
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid black;
+}
+
+.register-header .title{
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.register-header .close-button{
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background: none;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.register.body{
+    padding: 10px 15px;
+}
+
+#overlay{
+    position: fixed;
+    opacity: 0;
+    transition: 200ms ease-in-out;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgb(0, 0, 0, .5);
+    pointer-events: none;
+}
+
+#overlay:active {
+    opacity: 0;
+    pointer-events: all;
+
+}*/
+
+.modal {
+    background-color: rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: all 0.3 ease-in-out;
+    z-index: -1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.open {
+    opacity: 1;
+    z-index: 999;
+}
+
+.modal-inner {
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    padding: 15px 25px;
+    text-align: center;
+    width: 380px;
+}
+
+.modal-inner h2 {
+    margin: 0;
+    margin-bottom: 15px;
+}
+
+.modal-inner img{
+    width:380px;
+}
+
+.password-container {
+    position: relative;
+  }
+  
+  .password-container i {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+
+  .fa {
+    color: #333333; /* Ez az a szín, amit a gombhoz használsz */
+    cursor: pointer;
+    position: relative;
+    bottom: 2px;
+  }
+  
+  .registerButton {
+    background-color: #333333;
+    color: #f5f5f5; /* Ezt a színt használtad a gombhoz */
+    border-radius: 20px !important;
+    height: 35px;
+    border: none;
+    padding: 0 20px;
+    position: relative;
+    margin-top: 5px; 
+    width: 100%;
+  }
+  
+  
+
+
+

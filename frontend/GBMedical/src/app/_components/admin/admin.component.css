@@ -1,0 +1,16 @@
+table {
+  width: 100%;
+}
+
+.mat-column-password {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+.delete-button mat-icon {
+  color: red !important; /* Piros ikon */
+  outline: none; /* Biztosítja, hogy ne legyen outline sem */
+}

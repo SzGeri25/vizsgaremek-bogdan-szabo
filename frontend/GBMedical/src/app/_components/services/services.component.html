@@ -1,0 +1,71 @@
+<app-navbar></app-navbar>
+
+<div class="services-container">
+    <div class="services-header">
+        <h1>Szolgáltatásaink</h1>
+        <p>Fedezd fel kínálatunkat és válaszd ki a számodra legmegfelelőbb kezelést</p>
+    </div>
+
+    <div class="services-content">
+        <!-- Egyszerűsített szolgáltatás választó -->
+        <div class="select-wrapper">
+            <select (change)="onSelectService($event)">
+                <option disabled selected>Válassz szolgáltatásaink közül</option>
+                <option *ngFor="let service of services" [value]="service.name">
+                    {{ service.name }}
+                </option>
+            </select>
+        </div>
+
+        <!-- Kiválasztott szolgáltatás részletei -->
+        <div *ngIf="selectedService" class="service-details-card">
+            <div class="row service-info">
+                <div class="col">
+                    <h2>{{ selectedService.name }}</h2>
+                    <div class="service-meta">
+                        <span class="duration">{{ selectedService.duration }} perc</span>
+                        <span class="price">{{ selectedService.price | currency:'HUF':'symbol':'1.0-0' }}</span>
+                    </div>
+                    <p class="description">{{ selectedService.description }}</p>
+                    <div class="doctors-list">
+                        <h3>Elérhető orvosaink:</h3>
+                        <div *ngFor="let doctorName of selectedService.doctor_names" class="doctor-item">
+                            {{ doctorName }}
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col">
+                    <div class="doctors-section">
+                        <img [src]="selectedService.imageUrl" alt="Orvos kép" class="doctor-image" />
+                    </div>
+                </div>
+            </div>
+            <button class="book-button" (click)="bookService(selectedService)">
+                Időpontfoglalás
+            </button>
+        </div>
+
+        <!-- Összes szolgáltatás kártyákon -->
+        <div class="all-services-grid">
+            <div *ngFor="let service of services" class="service-card"
+                [class.selected]="service.id === selectedService?.id" (click)="selectService(service)">
+                <h3>{{ service.name }}</h3>
+                <div class="card-meta">
+                    <span>{{ service.duration }} perc</span>
+                    <span>{{ service.price | currency:'HUF':'symbol':'1.0-0' }}</span>
+                </div>
+                <p class="card-description">{{ service.description }}</p>
+                <div class="card-doctors">
+                    <span>Orvosok: </span>
+                    <span *ngFor="let doctor of service.doctor_names" class="doctor-tag">
+                        {{ doctor }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-chevron-up></app-chevron-up>
+<app-footer></app-footer>
