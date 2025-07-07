@@ -1,6 +1,6 @@
 ## GB Medical – Időpontfoglaló
 
-
+ℹ️ Részletes dokumentáció a **docs** mappában található "Szabó\_Gergely\_portfólió\_kész.pdf" néven.
 
 \## Projekt bemutatása
 
@@ -87,6 +87,3 @@ Ezeket a fájlokat a következő Google Drive mappában érheted el:
 * Navigálj a frontend mappába
 * Futtasd az npm install parancsot a függőségek telepítéséhez
 * Indítsd el az Angular szervert az ng serve parancssal
-
-ℹ️ Részletes dokumentáció a **docs** mappában található "Szabó\_Gergely\_portfólió\_kész.pdf" néven.
-
