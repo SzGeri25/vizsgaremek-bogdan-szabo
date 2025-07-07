@@ -1,4 +1,4 @@
-\# GB Medical – Időpontfoglaló
+## GB Medical – Időpontfoglaló
 
 
 
@@ -25,7 +25,6 @@ A projekt célja valós problémára adni megoldást az egészségügyi szolgál
 
 
 \## Fő funkciók
-
 \- Szolgáltatás vagy orvos választása a foglalás előtt
 
 \- Időpontfoglalás szabad időpontokra, bejelentkezett felhasználóknak
@@ -46,9 +45,22 @@ A projekt célja valós problémára adni megoldást az egészségügyi szolgál
 
 
 
-\## Telepítés és futtatás
+## Telepítők és WildFly szerver letöltése
 
+A projekthez tartozó nagyobb fájlok (telepítők és előre konfigurált WildFly szerver) a GitHub tárhely korlátozásai miatt nem találhatók meg itt.
 
+Ezeket a fájlokat a következő Google Drive mappában érheted el:
+
+📁 **[Letöltés: WildFly és telepítők (1,6 GB+)](https://drive.google.com/drive/folders/1hnuqlUmwaykHdEW0907J18hNS5yiGoeX?usp=sharing)**
+
+---
+
+## Tartalom
+
+- `installers.zip` – szükséges telepítők (1,61 GB)
+- `wildfly-preview-26.1.1.Final.zip` – előre konfigurált WildFly szerver (221 MB)
+
+---
 
 1\. Klónozd a repót:
 
@@ -75,8 +87,6 @@ A projekt célja valós problémára adni megoldást az egészségügyi szolgál
 * Navigálj a frontend mappába
 * Futtasd az npm install parancsot a függőségek telepítéséhez
 * Indítsd el az Angular szervert az ng serve parancssal
-
-
 
 ℹ️ Részletes dokumentáció a **docs** mappában található "Szabó\_Gergely\_portfólió\_kész.pdf" néven.
 
