@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mysql:
     image: mysql:8.0
@@ -8,13 +6,14 @@ services:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: gb_medical_idopontfoglalo
     ports:
-      - "3306:3306"
+      - 3306:3306
     volumes:
       - ./database:/docker-entrypoint-initdb.d
     restart: unless-stopped
 
   backend:
-    image: gbmed-backend
+    build: ./backend/
+    #image: gbmed-backend
     container_name: gbmed-backend
     depends_on:
       - mysql
@@ -24,14 +23,16 @@ services:
       DB_PASSWORD: rootpassword
       DB_NAME: gb_medical_idopontfoglalo
     ports:
-      - "8080:8080"
+      - 9990:9990
+      - 8080:8080
     restart: unless-stopped
 
   frontend:
-    image: gbmed-frontend
+    build: ./frontend/GBMedical
+    #image: gbmed-frontend
     container_name: gbmed-frontend
     depends_on:
       - backend
     ports:
-      - "80:80"
+      - 80:80
     restart: unless-stopped

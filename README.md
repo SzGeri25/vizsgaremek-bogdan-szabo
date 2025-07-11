@@ -87,3 +87,10 @@ Ezeket a fájlokat a következő Google Drive mappában érheted el:
 * Navigálj a frontend mappába
 * Futtasd az npm install parancsot a függőségek telepítéséhez
 * Indítsd el az Angular szervert az ng serve parancssal
+
+## Docker 
+
+For build: `docker compose up --build`
+For stop: `docker compose down`
+
+>Hint: You can do this foe specific services eg.: `docker compose up backend --build `

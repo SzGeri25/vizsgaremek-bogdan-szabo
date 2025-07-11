@@ -8,7 +8,7 @@ RUN mvn clean package -DskipTests
 # 2. Futtató fázis (WildFly image)
 FROM quay.io/wildfly/wildfly:latest
 
-COPY GBMedicalBackend/target/*.war /opt/jboss/wildfly/standalone/deployments/
+COPY ./GBMedicalBackend/GBMedicalBackend/target/*.war /opt/jboss/wildfly/standalone/deployments/
 
 EXPOSE 8080
 
