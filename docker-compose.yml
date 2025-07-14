@@ -13,23 +13,23 @@ services:
 
   backend:
     build: ./backend/
-    image: gbmed-backend
+    #image: gbmed-backend
     container_name: gbmed-backend
     depends_on:
       - mysql
     environment:
-      DB_HOST: gbmed-mysql
-      DB_URL: jdbc:mysql://gbmed-mysql:3306/gb_medical_idopontfoglalo?useSSL=false&serverTimezone=UTC
+      DB_HOST: mysql
       DB_USER: root
       DB_PASSWORD: rootpassword
       DB_NAME: gb_medical_idopontfoglalo
     ports:
+      - 9990:9990
       - 8080:8080
     restart: unless-stopped
 
   frontend:
     build: ./frontend/GBMedical
-    image: gbmed-frontend
+    #image: gbmed-frontend
     container_name: gbmed-frontend
     depends_on:
       - backend
