@@ -11,3 +11,8 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(), provideAnimationsAsync(), provideAnimationsAsync(), provideAnimationsAsync(),
   ]
 };
+
+export const environment = {
+  production: false,
+  apiUrl: 'http://gbmed-backend:8080/api'
+};

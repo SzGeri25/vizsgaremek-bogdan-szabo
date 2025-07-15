@@ -10,10 +10,12 @@ services:
     volumes:
       - ./database:/docker-entrypoint-initdb.d
     restart: unless-stopped
+    networks:
+     - java_proj
 
   backend:
     build: ./backend/
-    image: gbmed-backend
+    #image: gbmed-backend
     container_name: gbmed-backend
     depends_on:
       - mysql
@@ -26,13 +28,20 @@ services:
     ports:
       - 8080:8080
     restart: unless-stopped
+    networks:
+     - java_proj
 
   frontend:
     build: ./frontend/GBMedical
-    image: gbmed-frontend
+    #image: gbmed-frontend
     container_name: gbmed-frontend
     depends_on:
       - backend
     ports:
       - 80:80
     restart: unless-stopped
+    networks:
+     - java_proj
+
+networks: 
+  java_proj:
