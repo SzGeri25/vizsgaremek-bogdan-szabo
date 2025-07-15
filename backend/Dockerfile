@@ -7,7 +7,7 @@ WORKDIR /app/GBMedicalBackend
 RUN mvn clean package -DskipTests
 
 # 2. fázis: Futtató környezet (WildFly)
-FROM quay.io/wildfly/wildfly:latest
+FROM quay.io/wildfly/wildfly:26.1.1.Final
 
 
 # Másoljuk be a MySQL JDBC modult a megfelelő helyre

@@ -3,7 +3,7 @@ services:
     image: mysql:8.0
     container_name: gbmed-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: gb_medical_idopontfoglalo
     ports:
       - 3306:3306
@@ -19,9 +19,9 @@ services:
       - mysql
     environment:
       DB_HOST: gbmed-mysql
-      DB_URL: jdbc:mysql://gbmed-mysql:3306/gb_medical_idopontfoglalo?useSSL=false&serverTimezone=UTC
+      DB_URL: jdbc:mysql://gbmed-mysql:3306/gb_medical_idopontfoglalo?useSSL=false&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true
       DB_USER: root
-      DB_PASSWORD: rootpassword
+      DB_PASSWORD: root
       DB_NAME: gb_medical_idopontfoglalo
     ports:
       - 8080:8080
