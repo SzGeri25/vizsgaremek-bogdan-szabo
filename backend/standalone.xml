@@ -133,12 +133,8 @@
 						mysql
 					</driver>
 					<security>
-						<user-name>
-							root
-						</user-name>
-						<password>
-							root
-						</password>
+						<user-name>root</user-name>
+						<password>rootpassword</password>
 					</security>
 				</datasource>
 				<drivers>
