@@ -12,13 +12,19 @@ services:
     restart: unless-stopped
     networks:
      - java_proj
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   backend:
     build: ./backend/
     #image: gbmed-backend
     container_name: gbmed-backend
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     environment:
       DB_HOST: gbmed-mysql
       DB_URL: jdbc:mysql://gbmed-mysql:3306/gb_medical_idopontfoglalo?useSSL=false&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true
