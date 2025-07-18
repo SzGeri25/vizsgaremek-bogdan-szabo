@@ -134,7 +134,7 @@
 					</driver>
 					<security>
 						<user-name>root</user-name>
-						<password>rootpassword</password>
+						<password>root</password>
 					</security>
 				</datasource>
 				<drivers>
