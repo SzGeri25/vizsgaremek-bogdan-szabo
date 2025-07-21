@@ -31,6 +31,7 @@ services:
       DB_USER: root
       DB_PASSWORD: root
       DB_NAME: gb_medical_idopontfoglalo
+      CORS_ALLOWED_ORIGINS: http://localhost
     ports:
       - 8080:8080
     restart: unless-stopped
