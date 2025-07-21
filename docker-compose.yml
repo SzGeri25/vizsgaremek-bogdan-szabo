@@ -1,0 +1,54 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: gbmed-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: gb_medical_idopontfoglalo
+    ports:
+      - 3306:3306
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+    networks:
+     - java_proj
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend/
+    #image: gbmed-backend
+    container_name: gbmed-backend
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_HOST: gbmed-mysql
+      DB_URL: jdbc:mysql://gbmed-mysql:3306/gb_medical_idopontfoglalo?useSSL=false&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: gb_medical_idopontfoglalo
+      CORS_ALLOWED_ORIGINS: http://localhost
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+    networks:
+     - java_proj
+
+  frontend:
+    build: ./frontend/GBMedical
+    #image: gbmed-frontend
+    container_name: gbmed-frontend
+    depends_on:
+      - backend
+    ports:
+      - 80:80
+    restart: unless-stopped
+    networks:
+     - java_proj
+
+networks: 
+  java_proj:

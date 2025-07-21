@@ -445,6 +445,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `getAppointmentById` (IN `idIN` INT)
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getAvailableSlots` ()   BEGIN
+    -- Esetleges korábban létező ideiglenes tábla eldobása
+    DROP TEMPORARY TABLE IF EXISTS TimeSlots;
+    
     -- Ideiglenes tábla létrehozása a schedule-okból generált slotokkal
     CREATE TEMPORARY TABLE TimeSlots AS
     SELECT 
@@ -472,7 +475,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `getAvailableSlots` ()   BEGIN
         dxs.service_id,
         ser.name AS service_name
     FROM TimeSlots ts
-    LEFT JOIN Appointments a
+    LEFT JOIN appointments a
       ON ts.doctor_id = a.doctor_id
       AND ts.slot_start < a.end_time
       AND ts.slot_end > a.start_time
@@ -517,7 +520,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `getAvailableSlotsByDoctor` (IN `doc
         dxs.service_id,
         ser.name AS service_name
     FROM TimeSlots ts
-    LEFT JOIN Appointments a
+    LEFT JOIN appointments a
       ON ts.doctor_id = a.doctor_id
       AND ts.slot_start < a.end_time
       AND ts.slot_end > a.start_time
@@ -570,7 +573,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `getAvailableSlotsByService` (IN `se
         dxs.service_id,
         ser.name AS service_name
     FROM TimeSlots ts
-    LEFT JOIN Appointments a
+    LEFT JOIN appointments a
       ON ts.doctor_id = a.doctor_id
       AND ts.slot_start < a.end_time
       AND ts.slot_end > a.start_time
